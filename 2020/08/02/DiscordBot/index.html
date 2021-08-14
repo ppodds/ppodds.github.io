@@ -20,25 +20,29 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="學習筆記, 程式設計, Web, CTF">
-<meta property="og:type" content="website">
-<meta property="og:title" content="萌新的學習筆記">
-<meta property="og:url" content="https://ppodds.github.io/index.html">
+<meta name="description" content="前言從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。 123456789101112131415161718192021Raspberry Pi 4 model B 4GB ver《技術規格》* Broadcom BCM2711, Quad core Cor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用萬能的樹莓派實現24h Discord Bot(Python)">
+<meta property="og:url" content="https://ppodds.github.io/2020/08/02/DiscordBot/index.html">
 <meta property="og:site_name" content="萌新的學習筆記">
-<meta property="og:description" content="學習筆記, 程式設計, Web, CTF">
+<meta property="og:description" content="前言從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。 123456789101112131415161718192021Raspberry Pi 4 model B 4GB ver《技術規格》* Broadcom BCM2711, Quad core Cor">
 <meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2020-08-02T12:12:00.000Z">
+<meta property="article:modified_time" content="2021-08-14T09:37:30.000Z">
 <meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="樹莓派">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://ppodds.github.io/">
+<link rel="canonical" href="https://ppodds.github.io/2020/08/02/DiscordBot/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-TW","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2020/08/02/DiscordBot/","path":"2020/08/02/DiscordBot/","title":"用萬能的樹莓派實現24h Discord Bot(Python)"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>萌新的學習筆記</title>
+<title>用萬能的樹莓派實現24h Discord Bot(Python) | 萌新的學習筆記</title>
   
 
 
@@ -104,7 +108,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目錄
@@ -117,6 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E6%A9%9F%E5%89%8D%E7%9A%84%E6%BA%96%E5%82%99"><span class="nav-number">2.1.</span> <span class="nav-text">開機前的準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E7%9A%84%E5%BB%BA%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">環境的建置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E5%B1%ACDiscord-Bot"><span class="nav-number">2.3.</span> <span class="nav-text">部屬Discord Bot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%A8%E6%99%82%E9%9A%A8%E5%9C%B0%E7%9A%84%E6%8E%A7%E5%88%B6%E6%A8%B9%E8%8E%93%E6%B4%BE"><span class="nav-number">2.4.</span> <span class="nav-text">隨時隨地的控制樹莓派!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B7%A8%E5%AF%ABShell-Script%E4%BE%86%E5%BF%AB%E9%80%9F%E5%95%9F%E5%8B%95Bot"><span class="nav-number">2.5.</span> <span class="nav-text">編寫Shell Script來快速啟動Bot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">2.6.</span> <span class="nav-text">結語</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -175,215 +180,17 @@
 </noscript>
 
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/08/14/Start/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌新的學習筆記">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/08/14/Start/" class="post-title-link" itemprop="url">新的起點</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">發表於</span>
-      
-
-      <time title="創建時間：2021-08-14 16:43:35 / 修改時間：17:10:35" itemprop="dateCreated datePublished" datetime="2021-08-14T16:43:35+08:00">2021-08-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分類於</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%97%A5%E8%AA%8C/" itemprop="url" rel="index"><span itemprop="name">日誌</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h1><p>不知不覺中，大學生活已經過去一年了。相對於去年，實際上能力的進步並不明顯，在學習各項知識時也開始碰上瓶頸。</p>
-<p>前一年時原本我就有打算做一個個人網站，可惜能寫的東西實在太少，故決定將個人的網站整合成自己的學習筆記。未來可將學習收穫整理至此，在忘記的時候可以再回來看一遍，撰寫時也能重新釐清自己的觀念。期待能在未來有更好的學習效果。</p>
-<h1 id="目標"><a href="#目標" class="headerlink" title="目標"></a>目標</h1><p>最近打算把自己放在巴哈小屋的技術文章整理到這裡來，順便做一次校稿，讓這邊版面不要這麼空。整理完後會把新知網學到的一些知識整理在這，再來就是未來開發php網站系統的筆記。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2020/08/08/Asyncio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌新的學習筆記">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/08/08/Asyncio/" class="post-title-link" itemprop="url">Python asyncio簡單整理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">發表於</span>
-
-      <time title="創建時間：2020-08-08 20:22:45" itemprop="dateCreated datePublished" datetime="2020-08-08T20:22:45+08:00">2020-08-08</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-08-14 18:46:03" itemprop="dateModified" datetime="2021-08-14T18:46:03+08:00">2021-08-14</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分類於</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Python為了避免產生blocking問題，替耗時的IO、計算或網路相關操作提供了asyncio，可以用並發的方式完成工作，同時最大限度地提高作業效率。</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/413721/">並發和並行的比較</a></p>
-</blockquote>
-<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="協程和任務-Coroutines-and-Tasks"><a href="#協程和任務-Coroutines-and-Tasks" class="headerlink" title="協程和任務(Coroutines and Tasks)"></a>協程和任務(Coroutines and Tasks)</h2><h3 id="何謂協程"><a href="#何謂協程" class="headerlink" title="何謂協程?"></a><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-task.html#id1">何謂協程?</a></h3><p>協程指的是有宣告為async的函式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;world&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>此時<code>main()</code>就是協程，無法直接被執行</p>
-<h3 id="何謂任務"><a href="#何謂任務" class="headerlink" title="何謂任務?"></a><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-task.html#task-object">何謂任務?</a></h3><p>協程可以被裝成任務，接續上面的程式碼</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">task = asyncio.create_task(main())</span><br></pre></td></tr></table></figure>
-
-<p>此時<code>task</code>會是一個任務，任務比起一般協程能做出更多流程控制。</p>
-<h3 id="協程和任務的使用"><a href="#協程和任務的使用" class="headerlink" title="協程和任務的使用"></a>協程和任務的使用</h3><p>若要使用協程和任務，可使用<code>await</code>關鍵字</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> task</span><br><span class="line"><span class="keyword">await</span> main()</span><br></pre></td></tr></table></figure>
-
-<p>在這邊要注意，<code>await task</code>和<code>await main()</code>都會回傳<code>main</code>函式的執行結果，但是<code>task</code>是在<code>create_task()</code>沒多久後就執行了(會被丟進事件迴圈等待執行)，後者則是執行<code>await main()</code>時才會被執行。</p>
-<blockquote>
-<p>使用<code>await</code>的關鍵字，表示要Python等待後方任務或協程執行完畢再繼續執行下去。在等待執行完畢的期間，Python會不斷切換工作執行，直到等待中的任務完成。</p>
-</blockquote>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://mozillazg.com/2017/08/python-asyncio-note-task-usage.html">關於task的那些事(必看)</a></p>
-</blockquote>
-<blockquote>
-<p>雖然<code>asyncio.run()</code>可以用來執行協程和任務，但它其實是用於async程式的進入點，因此在正常情況下，一個async只能有一個<code>asyncio.run()</code>，否則會引發錯誤</p>
-</blockquote>
-<h2 id="Queue-Lock與Event"><a href="#Queue-Lock與Event" class="headerlink" title="Queue Lock與Event"></a>Queue Lock與Event</h2><p>可以用來控制執行情況</p>
-<h3 id="Queue-佇列"><a href="#Queue-佇列" class="headerlink" title="Queue 佇列"></a><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-queue.html#queues">Queue 佇列</a></h3><blockquote>
-<p>先進先出</p>
-</blockquote>
-<p>可以塞入需要處理的物件，在音樂機器人等需要有佇列時很有用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue = asyncio.Queue()</span><br><span class="line"><span class="keyword">await</span> queue.put(Obj)</span><br><span class="line">something = <span class="keyword">await</span> queue.get()</span><br></pre></td></tr></table></figure>
-
-<h3 id="Lock-鎖"><a href="#Lock-鎖" class="headerlink" title="Lock 鎖"></a><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-sync.html#lock">Lock 鎖</a></h3><p>能調控IO資源的取得，上鎖以後不能被使用，直到鎖被釋放為止，通常搭配<code>async with</code>使用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lock = asyncio.Lock()</span><br><span class="line"></span><br><span class="line"><span class="comment">#程式會等到鎖被釋放才進入該區塊</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">with</span> lock:</span><br><span class="line">    <span class="comment">#access shared state</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Event-事件"><a href="#Event-事件" class="headerlink" title="Event 事件"></a><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-sync.html#event">Event 事件</a></h3><p>能調控程式是否要繼續向下執行(<code>wait()</code>)，常用於callback函數中。<br>內部有個參數預設是<code>false</code>，可透過函數控制。當執行<code>wait()</code>時，若參數是<code>true</code>就會立刻繼續執行，否則會持續等待。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">waiter</span>(<span class="params">event</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;waiting for it ...&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> event.wait()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;... got it!&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># Create an Event object.</span></span><br><span class="line">    event = asyncio.Event()</span><br><span class="line">    <span class="comment"># Spawn a Task to wait until &#x27;event&#x27; is set.</span></span><br><span class="line">    waiter_task = asyncio.create_task(waiter(event))</span><br><span class="line">    <span class="comment"># Sleep for 1 second and set the event.</span></span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)</span><br><span class="line">    event.<span class="built_in">set</span>()</span><br><span class="line">    <span class="comment"># Wait until the waiter task is finished.</span></span><br><span class="line">    <span class="keyword">await</span> waiter_task</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-
-<h2 id="對抗耗時的IO操作"><a href="#對抗耗時的IO操作" class="headerlink" title="對抗耗時的IO操作"></a>對抗耗時的IO操作</h2><p>面對耗時的IO操作，可以使用比較低層的操作方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">blocking_io</span>():</span></span><br><span class="line">    <span class="comment">#do something</span></span><br><span class="line">    asyncio.sleep(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Fuck My Life&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    loop = asyncio.get_running_loop()</span><br><span class="line">    result = <span class="keyword">await</span> loop.run_in_executor(<span class="literal">None</span>, blocking_io)</span><br><span class="line">    <span class="built_in">print</span>(result)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-
-<p>用這種方法處理，主線程就不會卡住，在Discord Bot上常常用到。</p>
-<h1 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h1><p>其實這篇是整理幾個重點給我自己看的，文中只有簡單帶過常用的東西，如果需要更深層的知識需要自己去搜尋。</p>
-<p>有任何錯誤請通知我。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
     <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2020/08/02/DiscordBot/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -396,9 +203,9 @@
       <meta itemprop="name" content="萌新的學習筆記">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/08/02/DiscordBot/" class="post-title-link" itemprop="url">用萬能的樹莓派實現24h Discord Bot(Python)</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          用萬能的樹莓派實現24h Discord Bot(Python)
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -437,7 +244,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Raspberry Pi 4 model B 4GB ver《技術規格》</span><br><span class="line">* Broadcom BCM2711, Quad core Cortex-A72 (ARM v8) 64-bit SoC @ 1.5GHz</span><br><span class="line">* 4GB LPDDR4-3200 SDRAM</span><br><span class="line">* CYW43455 2.4 GHz/5.0 GHz IEEE 802.11ac wireless, Bluetooth 5.0, BLE</span><br><span class="line">* Gigabit Ethernet</span><br><span class="line">* 2x USB 3.0 ports; 2x USB 2.0 ports.</span><br><span class="line">* Raspberry Pi standard 40 pin GPIO header</span><br><span class="line">* 2 × micro-HDMI ports (up to 4kp60 supported)</span><br><span class="line">* 2-lane MIPI DSI display port</span><br><span class="line">* 2-lane MIPI CSI camera port</span><br><span class="line">* 4-pole stereo audio and composite video port</span><br><span class="line">* 265 (4kp60 decode), H264 (1080p60 decode, 1080p30 encode)</span><br><span class="line">* OpenGL ES 3.0 graphics</span><br><span class="line">* Micro-SD card slot for loading operating system and data storage</span><br><span class="line">* 5V DC via USB-C connector (minimum 3A*)</span><br><span class="line">* 5V DC via GPIO header (minimum 3A*)</span><br><span class="line">* Power over Ethernet (PoE) enabled (requires separate PoE HAT)</span><br><span class="line">* Operating temperature: 0 – 50 degrees C ambient</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">From 維基百科</span><br></pre></td></tr></table></figure>
 
 <h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="開機前的準備"><a href="#開機前的準備" class="headerlink" title="開機前的準備"></a>開機前的準備</h2><p>由於樹莓派本身沒有自帶儲存裝置，所以我們會需要mircoSD卡作為他的儲存裝置(插槽在電路板背面)，而在插入前必須先格式化並灌入作業系統(可參考這裡)。</p>
@@ -509,7 +316,6 @@
 <p>之後cmd不會有任何提示，但是Bot就會默默啟動了，並且在關閉以後把紀錄丟到目錄裡面的Log.txt裡面。如果要關閉Bot可以從cmd用指令kill掉處理程序，或是在Discord Bot加入關閉或重啟的指令，就可以從Discord客戶端控制。</p>
 <h2 id="結語"><a href="#結語" class="headerlink" title="結語"></a>結語</h2><p>樹莓派有非常多玩法，用來掛Discord Bot只是其中一種，各位有空也可以來玩玩看樹莓派喔!</p>
 
-      
     </div>
 
     
@@ -517,11 +323,26 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/%E6%A8%B9%E8%8E%93%E6%B4%BE/" rel="tag"># 樹莓派</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/08/08/Asyncio/" rel="next" title="Python asyncio簡單整理">
+                  Python asyncio簡單整理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
     </footer>
   </article>
 </div>
+
 
 
 
