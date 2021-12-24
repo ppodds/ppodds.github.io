@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。 正文 主機環境 基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。 時區調整 先檢查一下伺服器現在的時區 1timedatectl 伺服器一開">
+<meta property="og:type" content="article">
+<meta property="og:title" content="從零開始的Laravel生活(部署篇)">
+<meta property="og:url" content="https://ppodds.github.io/2021/09/09/LaravelDeploy/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。 正文 主機環境 基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。 時區調整 先檢查一下伺服器現在的時區 1timedatectl 伺服器一開">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2021-09-09T04:48:15.000Z">
+<meta property="article:modified_time" content="2021-09-09T05:57:33.000Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="MariaDB">
+<meta property="article:tag" content="Deploy">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ppodds.github.io/2021/09/09/LaravelDeploy/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2021/09/09/LaravelDeploy/","path":"2021/09/09/LaravelDeploy/","title":"從零開始的Laravel生活(部署篇)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>從零開始的Laravel生活(部署篇) | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">28</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">9</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E6%A9%9F%E7%92%B0%E5%A2%83"><span class="nav-number">2.1.</span> <span class="nav-text">主機環境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%82%E5%8D%80%E8%AA%BF%E6%95%B4"><span class="nav-number">2.1.1.</span> <span class="nav-text">時區調整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh-%E7%99%BB%E5%85%A5%E9%99%90%E5%88%B6"><span class="nav-number">2.1.2.</span> <span class="nav-text">ssh 登入限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#docker-%E5%AE%89%E8%A3%9D"><span class="nav-number">2.1.3.</span> <span class="nav-text">Docker 安裝</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-engine"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">Docker Engine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker-compose"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">Docker Compose</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%89%8D%E6%B8%AC%E8%A9%A6"><span class="nav-number">2.2.</span> <span class="nav-text">部署前測試</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BC%89%E5%B0%88%E6%A1%88%E6%AA%94"><span class="nav-number">2.2.1.</span> <span class="nav-text">下載專案檔</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%9D-laravel-package"><span class="nav-number">2.2.2.</span> <span class="nav-text">安裝 Laravel Package</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#laravel-permission-denied"><span class="nav-number">2.2.3.</span> <span class="nav-text">Laravel Permission Denied</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">2.3.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#laravel-%E6%80%A7%E8%83%BD%E5%84%AA%E5%8C%96"><span class="nav-number">2.3.1.</span> <span class="nav-text">Laravel 性能優化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AA%BF%E6%95%B4%E8%A8%AD%E5%AE%9A%E6%AA%94"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">調整設定檔</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E5%BF%AB%E5%8F%96"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">利用快取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#opcache"><span class="nav-number">2.3.1.3.</span> <span class="nav-text">Opcache</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B5%90%E6%9E%9C"><span class="nav-number">2.3.1.4.</span> <span class="nav-text">結果</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#database-%E5%AD%98%E5%8F%96%E6%8E%A7%E5%88%B6"><span class="nav-number">2.3.2.</span> <span class="nav-text">Database 存取控制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/09/09/LaravelDeploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          從零開始的Laravel生活(部署篇)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2021-09-09 12:48:15 / 修改時間：13:57:33" itemprop="dateCreated datePublished" datetime="2021-09-09T12:48:15+08:00">2021-09-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言">前言</h1>
+<p>上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。</p>
+<h1 id="正文">正文</h1>
+<h2 id="主機環境">主機環境</h2>
+<p>基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。</p>
+<h3 id="時區調整">時區調整</h3>
+<p>先檢查一下伺服器現在的時區</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timedatectl</span><br></pre></td></tr></table></figure>
+<p>伺服器一開始是標準時區(+0)，要調整時區可以直接用內建的工具。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tzselect</span><br></pre></td></tr></table></figure>
+<p>過程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">Please identify a location so that time zone rules can be set correctly.</span><br><span class="line">Please select a continent, ocean, &quot;coord&quot;, or &quot;TZ&quot;.</span><br><span class="line"> 1) Africa</span><br><span class="line"> 2) Americas</span><br><span class="line"> 3) Antarctica</span><br><span class="line"> 4) Asia</span><br><span class="line"> 5) Atlantic Ocean</span><br><span class="line"> 6) Australia</span><br><span class="line"> 7) Europe</span><br><span class="line"> 8) Indian Ocean</span><br><span class="line"> 9) Pacific Ocean</span><br><span class="line">10) coord - I want to use geographical coordinates.</span><br><span class="line">11) TZ - I want to specify the timezone using the Posix TZ format.</span><br><span class="line">#? 4</span><br><span class="line">Please select a country whose clocks agree with yours.</span><br><span class="line"> 1) Afghanistan           18) Israel                35) Palestine</span><br><span class="line"> 2) Armenia               19) Japan                 36) Philippines</span><br><span class="line"> 3) Azerbaijan            20) Jordan                37) Qatar</span><br><span class="line"> 4) Bahrain               21) Kazakhstan            38) Russia</span><br><span class="line"> 5) Bangladesh            22) Korea (North)         39) Saudi Arabia</span><br><span class="line"> 6) Bhutan                23) Korea (South)         40) Singapore</span><br><span class="line"> 7) Brunei                24) Kuwait                41) Sri Lanka</span><br><span class="line"> 8) Cambodia              25) Kyrgyzstan            42) Syria</span><br><span class="line"> 9) China                 26) Laos                  43) Taiwan</span><br><span class="line">10) Cyprus                27) Lebanon               44) Tajikistan</span><br><span class="line">11) East Timor            28) Macau                 45) Thailand</span><br><span class="line">12) Georgia               29) Malaysia              46) Turkmenistan</span><br><span class="line">13) Hong Kong             30) Mongolia              47) United Arab Emirates</span><br><span class="line">14) India                 31) Myanmar (Burma)       48) Uzbekistan</span><br><span class="line">15) Indonesia             32) Nepal                 49) Vietnam</span><br><span class="line">16) Iran                  33) Oman                  50) Yemen</span><br><span class="line">17) Iraq                  34) Pakistan</span><br><span class="line">#? 43</span><br><span class="line"></span><br><span class="line">The following information has been given:</span><br><span class="line"></span><br><span class="line">        Taiwan</span><br><span class="line"></span><br><span class="line">Therefore TZ=&#x27;Asia/Taipei&#x27; will be used.</span><br><span class="line">Selected time is now:   Thu Sep  9 13:03:40 CST 2021.</span><br><span class="line">Universal Time is now:  Thu Sep  9 05:03:40 UTC 2021.</span><br><span class="line">Is the above information OK?</span><br><span class="line">1) Yes</span><br><span class="line">2) No</span><br><span class="line">#? Yes</span><br><span class="line">Please enter a number in range.</span><br><span class="line">#? 1</span><br><span class="line"></span><br><span class="line">You can make this change permanent for yourself by appending the line</span><br><span class="line">        TZ=&#x27;Asia/Taipei&#x27;; export TZ</span><br><span class="line">to the file &#x27;.profile&#x27; in your home directory; then log out and log in again.</span><br><span class="line"></span><br><span class="line">Here is that TZ value again, this time on standard output so that you</span><br><span class="line">can use the /usr/bin/tzselect command in shell scripts:</span><br><span class="line">Asia/Taipei</span><br></pre></td></tr></table></figure>
+<p>再次檢查時區</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timedatectl</span><br></pre></td></tr></table></figure>
+<p>發現沒有變動，所以只好換個方法，接下來嘗試直接改動<code>/etc/localtime</code>的連結位置來更改時區</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -sf /usr/share/zoneinfo/Asia/Taipei /etc/localtime</span><br></pre></td></tr></table></figure>
+<p>確認一下結果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">               Local time: Thu 2021-09-09 13:09:17 CST</span><br><span class="line">           Universal time: Thu 2021-09-09 05:09:17 UTC</span><br><span class="line">                 RTC time: Thu 2021-09-09 05:09:17</span><br><span class="line">                Time zone: Asia/Taipei (CST, +0800)</span><br><span class="line">System clock synchronized: yes</span><br><span class="line">              NTP service: active</span><br><span class="line">          RTC in local TZ: no</span><br></pre></td></tr></table></figure>
+<p>時區改動了</p>
+<blockquote>
+<p>timedatectl 可以拿來改時區</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">timedatectl list-timezones # 找你的時區</span><br><span class="line">sudo timedatectl set-timezone &lt;time_zone&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Example</span></span><br><span class="line">sudo timedatectl set-timezone Asia/Taipei</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="ssh-登入限制">ssh 登入限制</h3>
+<p>由於管理員們都是使用公鑰登入，為了安全考量決定把 ssh 的密碼登入關掉。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+<p>sshd_config</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Authentication:</span><br><span class="line"></span><br><span class="line">#LoginGraceTime 2m</span><br><span class="line">#PermitRootLogin prohibit-password</span><br><span class="line">#StrictModes yes</span><br><span class="line">#MaxAuthTries 6</span><br><span class="line">#MaxSessions 10</span><br><span class="line"></span><br><span class="line">PubkeyAuthentication yes</span><br><span class="line">PasswordAuthentication no</span><br></pre></td></tr></table></figure>
+<p>把<code>PubkeyAuthentication</code>取消註解再把<code>PasswordAuthentication no</code>補進去就可以了。</p>
+<blockquote>
+<p>可以再加個<a target="_blank" rel="noopener" href="https://www.fail2ban.org/wiki/index.php/Main_Page">Fail2ban</a>效果拔群</p>
+</blockquote>
+<h3 id="docker-安裝">Docker 安裝</h3>
+<h4 id="docker-engine">Docker Engine</h4>
+<p>直接照著<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository">官網說明</a>走，把 docker engine 裝起來</p>
+<p>之後要給使用者帳號 docker 群組的權限</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -aG docker &lt;user&gt;</span><br></pre></td></tr></table></figure>
+<p>之後 docker 應該就能正常跑起來，可以打下面指令試試看</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果有 Permission Denied 之類的錯誤訊息應該就是沒把使用者加進 docker 組</p>
+</blockquote>
+<h4 id="docker-compose">Docker Compose</h4>
+<p>一樣照<a target="_blank" rel="noopener" href="https://docs.docker.com/compose/install/#install-compose-on-linux-systems">官網的說明</a>操作</p>
+<p>用 curl 載下來以後給執行權限丟到有在 PATH 裡面的目錄就可以了，基本上就是個執行檔。</p>
+<h2 id="部署前測試">部署前測試</h2>
+<h3 id="下載專案檔">下載專案檔</h3>
+<p>直接採用 Git 可以快速地把專案的程式碼複製到主機上來，與此同時要小心 GitLeak，如果 web server 的設定正確的話應該就不用擔心。</p>
+<h3 id="安裝-laravel-package">安裝 Laravel Package</h3>
+<p>先把 Docker 服務架起來</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>要在專案目錄下用才抓的到<code>docker-compose.yml</code></p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker attach app # 這裡寫你container的名稱</span><br><span class="line">composer install # 把php的套件裝完</span><br><span class="line">npm install # node的套件</span><br><span class="line">cp .env.example .env # 把env檔案建起來，待會還要進去設定</span><br><span class="line">php artisan key:generate # 產生一個加密用的key，Laravel會用到</span><br><span class="line">php artisan optimize # 把Laravel的快取清掉再重建</span><br><span class="line">php artisan migrate --seed # 跑migrate讓他把資料庫table建起來</span><br></pre></td></tr></table></figure>
+<p>把<code>.env</code>的設定調整完後，前置作業應該做完了，但是肯定還有 Bug 吧?</p>
+<h3 id="laravel-permission-denied">Laravel Permission Denied</h3>
+<p>果不其然，一連上伺服器就跳 500，只好把 debug 打開看，結果是 Laravel 沒有寫入檔案的權限。</p>
+<p>原因來自 Docker 預設會用 root 來對 container 裡面做操作，因此在 Docker 掛載完 volume 後，整個 volume 都變成 root 才能操作。要解決只要在<code>docker-compose.yml</code>裡面指定好使用者就可以了。</p>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">app:</span><br><span class="line">    build:</span><br><span class="line">      context: ./</span><br><span class="line">      dockerfile: app.dockerfile</span><br><span class="line">    <span class="keyword">user</span>: <span class="string">&quot;www-data:www-data&quot;</span></span><br><span class="line">    working_dir: /var/www</span><br><span class="line">    volumes:</span><br><span class="line">      - ./:/var/www</span><br><span class="line">    environment:</span><br><span class="line">      - <span class="string">&quot;DB_PORT=3306&quot;</span></span><br></pre></td></tr></table></figure>
+<p>這樣一進到 container 就會用 www-data 來做操作，應該可以避免掉 Laravel 無法更動檔案的問題。</p>
+<blockquote>
+<p>如果還是出現 Permission Denied 的狀況，就要手動設定資料夾內的權限。可嘗試<code>sudo chown -R www-data:www-data /path</code>，如果此操作反而導致 Docker 沒辦法讀取資料夾內的內容一樣可以透過手動調整權限解決</p>
+</blockquote>
+<h2 id="部署">部署</h2>
+<h3 id="laravel-性能優化">Laravel 性能優化</h3>
+<p>測試沒問題後發現網站實在是跑很慢，甚至要等個一秒才會有回應，可以嘗試以下的性能優化方法。</p>
+<h4 id="調整設定檔">調整設定檔</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">APP_ENV=production</span><br><span class="line">APP_DEBUG=false</span><br></pre></td></tr></table></figure>
+<p>調整這兩項</p>
+<h4 id="利用快取">利用快取</h4>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">php artisan optimize # 把路由還有一些快取清掉再重建</span><br><span class="line">php artisan config:cache # 把config快取起來</span><br><span class="line">php artisan route:cache # 把路由快取起來</span><br><span class="line">composer dump-autoload --optimize # 生成classmap</span><br></pre></td></tr></table></figure>
+<h4 id="opcache">Opcache</h4>
+<p>這部分我沒有使用到，有興趣的人可以再另外搜尋。</p>
+<h4 id="結果">結果</h4>
+<p>速度提升非常明顯，client 從送出到收到回覆簡短到 100 多 ms</p>
+<h3 id="database-存取控制">Database 存取控制</h3>
+<p>預設上 MariaDB 會把 root 的遠端登入開啟，如果要關閉的話可以從環境變數設定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">environment:</span><br><span class="line">      - &quot;MARIADB_ROOT_HOST=127.0.0.1&quot;</span><br></pre></td></tr></table></figure>
+<p>不過就算設定了，別人還是可以用其他帳號登入，所以最好方式就是不要開 port，可以省下麻煩。反正就算不把 port 橋接到主機上，container 之間還是可以互相連線。</p>
+<p>最後 database 在 docker-compose 裡面長這樣</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">database:</span><br><span class="line">    image: mariadb:latest</span><br><span class="line">    restart: always</span><br><span class="line">    volumes:</span><br><span class="line">      - dbdata:/var/lib/mysql</span><br><span class="line">    environment:</span><br><span class="line">      - &quot;MYSQL_DATABASE=tree&quot;</span><br><span class="line">      - &quot;MYSQL_USER=tree&quot;</span><br><span class="line">      - &quot;MYSQL_PASSWORD=secret&quot;</span><br><span class="line">      - &quot;MARIADB_ROOT_PASSWORD=secret&quot;</span><br><span class="line">      - &quot;MARIADB_ROOT_HOST=127.0.0.1&quot;</span><br></pre></td></tr></table></figure>
+<p>切掉外部連線一勞永逸，從外部就沒辦法再登入 DB 了。</p>
+<h1 id="結語">結語</h1>
+<p>這次部署其實做的滿隨便的，現在系統還沒正式上線，所以應該還會再做一些調整，如果有任何變更我也會更新上來。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/PHP/" rel="tag"># PHP</a>
+              <a href="/tags/Laravel/" rel="tag"># Laravel</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/MariaDB/" rel="tag"># MariaDB</a>
+              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
+              <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/02/Raspberry64/" rel="prev" title="樹莓派的重啟人生">
+                  <i class="fa fa-chevron-left"></i> 樹莓派的重啟人生
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/12/24/LaravelProxy/" rel="next" title="從零開始的Laravel生活(部署篇-踩坑實錄)">
+                  從零開始的Laravel生活(部署篇-踩坑實錄) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ppodds</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

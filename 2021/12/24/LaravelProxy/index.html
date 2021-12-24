@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 自從摸到 VM 的機器後又過了一段時間，就和學校電算申請了一個虛擬路徑用來連線到 VM 的主機。這個虛擬路徑服務除了主要功能以外，還可以幫忙上 SSL，省去我們單位自己維護 ssl 憑證和 domain 的麻煩。雖然這個服務聽起來相當方便，但要把原本的主機改成用虛擬路徑服務連線絕對不是簡單的一件事，何況這個主機上面同時架了三個網站，還要再根據不同的 request url 導向到不同的本機">
+<meta property="og:type" content="article">
+<meta property="og:title" content="從零開始的Laravel生活(部署篇-踩坑實錄)">
+<meta property="og:url" content="https://ppodds.github.io/2021/12/24/LaravelProxy/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 自從摸到 VM 的機器後又過了一段時間，就和學校電算申請了一個虛擬路徑用來連線到 VM 的主機。這個虛擬路徑服務除了主要功能以外，還可以幫忙上 SSL，省去我們單位自己維護 ssl 憑證和 domain 的麻煩。雖然這個服務聽起來相當方便，但要把原本的主機改成用虛擬路徑服務連線絕對不是簡單的一件事，何況這個主機上面同時架了三個網站，還要再根據不同的 request url 導向到不同的本機">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2021-12-24T08:13:15.000Z">
+<meta property="article:modified_time" content="2021-12-24T08:13:15.000Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="Deploy">
+<meta property="article:tag" content="Inertia">
+<meta property="article:tag" content="NGINX">
+<meta property="article:tag" content="Reverse Proxy">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ppodds.github.io/2021/12/24/LaravelProxy/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2021/12/24/LaravelProxy/","path":"2021/12/24/LaravelProxy/","title":"從零開始的Laravel生活(部署篇-踩坑實錄)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>從零開始的Laravel生活(部署篇-踩坑實錄) | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">28</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">9</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%95%8F%E9%A1%8C%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">問題描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B1%BA%E6%AD%B7%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">解決歷程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-laravel-trust-proxy"><span class="nav-number">2.2.1.</span> <span class="nav-text">設定 Laravel Trust Proxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-x-forwarded-prefix"><span class="nav-number">2.2.2.</span> <span class="nav-text">設定 X-Forwarded-Prefix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#inertia-base-url-%E5%95%8F%E9%A1%8C"><span class="nav-number">2.2.3.</span> <span class="nav-text">Inertia Base URL 問題</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#https-%E8%A2%AB%E8%BD%89%E5%9D%80%E5%9B%9E-http-%E5%86%8D%E8%A2%AB%E8%BD%89%E5%9B%9E-https"><span class="nav-number">2.2.4.</span> <span class="nav-text">https 被轉址回 http 再被轉回 https?</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/12/24/LaravelProxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          從零開始的Laravel生活(部署篇-踩坑實錄)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-12-24 16:13:15" itemprop="dateCreated datePublished" datetime="2021-12-24T16:13:15+08:00">2021-12-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言">前言</h1>
+<p>自從摸到 VM 的機器後又過了一段時間，就和學校電算申請了一個虛擬路徑用來連線到 VM 的主機。這個虛擬路徑服務除了主要功能以外，還可以幫忙上 SSL，省去我們單位自己維護 ssl 憑證和 domain 的麻煩。雖然這個服務聽起來相當方便，但要把原本的主機改成用虛擬路徑服務連線絕對不是簡單的一件事，何況這個主機上面同時架了三個網站，還要再根據不同的 request url 導向到不同的本機網站上面去，因此主機為了要配合虛擬路徑服務，又再加了一個 Reverse Proxy。</p>
+<p>這次的踩坑是 Laravel 在虛擬路徑上支援不完整，也花了很久的時間找出 Bug 在哪邊並且修復。</p>
+<h1 id="正文">正文</h1>
+<h2 id="問題描述">問題描述</h2>
+<p>連上網站後虛擬路徑會被改寫成<code>https://domain/</code>，但是實際上提出的 request 是<code>https://domain/to/project</code>，導致了嚴重的路徑錯誤問題。經過觀察後發現前端路由(Ziggy)的 url 變數是<code>http://localhost:8080/</code>，可以先猜測是 reverse proxy 導致原本 request 的資訊遺失，原本的後端伺服器只能收到 reverse proxy 所送請求的資訊。</p>
+<p>另一個問題是發出 xhr 請求以後會被 CORS policy 擋掉，初期猜測是因為請求路徑錯誤，提出的 request 是發給 http 的，以致被瀏覽器的 CORS policy 擋掉。後來發現問題其實在於 reverse proxy 的設定。</p>
+<h2 id="解決歷程">解決歷程</h2>
+<h3 id="設定-laravel-trust-proxy">設定 Laravel Trust Proxy</h3>
+<p>一開始先試試看用<code>TrustProxies.php</code>裡面的設定來解決遺失的資訊。</p>
+<p><code>app/Http/Middleware/TrustProxies.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>\<span class="title">Http</span>\<span class="title">Middleware</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">Middleware</span>\<span class="title">TrustProxies</span> <span class="title">as</span> <span class="title">Middleware</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">Request</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrustProxies</span> <span class="keyword">extends</span> <span class="title">Middleware</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The trusted proxies for this application.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array&lt;int, string&gt;|string|null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$proxies</span> = <span class="string">&#x27;*&#x27;</span>; <span class="comment">// allow all proxies for testing</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The headers that should be used to detect proxies.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$headers</span> =</span><br><span class="line">        Request::HEADER_X_FORWARDED_FOR |</span><br><span class="line">        Request::HEADER_X_FORWARDED_HOST |</span><br><span class="line">        Request::HEADER_X_FORWARDED_PORT |</span><br><span class="line">        Request::HEADER_X_FORWARDED_PROTO |</span><br><span class="line">        Request::HEADER_X_FORWARDED_AWS_ELB;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之後調整 NGINX 的 reverse proxy 設定 (節錄)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  listen [::]:80;</span><br><span class="line"></span><br><span class="line">  server_name _;</span><br><span class="line"></span><br><span class="line">  location /to/project/ &#123;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;</span><br><span class="line">    proxy_set_header X-Forwarded-Host domain;</span><br><span class="line">    proxy_set_header X-Forwarded-Port 443;</span><br><span class="line">    proxy_pass http://localhost:8080/;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重啟 NGINX 後會發現能抓到上面這些資訊了，可是問題路徑被改寫的問題依舊存在，應該是能算是解決一小部分。</p>
+<h3 id="設定-x-forwarded-prefix">設定 X-Forwarded-Prefix</h3>
+<p>經過搜尋後，發現 X-Forwarded-Prefix 這個 Header 可以達成目前虛擬路徑的需求，便先嘗試加入這個 Header 試試看。</p>
+<p>NGINX 設定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  listen [::]:80;</span><br><span class="line"></span><br><span class="line">  server_name _;</span><br><span class="line"></span><br><span class="line">  location /to/project/ &#123;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;</span><br><span class="line">    proxy_set_header X-Forwarded-Host domain;</span><br><span class="line">    proxy_set_header X-Forwarded-Port 443;</span><br><span class="line">    proxy_set_header X-Forwarded-Prefix /to/project/;</span><br><span class="line">    proxy_pass http://localhost:8080/;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>app/Http/Middleware/TrustProxies.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>\<span class="title">Http</span>\<span class="title">Middleware</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">Middleware</span>\<span class="title">TrustProxies</span> <span class="title">as</span> <span class="title">Middleware</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">Request</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrustProxies</span> <span class="keyword">extends</span> <span class="title">Middleware</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The trusted proxies for this application.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array&lt;int, string&gt;|string|null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$proxies</span> = <span class="string">&#x27;*&#x27;</span>; <span class="comment">// allow all proxies for testing</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The headers that should be used to detect proxies.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$headers</span> =</span><br><span class="line">        Request::HEADER_X_FORWARDED_FOR |</span><br><span class="line">        Request::HEADER_X_FORWARDED_HOST |</span><br><span class="line">        Request::HEADER_X_FORWARDED_PORT |</span><br><span class="line">        Request::HEADER_X_FORWARDED_PROTO |</span><br><span class="line">        Request::HEADER_X_FORWARDED_PREFIX |</span><br><span class="line">        Request::HEADER_X_FORWARDED_AWS_ELB;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重啟過後依然沒有抓到 prefix 的資訊，沒想法的我只能到 Laravel 的 Source Code 裡面尋找答案了。</p>
+<p>翻起了 Laravel 的 Source Code 後會發現，<code>Laravel Framework</code> <code>TrustedProxies.php</code> 的內部實作其實仰賴<code>sympony</code>這個框架的實作，經過瘋狂的<code>dump()</code>測試洗禮後，我發現<code>sympony</code>那邊沒有正常的把<code>Request</code>的<code>baseUrl</code>解析出來。我原先以為是<code>sympony</code>的內容有寫錯的部分，為此還發了一篇 issue 在<code>sympony</code>的 GitHub 上。後來其他人的回覆讓我在確認的時候發現，問題其實不來自於<code>sympony</code>對<code>X-Forwarded-Prefix</code>處理的實作，而是來自<code>Laravel Framework</code>尚未支援此項 Header。修改<code>Laravel Framework</code>的<code>TrustedProxies.php</code>後成功讓<code>Request</code>的<code>baseUrl</code>正確解析。</p>
+<p>節錄自<code>src/Illuminate/Http/Middleware/TrustProxies.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">Middleware</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">Request</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TrustProxies</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The trusted proxies for the application.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> array|string|null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$proxies</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The proxy header mappings.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@var</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$headers</span> = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_PREFIX | Request::HEADER_X_FORWARDED_AWS_ELB;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Retrieve trusted header name(s), falling back to defaults if config not set.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int A bit field of Request::HEADER_*, to set which headers to trust from your proxies.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">getTrustedHeaderNames</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (<span class="keyword">$this</span>-&gt;headers) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_X_FORWARDED_AWS_ELB&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_X_FORWARDED_AWS_ELB:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_AWS_ELB;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_FORWARDED&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_FORWARDED:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_FORWARDED;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_X_FORWARDED_FOR&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_X_FORWARDED_FOR:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_FOR;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_X_FORWARDED_HOST&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_X_FORWARDED_HOST:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_HOST;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_X_FORWARDED_PORT&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_X_FORWARDED_PORT:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_PORT;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_X_FORWARDED_PROTO&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_X_FORWARDED_PROTO:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_PROTO;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;HEADER_X_FORWARDED_PREFIX&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> Request::HEADER_X_FORWARDED_PREFIX:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_PREFIX;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">return</span> Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_PREFIX | Request::HEADER_X_FORWARDED_AWS_ELB;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;headers;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>內容其實也只是把缺失的<code>X-Forwarded-Prefix</code>支援加進去而已，但是就解決了<code>baseUrl</code>解析錯誤的問題。這個更新我也順便拿去發 PR 給<code>Laravel Framework</code>，沒多久就成功被 merge 進 master 分支了，沒有意外的話應該會在 Laravel 9 發布的時候看到它。</p>
+<h3 id="inertia-base-url-問題">Inertia Base URL 問題</h3>
+<p>雖然確定 Request 的<code>baseUrl</code>已經被正確解析，但是問題並沒有解決。我猜測問題可能來自 Inertia 和它的前端路由。稍微翻過以後我先暫時排除前端路由出錯，決定來研究一下 Inertia 到底發生了什麼事，導致路徑被改寫。</p>
+<p>仔細研究以後發現問題出在 Inertia 在控制傳回的 json response 時 url 只有考慮<code>request URI</code>，沒有在前面接上<code>baseUrl</code>，才導致最終出來的路徑是錯誤的，於是修正方法就是直接把<code>baseUrl</code>接在<code>request URI</code>前面。</p>
+<p>節錄自<code>src/Response.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Inertia</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Closure</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Contracts</span>\<span class="title">Support</span>\<span class="title">Arrayable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Contracts</span>\<span class="title">Support</span>\<span class="title">Responsable</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Http</span>\<span class="title">JsonResponse</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Support</span>\<span class="title">Arr</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Support</span>\<span class="title">Facades</span>\<span class="title">App</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Support</span>\<span class="title">Facades</span>\<span class="title">Response</span> <span class="title">as</span> <span class="title">ResponseFactory</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Support</span>\<span class="title">Traits</span>\<span class="title">Macroable</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Response</span> <span class="keyword">implements</span> <span class="title">Responsable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">Macroable</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$component</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$props</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$rootView</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$version</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$viewData</span> = [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">toResponse</span>(<span class="params"><span class="variable">$request</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$only</span> = array_filter(explode(<span class="string">&#x27;,&#x27;</span>, <span class="variable">$request</span>-&gt;header(<span class="string">&#x27;X-Inertia-Partial-Data&#x27;</span>, <span class="string">&#x27;&#x27;</span>)));</span><br><span class="line"></span><br><span class="line">        <span class="variable">$props</span> = (<span class="variable">$only</span> &amp;&amp; <span class="variable">$request</span>-&gt;header(<span class="string">&#x27;X-Inertia-Partial-Component&#x27;</span>) === <span class="keyword">$this</span>-&gt;component)</span><br><span class="line">            ? Arr::only(<span class="keyword">$this</span>-&gt;props, <span class="variable">$only</span>)</span><br><span class="line">            : array_filter(<span class="keyword">$this</span>-&gt;props, <span class="function"><span class="keyword">function</span> (<span class="params"><span class="variable">$prop</span></span>) </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> ! (<span class="variable">$prop</span> <span class="keyword">instanceof</span> LazyProp);</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">        array_walk_recursive(<span class="variable">$props</span>, <span class="function"><span class="keyword">function</span> (<span class="params">&amp;<span class="variable">$prop</span></span>) <span class="keyword">use</span> (<span class="params"><span class="variable">$request</span></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$prop</span> <span class="keyword">instanceof</span> LazyProp) &#123;</span><br><span class="line">                <span class="variable">$prop</span> = App::call(<span class="variable">$prop</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$prop</span> <span class="keyword">instanceof</span> <span class="built_in">Closure</span>) &#123;</span><br><span class="line">                <span class="variable">$prop</span> = App::call(<span class="variable">$prop</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$prop</span> <span class="keyword">instanceof</span> Responsable) &#123;</span><br><span class="line">                <span class="variable">$prop</span> = <span class="variable">$prop</span>-&gt;toResponse(<span class="variable">$request</span>)-&gt;getData(<span class="literal">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="variable">$prop</span> <span class="keyword">instanceof</span> Arrayable) &#123;</span><br><span class="line">                <span class="variable">$prop</span> = <span class="variable">$prop</span>-&gt;toArray();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">foreach</span> (<span class="variable">$props</span> <span class="keyword">as</span> <span class="variable">$key</span> =&gt; <span class="variable">$value</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (str_contains(<span class="variable">$key</span>, <span class="string">&#x27;.&#x27;</span>)) &#123;</span><br><span class="line">                data_set(<span class="variable">$props</span>, <span class="variable">$key</span>, <span class="variable">$value</span>);</span><br><span class="line">                <span class="keyword">unset</span>(<span class="variable">$props</span>[<span class="variable">$key</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在url前面串接base url</span></span><br><span class="line">        <span class="variable">$page</span> = [</span><br><span class="line">            <span class="string">&#x27;component&#x27;</span> =&gt; <span class="keyword">$this</span>-&gt;component,</span><br><span class="line">            <span class="string">&#x27;props&#x27;</span> =&gt; <span class="variable">$props</span>,</span><br><span class="line">            <span class="string">&#x27;url&#x27;</span> =&gt; <span class="variable">$request</span>-&gt;getBaseUrl().<span class="variable">$request</span>-&gt;getRequestUri(),</span><br><span class="line">            <span class="string">&#x27;version&#x27;</span> =&gt; <span class="keyword">$this</span>-&gt;version,</span><br><span class="line">        ];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="variable">$request</span>-&gt;header(<span class="string">&#x27;X-Inertia&#x27;</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> JsonResponse(<span class="variable">$page</span>, <span class="number">200</span>, [</span><br><span class="line">                <span class="string">&#x27;Vary&#x27;</span> =&gt; <span class="string">&#x27;Accept&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;X-Inertia&#x27;</span> =&gt; <span class="string">&#x27;true&#x27;</span>,</span><br><span class="line">            ]);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ResponseFactory::view(<span class="keyword">$this</span>-&gt;rootView, <span class="keyword">$this</span>-&gt;viewData + [<span class="string">&#x27;page&#x27;</span> =&gt; <span class="variable">$page</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這個錯誤我也有發一個 PR 到他們的 GitHub，過了好幾天還沒被審，就先擺著了。</p>
+<h3 id="https-被轉址回-http-再被轉回-https">https 被轉址回 http 再被轉回 https?</h3>
+<p>這個問題導致 XHR 請求會被 CORS policy 擋下來，很直覺的會跑去猜是 reverse proxy 的設定錯誤。於是我很暴力的改了設定。</p>
+<p>NGINX 設定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen 80;</span><br><span class="line">  listen [::]:80;</span><br><span class="line"></span><br><span class="line">  server_name _;</span><br><span class="line"></span><br><span class="line">  location /to/project &#123;</span><br><span class="line">    proxy_set_header X-Forwarded-Prefix /to/project;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;</span><br><span class="line">    proxy_set_header X-Forwarded-Host domain;</span><br><span class="line">    proxy_set_header X-Forwarded-Port 443;</span><br><span class="line">    proxy_pass http://localhost:8080/;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  location /to/project/ &#123;</span><br><span class="line">    proxy_set_header X-Forwarded-Prefix /to/project;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;</span><br><span class="line">    proxy_set_header X-Forwarded-Host domain;</span><br><span class="line">    proxy_set_header X-Forwarded-Port 443;</span><br><span class="line">    proxy_pass http://localhost:8080/;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>問題來自於吃到<code>https://domain/to/project</code>這種請求時會先被重新導向到<code>http://domain/to/project/</code>，所以我設兩個相同的 proxy 設定給不同的兩個 url 來解決問題。解決方案有點醜，之後可能會寫成 conf 檔再 include 進來，但是現在會動就好，所以先這樣擺著。</p>
+<p>問題至此算是全部結束，剩下一些 xhr 請求位置錯誤的問題，之後等比較有空再來修。</p>
+<h1 id="結語">結語</h1>
+<p>沒想到打工地方的專案加個 reverse proxy 可以衍生出這麼多問題，還讓我發了兩個 PR，其中一個還是世界知名的 php web framework，學到了不少。此外，這學期感覺有點太混了，未來基於現實考量應該會再更認真一些，以上是這次的報告，感謝讀到這裡的所有人。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/PHP/" rel="tag"># PHP</a>
+              <a href="/tags/Laravel/" rel="tag"># Laravel</a>
+              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
+              <a href="/tags/Inertia/" rel="tag"># Inertia</a>
+              <a href="/tags/NGINX/" rel="tag"># NGINX</a>
+              <a href="/tags/Reverse-Proxy/" rel="tag"># Reverse Proxy</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/09/LaravelDeploy/" rel="prev" title="從零開始的Laravel生活(部署篇)">
+                  <i class="fa fa-chevron-left"></i> 從零開始的Laravel生活(部署篇)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ppodds</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

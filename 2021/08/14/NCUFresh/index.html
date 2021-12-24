@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 這個暑假作為新生知訊網的程設組員，和不少夥伴打造了全新的2021新生知訊網，無論是使用的框架還是概念都和以往不同，再加上這個專案是我首次做Web的實戰開發，學到了不少技巧，因此決定把學到的知識整理到這篇文章中，除了可以把概念整理一遍，便於未來複習外，也能給予其他人不小的幫助。 正文 專案架構 簡單的放一張醜醜的圖再說明  User View表示使用者操作的瀏覽器視圖，一開始Ser">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021新生知訊網開發筆記">
+<meta property="og:url" content="https://ppodds.github.io/2021/08/14/NCUFresh/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 這個暑假作為新生知訊網的程設組員，和不少夥伴打造了全新的2021新生知訊網，無論是使用的框架還是概念都和以往不同，再加上這個專案是我首次做Web的實戰開發，學到了不少技巧，因此決定把學到的知識整理到這篇文章中，除了可以把概念整理一遍，便於未來複習外，也能給予其他人不小的幫助。 正文 專案架構 簡單的放一張醜醜的圖再說明  User View表示使用者操作的瀏覽器視圖，一開始Ser">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/project.png">
+<meta property="og:image" content="https://zh.nuxtjs.org/docs/2.x/nuxt-lifecycle.svg">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/directory.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/route.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/club.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/list.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/DOM.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/bug.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/vh.svg">
+<meta property="article:published_time" content="2021-08-14T12:12:40.000Z">
+<meta property="article:modified_time" content="2021-08-17T17:11:43.000Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="Vue.js">
+<meta property="article:tag" content="Nuxt.js">
+<meta property="article:tag" content="Server Side Rendering">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ppodds.github.io/2021/08/14/NCUFresh/project.png">
+
+
+<link rel="canonical" href="https://ppodds.github.io/2021/08/14/NCUFresh/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2021/08/14/NCUFresh/","path":"2021/08/14/NCUFresh/","title":"2021新生知訊網開發筆記"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>2021新生知訊網開發筆記 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">28</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">9</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%88%E6%A1%88%E6%9E%B6%E6%A7%8B"><span class="nav-number">2.1.</span> <span class="nav-text">專案架構</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%9C%E6%96%BCnuxt"><span class="nav-number">2.2.</span> <span class="nav-text">關於Nuxt</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B0%A1%E4%BB%8B"><span class="nav-number">2.2.1.</span> <span class="nav-text">簡介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nuxt%E5%B0%88%E6%A1%88%E7%B5%90%E6%A7%8B"><span class="nav-number">2.2.2.</span> <span class="nav-text">Nuxt專案結構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nuxt%E7%9A%84%E8%B7%AF%E7%94%B1"><span class="nav-number">2.2.3.</span> <span class="nav-text">Nuxt的路由</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8B%95%E6%85%8B%E8%B7%AF%E7%94%B1"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">動態路由</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8B%95%E6%85%8B%E8%B7%AF%E7%94%B1%E9%A9%97%E8%AD%89"><span class="nav-number">2.2.3.1.1.</span> <span class="nav-text">動態路由驗證</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#clientonly"><span class="nav-number">2.2.4.</span> <span class="nav-text">ClientOnly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nuxt-event-bus"><span class="nav-number">2.2.5.</span> <span class="nav-text">Nuxt Event Bus</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#css-tricks"><span class="nav-number">2.3.</span> <span class="nav-text">CSS Tricks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rwd%E5%9C%96%E7%89%87%E9%85%8D%E4%B8%8A%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.3.1.</span> <span class="nav-text">RWD圖片配上定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%84%E5%BC%8F%E5%90%84%E6%A8%A3%E7%9A%84%E5%B0%8D%E9%BD%8A%E6%96%B9%E6%B3%95"><span class="nav-number">2.3.2.</span> <span class="nav-text">各式各樣的對齊方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%AE%E4%B8%AD"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">置中</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%B5%95%E5%B0%8D%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.3.2.1.1.</span> <span class="nav-text">絕對位置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9B%B8%E5%B0%8D%E4%BD%8D%E7%BD%AE"><span class="nav-number">2.3.2.1.2.</span> <span class="nav-text">相對位置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%BB%A5%E6%BB%BE%E5%8B%95%E7%9A%84%E6%B8%85%E5%96%AE"><span class="nav-number">2.3.3.</span> <span class="nav-text">可以滾動的清單</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fullpage.js%E7%9A%84%E5%B9%BE%E5%80%8B%E9%9B%B7%E9%BB%9E"><span class="nav-number">2.4.</span> <span class="nav-text">fullpage.js的幾個雷點</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BB%BF%E7%89%88%E7%95%AB%E9%9D%A2%E7%B5%95%E5%B0%8D%E4%B8%8D%E8%83%BD%E8%B6%85%E5%87%BA%E5%8D%80%E6%AE%B5"><span class="nav-number">2.4.1.</span> <span class="nav-text">滿版畫面絕對不能超出區段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#data-anchor%E4%B8%8D%E8%83%BD%E6%98%AF%E8%8B%B1%E6%96%87"><span class="nav-number">2.4.2.</span> <span class="nav-text">data-anchor不能是英文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%B1%E9%9F%BF%E9%A0%81%E9%9D%A2%E4%B8%8A%E5%8F%AF%E6%BB%BE%E5%8B%95%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.4.3.</span> <span class="nav-text">影響頁面上可滾動的元素</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#safari%E7%9A%84vh%E5%9D%91"><span class="nav-number">2.5.</span> <span class="nav-text">Safari的vh坑</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/08/14/NCUFresh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          2021新生知訊網開發筆記
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-08-14 20:12:40" itemprop="dateCreated datePublished" datetime="2021-08-14T20:12:40+08:00">2021-08-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2021-08-18 01:11:43" itemprop="dateModified" datetime="2021-08-18T01:11:43+08:00">2021-08-18</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言">前言</h1>
+<p>這個暑假作為新生知訊網的程設組員，和不少夥伴打造了全新的2021新生知訊網，無論是使用的框架還是概念都和以往不同，再加上這個專案是我首次做Web的實戰開發，學到了不少技巧，因此決定把學到的知識整理到這篇文章中，除了可以把概念整理一遍，便於未來複習外，也能給予其他人不小的幫助。</p>
+<h1 id="正文">正文</h1>
+<h2 id="專案架構">專案架構</h2>
+<p>簡單的放一張醜醜的圖再說明</p>
+<p><img src="/2021/08/14/NCUFresh/project.png" alt="專案架構圖"></p>
+<p>User View表示使用者操作的瀏覽器視圖，一開始Server收到前端頁面的request時，會先經過NGINX的反向代理，再轉給Nuxt的前端伺服器去處理。Nuxt就會把需要的資源還有整個Vue app傳給client。client解析完就會看到我們精心打造的網頁了!</p>
+<p>當使用者在視圖上操作時，Vue app會即時的在前端把畫面刷新。若是需要用到後端資料的話，則利用<code>axios</code>對Server提出api request，請求經過NGINX的反向代理轉給Nuxt，再由Nuxt的proxy設定轉給Express Server，Server回應client後再由Vue刷新使用者的視圖。</p>
+<h2 id="關於nuxt">關於Nuxt</h2>
+<h3 id="簡介">簡介</h3>
+<p>Nuxt.js是一個Vue的SSR(Server Side Rendering)框架，可以解決純js網頁沒辦法被搜尋引擎爬蟲抓到的問題(SEO)。</p>
+<p>雖然SSR很潮，但是也有要注意的地方，以下是來自官方文檔的Nuxt Lifecycle</p>
+<p><img src="https://zh.nuxtjs.org/docs/2.x/nuxt-lifecycle.svg" alt="Nuxt Lifecycle"></p>
+<p>這張圖解釋了生命週期階段能使用的資料，如果在錯誤的生命週期想調用資料就會出錯。</p>
+<h3 id="nuxt專案結構">Nuxt專案結構</h3>
+<p>以下是Nuxt的專案結構 <img src="/2021/08/14/NCUFresh/directory.png" alt="專案結構"></p>
+<ul>
+<li>.nuxt Nuxt自動生成的檔案，之後要deploy前build完的檔案也會被丟在裡面</li>
+<li>assets 要用到的資源檔，主要是圖片和字體那些</li>
+<li>components Vue的component</li>
+<li>layouts 用來放頁面版型，在新知網中各分頁的全域CSS也放在這</li>
+<li>middleware 跑進頁面之前要先跑的middleware都會放這</li>
+<li>pages 頁面的檔案，結構會被Nuxt當成路由路徑</li>
+<li>plugins 如果有什麼插件要先載入的要把注入的code放這</li>
+<li>static Server的靜態檔案，像是icon之類的</li>
+<li>nuxt.config.js nuxt的設定，包了插件、全域CSS、Proxy等一堆設定，如果不知道要去哪改設定的時候可以到這邊看看</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://zh.nuxtjs.org/docs/2.x/get-started/directory-structure">官方文檔</a>有更詳細的說明</p>
+<h3 id="nuxt的路由">Nuxt的路由</h3>
+<p>由於Nuxt自己製作了前端路由的系統，因此我們要把網站中不同頁面的跳轉從一般超連結換成NuxtLink</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--bad example--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;/xxx&quot;</span>&gt;</span>link<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--good example--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">nuxt-link</span> <span class="attr">to</span>=<span class="string">&quot;/xxx&quot;</span>&gt;</span>link<span class="tag">&lt;/<span class="name">nuxt-link</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>換掉連結後，就算進行分頁跳轉，瀏覽器也不會把整個頁面刷新。</p>
+<blockquote>
+<p>其實NuxtLink雷還不少，如果要在NuxtLink上用<code>@clink</code>要改寫成<code>@click.native</code>，否則不會觸發。而就算改用<code>@click.native</code>，在事件當中使用<code>emit</code>還是會有問題。此外，NuxtLink似乎不能使用相對路徑來做路由</p>
+</blockquote>
+<p>Nuxt頁面的路由路徑是由目錄路徑決定的，若是訪問目錄的位置，則會render該目錄的<code>index.vue</code>。</p>
+<blockquote>
+<p>若要調用路由的資料，可使用<code>this.$route</code>，要對路由做操作可使用<code>this.$router</code>，如<code>$router.back()</code>、<code>$router.go()</code>等</p>
+</blockquote>
+<h4 id="動態路由">動態路由</h4>
+<p>若要使用動態路由，可將頁面名稱前方加上<code>_</code>(如<code>_type.vue</code>)，此時<code>type</code>就會變成路由參數，可以在<code>validate</code>函式中做驗證或是用來render頁面。</p>
+<p>以下是動態路由結構實例(新知網的頁面)</p>
+<p><img src="/2021/08/14/NCUFresh/route.png" alt="動態路由實例"></p>
+<h5 id="動態路由驗證">動態路由驗證</h5>
+<p>簡單的動態路由驗證可以像下面這樣子</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">validate</span>(<span class="params">&#123; params &#125;</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> club = [</span><br><span class="line">            <span class="string">&quot;learn&quot;</span>,</span><br><span class="line">            <span class="string">&quot;religion&quot;</span>,</span><br><span class="line">            <span class="string">&quot;music&quot;</span>,</span><br><span class="line">            <span class="string">&quot;sport&quot;</span>,</span><br><span class="line">            <span class="string">&quot;skill&quot;</span>,</span><br><span class="line">            <span class="string">&quot;serve&quot;</span>,</span><br><span class="line">            <span class="string">&quot;friend&quot;</span>,</span><br><span class="line">            <span class="string">&quot;fun&quot;</span>,</span><br><span class="line">            <span class="string">&quot;team&quot;</span></span><br><span class="line">        ];</span><br><span class="line">        <span class="keyword">return</span> club.includes(params.type);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果<code>type</code>不在清單上就會變成404(找不到頁面)</p>
+<h3 id="clientonly">ClientOnly</h3>
+<p>有時會碰上template中的component只能在client side render的狀況。此時可以用</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ClientOnly</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">ClientOnly</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如此Nuxt就只會在Client side的時候才渲染內部元素。 &gt; 本次用到的vue-fullpage.js就有要求一定要在Client side才能正常執行，因此fullpage的component一定要包在<code>&lt;ClientOnly&gt;</code>內</p>
+<h3 id="nuxt-event-bus">Nuxt Event Bus</h3>
+<p>Vue本身就有<code>emit</code>可以在component之間傳遞資料了，不過Nuxt依舊提供一套emit的系統給我們使用。在使用妥當的情況下，甚至比原生Vue給的<code>emit</code>好用不少。</p>
+<p>當我們要使用Nuxt提供的emit前，我們要先在要接收的component註冊。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$on(<span class="string">&#x27;some-event&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="title">beforeDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$off(<span class="string">&#x27;some-event&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之後要發出事件就簡單多了，只要加一句</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$nuxt.$emit(<span class="string">&#x27;some-event&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>整個頁面都能接收到Nuxt emit出去的事件，解決了Vue提供的<code>emit</code>連續向上傳遞或橫向傳遞時難以使用的問題。除此之外也能向原生的<code>emit</code>一樣傳參數，如:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$on(<span class="string">&#x27;some-event&#x27;</span>, <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(arg);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="title">beforeDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$off(<span class="string">&#x27;some-event&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$nuxt.$emit(<span class="string">&#x27;some-event&#x27;</span>, <span class="string">&#x27;test&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="css-tricks">CSS Tricks</h2>
+<h3 id="rwd圖片配上定位">RWD圖片配上定位</h3>
+<p>我的頁面中有需要同時做RWD圖片並且相對定位不能跑掉的需求，最後找到的方法如下:</p>
+<ol type="1">
+<li>圖片只能做寬度或高度的其中一項</li>
+<li>用多層<code>div</code>交錯使用相對定位和絕對定位，並調整大小</li>
+<li>讓圖片的大小切齊父元素<code>div</code>的高或寬</li>
+</ol>
+<p>看起來有點攏統，簡單解釋一下</p>
+<p>圖片如果在做RWD時同時設定了寬高，就會導致圖片比例扭曲</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">img</span> &#123;</span><br><span class="line">    <span class="comment">// wrong</span></span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// correct</span></span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="comment">// also correct</span></span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>圖片比例扭曲除了會造成使用者體驗不佳外，也會導致我們圖片定位跑版</p>
+<p>使用多層<code>div</code>並交錯使用絕對位置和相對位置的原因則是為了讓子元素可以使用絕對定位來控制大小和位置，實例如下:</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.blocks</span> &#123;</span><br><span class="line">    <span class="comment">// 最外層的div將大小與位置先設定好</span></span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">90%</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">31%</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">10%</span>;</span><br><span class="line">    <span class="selector-class">.blocks-inside</span> &#123;</span><br><span class="line">        <span class="comment">// 內層relative大小貼合父層即可</span></span><br><span class="line">        <span class="attribute">position</span>: relative;</span><br><span class="line">        <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">        <span class="selector-class">.go-wrapper</span> &#123;</span><br><span class="line">            <span class="comment">// 要把圖片在父層的相對位置釘死就要靠這個absolute</span></span><br><span class="line">            <span class="attribute">position</span>: absolute;</span><br><span class="line">            <span class="comment">// 調整圖片的大小</span></span><br><span class="line">            <span class="attribute">height</span>: <span class="number">16%</span>;</span><br><span class="line">            <span class="selector-tag">img</span> &#123;</span><br><span class="line">                <span class="comment">// 裡面的圖片大小跟父層貼合即可</span></span><br><span class="line">                <span class="attribute">position</span>: relative;</span><br><span class="line">                <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之後調整圖片大小就只要動<code>absolute</code>的<code>div</code>。從這裡可以看出讓子元素大小貼齊的好處就是維護方便與可讀性。</p>
+<p>最後效果可以弄成下圖的樣子</p>
+<p><img src="/2021/08/14/NCUFresh/club.png" alt="社團介紹頁面"></p>
+<h3 id="各式各樣的對齊方法">各式各樣的對齊方法</h3>
+<p>置中等對齊方式一直是CSS新手的痛，下面整理幾個常用的對齊方式</p>
+<h4 id="置中">置中</h4>
+<h5 id="絕對位置">絕對位置</h5>
+<p>絕對位置要置中可以用下面的方法</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    <span class="comment">// 水平置中</span></span><br><span class="line">    &amp;<span class="selector-class">.a</span> &#123;</span><br><span class="line">        <span class="attribute">position</span>: absolute;</span><br><span class="line">        <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">        <span class="attribute">transform</span>: translateX(-<span class="number">50%</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 垂直置中</span></span><br><span class="line">    &amp;<span class="selector-class">.b</span> &#123;</span><br><span class="line">        <span class="attribute">position</span>: absolute;</span><br><span class="line">        <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">        <span class="attribute">transform</span>: translateY(-<span class="number">50%</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 水平垂直都置中</span></span><br><span class="line">    &amp;<span class="selector-class">.c</span> &#123;</span><br><span class="line">        <span class="attribute">position</span>: absolute;</span><br><span class="line">        <span class="attribute">left</span>: <span class="number">50%</span>;</span><br><span class="line">        <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">        <span class="attribute">transform</span>: translate(-<span class="number">50%</span>, -<span class="number">50%</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>&amp;表示父階層的selector(scss的語法)</p>
+</blockquote>
+<p>原理算是透過硬推的方式把位置推到中間，以水平置中為例，先用<code>left: 50%</code>向右推父元素50%的寬度，此時子元素最左方會切齊父元素中線。</p>
+<p>再利用<code>transform: translateX(-50%)</code>將子元素向左推自身50%的寬度，最後就會得到剛好置中的效果。</p>
+<blockquote>
+<p>如果這裡看不懂的話可以畫圖模擬看看</p>
+</blockquote>
+<h5 id="相對位置">相對位置</h5>
+<p>如果要用相對位置來置中，我傾向使用flex。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    &amp;<span class="selector-class">.parent</span> &#123;</span><br><span class="line">        <span class="attribute">display</span>: flex;</span><br><span class="line">        <span class="attribute">justify-content</span>: center;</span><br><span class="line">        <span class="attribute">align-items</span>: center;</span><br><span class="line">        <span class="selector-class">.child</span> &#123;</span><br><span class="line">            <span class="attribute">position</span>: relative;</span><br><span class="line">            <span class="attribute">height</span>: <span class="number">50%</span>;</span><br><span class="line">            <span class="attribute">width</span>: <span class="number">50%</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>display: flex</code>會讓該元素成為flex container，裡面的子元素位置會自動被flex container調整</p>
+</blockquote>
+<p>利用flex container可以設定主軸對齊和次軸對齊的特性，可以把<code>child</code>這個長寬剛好是<code>parent</code>一半大的元素置中。</p>
+<blockquote>
+<p>此處的效果是水平及垂直都置中，若是只需要其中一項，可以搭配<code>flex direction</code>並調整兩軸對齊的參數</p>
+</blockquote>
+<h3 id="可以滾動的清單">可以滾動的清單</h3>
+<p>這項功能在手機板很常見，具體實做起來用flex container配上<code>overflow</code>屬性非常快。以下是新知網中的實際應用:</p>
+<p><img src="/2021/08/14/NCUFresh/list.png" alt="手機板滾動清單"></p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">    <span class="selector-class">.table-list-wrapper</span> &#123;</span><br><span class="line">        <span class="comment">// 由於是浮動選單，所以設成fixed</span></span><br><span class="line">        <span class="attribute">position</span>: fixed;</span><br><span class="line">        <span class="comment">// width調成滿版可以省下水平對齊的困擾</span></span><br><span class="line">        <span class="attribute">width</span>: <span class="number">100vw</span>;</span><br><span class="line">        <span class="comment">// 清單最大的顯示範圍</span></span><br><span class="line">        <span class="attribute">height</span>: <span class="number">60vh</span>;</span><br><span class="line">        <span class="attribute">top</span>: <span class="number">20vh</span>;</span><br><span class="line">        <span class="attribute">z-index</span>: <span class="number">200</span>;</span><br><span class="line">        <span class="selector-class">.table-list-wrapper-inside</span> &#123;</span><br><span class="line">            <span class="attribute">position</span>: relative;</span><br><span class="line">            <span class="comment">// 與父層大小貼合</span></span><br><span class="line">            <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">            <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">            <span class="comment">// 利用flex container來自動調整底下清單的對齊</span></span><br><span class="line">            <span class="attribute">display</span>: flex;</span><br><span class="line">            <span class="attribute">flex-direction</span>: column;</span><br><span class="line">            <span class="comment">// 在這裡次軸是水平軸，所以flex-end就會是元素最右方</span></span><br><span class="line">            <span class="attribute">align-items</span>: flex-end;</span><br><span class="line">            <span class="attribute">z-index</span>: <span class="number">200</span>;</span><br><span class="line">            <span class="comment">// 讓y軸方向可以滾動</span></span><br><span class="line">            <span class="attribute">overflow-y</span>: scroll;</span><br><span class="line">            <span class="selector-class">.table-block</span> &#123;</span><br><span class="line">                <span class="comment">// 用來定義每個方塊的大小，之後再讓背景大小切齊</span></span><br><span class="line">                <span class="attribute">position</span>: relative;</span><br><span class="line">                <span class="attribute">height</span>: <span class="number">13%</span>;</span><br><span class="line">                <span class="attribute">width</span>: <span class="number">57%</span>;</span><br><span class="line">                <span class="selector-class">.block-background</span> &#123;</span><br><span class="line">                    <span class="comment">// 讓背景圖片切齊父元素</span></span><br><span class="line">                    <span class="attribute">position</span>: relative;</span><br><span class="line">                    <span class="attribute">height</span>: <span class="number">100%</span>;</span><br><span class="line">                    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="fullpage.js的幾個雷點">fullpage.js的幾個雷點</h2>
+<p>本次專案有很多人有滿版顯示還有分段下滑的需求，於是買了Vue-fullpage.js，不過坑還不少，下面有幾項需要注意的地方。</p>
+<h3 id="滿版畫面絕對不能超出區段">滿版畫面絕對不能超出區段</h3>
+<p>fullpage中可以滾動的區段一定要加上<code>section</code>的CSS clsss，在裡面的任何元素也不能超出<code>section</code>的區塊。</p>
+<p>fullpage會自動抓取<code>section</code>的高度，再把這個高度當成本頁的高度，在滾動時也會被當成參數來用。</p>
+<blockquote>
+<p>實際上fullpage會修改DOM結構，因此會多很多fullpage弄出來的div，其中多會被加上<code>style="height: &lt;section-hight&gt;px"</code>，導致<code>section</code>子元素超出範圍就會跑版。 <img src="/2021/08/14/NCUFresh/DOM.png" alt="fullpage DOM結構"></p>
+</blockquote>
+<h3 id="data-anchor不能是英文">data-anchor不能是英文</h3>
+<p>實際測試的時候，發現採用<code>data-anchor</code>作為跳轉區段的辨識時，只要<code>data-anchor</code>的值為英數組成，在滾動到該頁面後就會跑版。</p>
+<p>檢查過後發現是fullpage在修改DOM時，因為錯誤的操作將我的class改掉了。</p>
+<p><img src="/2021/08/14/NCUFresh/bug.png" alt="fullpage 操作DOM"></p>
+<p>當有特定<code>data-anchor</code>出現時，fullpage修改body的class就可能出現錯誤，導致<code>groups-layout</code>的class名稱改變，最終導致跑版。</p>
+<p>最後只能把顯示的標題和<code>data-anchor</code>的值分開，以避免跑板問題。</p>
+<blockquote>
+<p>有設定<code>data-anchor</code>的情況下，要注意同頁面是否有<code>id</code>的值和<code>data-anchor</code>撞名。若是發生撞名也會導致一系列錯誤。</p>
+</blockquote>
+<h3 id="影響頁面上可滾動的元素">影響頁面上可滾動的元素</h3>
+<p>頁面上如果有可滾動元素，在沒有正確設定下，滾動就會被fullpage吃掉，最終變成切換頁面。所幸是解決方法不難，只要在fullpage的初始化設定內調整即可。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="attr">options</span>: &#123;</span><br><span class="line">                ...</span><br><span class="line">                <span class="attr">normalScrollElements</span>:</span><br><span class="line">                    <span class="string">&quot;.table-list-wrapper-inside, .content-area, .block-text-wrapper&quot;</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>normalScrollElements</code>設定要在頁面上能正常滾動的元素，採用CSS selector的方式設定，中間用<code>,</code>分隔</p>
+</blockquote>
+<h2 id="safari的vh坑">Safari的vh坑</h2>
+<p>Safari的<code>vh</code>算法跟一般的瀏覽器不太一樣，從示意圖來看就可以感受到Apple滿滿的惡意。</p>
+<p><img src="/2021/08/14/NCUFresh/vh.svg" alt="Safari vh示意圖"></p>
+<p>既然踩坑的不會只有我一個，想當然耳，解決方法當然不少。可惜這是在最後測試期才發現的問題，不想花太多時間修復的我，直接把<code>overflow</code>的scroll bar還給user，果斷放棄滿版。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10249090">iT邦幫忙</a>的文章有整理了一個簡單方法來克服這個問題。如果要用在Vue/Nuxt的專案上的話，可以採用mixin的方式，讓每個頁面都能載入到我們自己設置的vh變數。</p>
+</blockquote>
+<h1 id="結語">結語</h1>
+<p>這篇文差不多就先寫到這裡，如果我之後又想起甚麼重點的話會再回來補。近期還會有一個學校的小專案，會再整理一篇筆記到網站上。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/CSS/" rel="tag"># CSS</a>
+              <a href="/tags/Vue-js/" rel="tag"># Vue.js</a>
+              <a href="/tags/Nuxt-js/" rel="tag"># Nuxt.js</a>
+              <a href="/tags/Server-Side-Rendering/" rel="tag"># Server Side Rendering</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/14/Start/" rel="prev" title="新的起點">
+                  <i class="fa fa-chevron-left"></i> 新的起點
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/18/Laravel/" rel="next" title="從零開始的Laravel生活">
+                  從零開始的Laravel生活 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ppodds</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

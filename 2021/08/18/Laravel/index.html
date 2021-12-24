@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 日前接了學校事務組的打工，有一個要寫迷你系統的需求。為了順便練練 PHP 的功力，這次選用 Laravel 做主要框架，不過做起來比想像中複雜非常多，看起來我太高估自己的學習能力了。 正文 專案架構 一開始原本打算簡單做，所以大概是這樣想的:  東西打算放到學校的虛擬機上面跑，就用 Docker 包了 Container 來讓環境乾淨一點。這裡的圖省略了一些組件，在包 Conta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="從零開始的Laravel生活">
+<meta property="og:url" content="https://ppodds.github.io/2021/08/18/Laravel/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 日前接了學校事務組的打工，有一個要寫迷你系統的需求。為了順便練練 PHP 的功力，這次選用 Laravel 做主要框架，不過做起來比想像中複雜非常多，看起來我太高估自己的學習能力了。 正文 專案架構 一開始原本打算簡單做，所以大概是這樣想的:  東西打算放到學校的虛擬機上面跑，就用 Docker 包了 Container 來讓環境乾淨一點。這裡的圖省略了一些組件，在包 Conta">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/18/Laravel/project.png">
+<meta property="og:image" content="https://ppodds.github.io/2021/08/18/Laravel/404.png">
+<meta property="article:published_time" content="2021-08-17T16:17:20.000Z">
+<meta property="article:modified_time" content="2021-09-03T15:06:35.000Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="MariaDB">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="Vue.js">
+<meta property="article:tag" content="Inertia.js">
+<meta property="article:tag" content="Laravel Jetstream">
+<meta property="article:tag" content="asyncio">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ppodds.github.io/2021/08/18/Laravel/project.png">
+
+
+<link rel="canonical" href="https://ppodds.github.io/2021/08/18/Laravel/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2021/08/18/Laravel/","path":"2021/08/18/Laravel/","title":"從零開始的Laravel生活"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>從零開始的Laravel生活 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">28</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">9</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%88%E6%A1%88%E6%9E%B6%E6%A7%8B"><span class="nav-number">2.1.</span> <span class="nav-text">專案架構</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E7%99%BC%E7%92%B0%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">2.2.</span> <span class="nav-text">開發環境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#laravel"><span class="nav-number">2.3.</span> <span class="nav-text">Laravel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#starter-kits"><span class="nav-number">2.3.1.</span> <span class="nav-text">Starter Kits</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jetstream-%E5%88%B0%E5%BA%95%E6%9C%89%E5%A4%9A%E5%BC%B7"><span class="nav-number">2.3.2.</span> <span class="nav-text">Jetstream 到底有多強?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#database-model-and-migration"><span class="nav-number">2.3.3.</span> <span class="nav-text">Database Model and Migration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#model-%E6%93%8D%E4%BD%9C"><span class="nav-number">2.3.4.</span> <span class="nav-text">Model 操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%84%B2%E5%AD%98"><span class="nav-number">2.3.4.1.</span> <span class="nav-text">儲存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">2.3.4.2.</span> <span class="nav-text">更新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%AA%E9%99%A4"><span class="nav-number">2.3.4.3.</span> <span class="nav-text">刪除</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A-resource-router"><span class="nav-number">2.3.5.</span> <span class="nav-text">設定 Resource Router</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8C%AF%E5%85%A5%E8%B3%87%E6%96%99"><span class="nav-number">2.3.6.</span> <span class="nav-text">匯入資料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E4%BF%A1%E5%8A%9F%E8%83%BD"><span class="nav-number">2.3.7.</span> <span class="nav-text">寄信功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%87%E4%BB%A4%E5%AF%A6%E4%BD%9C"><span class="nav-number">2.3.7.1.</span> <span class="nav-text">指令實作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mail"><span class="nav-number">2.3.7.2.</span> <span class="nav-text">Mail</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A"><span class="nav-number">2.3.7.2.1.</span> <span class="nav-text">設定</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E4%BF%A1%E4%BB%B6"><span class="nav-number">2.3.7.2.2.</span> <span class="nav-text">建立信件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%84%E4%BF%A1"><span class="nav-number">2.3.7.3.</span> <span class="nav-text">寄信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E7%AF%A9%E9%81%B8%E5%AF%84%E4%BB%B6"><span class="nav-number">2.3.7.4.</span> <span class="nav-text">完成篩選寄件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E6%8C%87%E4%BB%A4"><span class="nav-number">2.3.7.4.1.</span> <span class="nav-text">建立指令</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AF%A9%E9%81%B8%E5%85%A7%E5%AE%B9"><span class="nav-number">2.3.7.4.2.</span> <span class="nav-text">篩選內容</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%8C%E6%88%90%E6%8C%87%E4%BB%A4"><span class="nav-number">2.3.7.4.3.</span> <span class="nav-text">完成指令</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#inertia.js"><span class="nav-number">2.4.</span> <span class="nav-text">Inertia.js</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#inertia-%E5%8D%94%E5%AE%9A"><span class="nav-number">2.4.1.</span> <span class="nav-text">Inertia 協定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#render-%E9%A0%81%E9%9D%A2"><span class="nav-number">2.4.2.</span> <span class="nav-text">render 頁面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#error-handleing"><span class="nav-number">2.4.3.</span> <span class="nav-text">Error Handleing</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91%E5%AF%A6%E9%8C%84"><span class="nav-number">2.5.</span> <span class="nav-text">踩坑實錄</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#npm-run-watch-%E7%84%A1%E6%95%88"><span class="nav-number">2.5.1.</span> <span class="nav-text">npm run watch 無效?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%B5%E4%BB%B6-inline-%E5%9C%96%E7%89%87%E5%B5%8C%E5%85%A5%E5%A4%B1%E6%95%97"><span class="nav-number">2.5.2.</span> <span class="nav-text">郵件 inline 圖片嵌入失敗</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/08/18/Laravel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          從零開始的Laravel生活
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-08-18 00:17:20" itemprop="dateCreated datePublished" datetime="2021-08-18T00:17:20+08:00">2021-08-18</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2021-09-03 23:06:35" itemprop="dateModified" datetime="2021-09-03T23:06:35+08:00">2021-09-03</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言">前言</h1>
+<p>日前接了學校事務組的打工，有一個要寫迷你系統的需求。為了順便練練 PHP 的功力，這次選用 Laravel 做主要框架，不過做起來比想像中複雜非常多，看起來我太高估自己的學習能力了。</p>
+<h1 id="正文">正文</h1>
+<h2 id="專案架構">專案架構</h2>
+<p>一開始原本打算簡單做，所以大概是這樣想的:</p>
+<p><img src="/2021/08/18/Laravel/project.png" alt="簡易專案架構"></p>
+<p>東西打算放到學校的虛擬機上面跑，就用 Docker 包了 Container 來讓環境乾淨一點。這裡的圖省略了一些組件，在包 Container 時，為了要讓 Lavarel 有辦法提供 Web 服務，還有一項 NGINX，另外為了讓測試環境更舒適，我也順便把 Adminer 也包進去了，最後變成大禮包(?</p>
+<h2 id="開發環境搭建">開發環境搭建</h2>
+<p>由於正式上線要使用 Docker，開發環境就順便用 Docker 架了。</p>
+<p>身為 Docker 萌新，先上網找了 Laradock，但是看起來真的超肥，決定自己來弄。各式各樣爬文加上拼拼湊湊的結果，好不容易終於把測試環境架起來。</p>
+<p><code>docker-compose.yml</code></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&quot;2&quot;</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">./</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">app.dockerfile</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/var/www</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./:/var/www</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;DB_PORT=3306&quot;</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span></span><br><span class="line">      <span class="attr">context:</span> <span class="string">./</span></span><br><span class="line">      <span class="attr">dockerfile:</span> <span class="string">web.dockerfile</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/var/www</span></span><br><span class="line">    <span class="attr">volumes_from:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">app</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8080</span><span class="string">:80</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">NGINX_PORT=80</span></span><br><span class="line">  <span class="attr">database:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">mariadb:latest</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">dbdata:/var/lib/mysql</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;MYSQL_DATABASE=tree&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;MYSQL_USER=tree&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;MYSQL_PASSWORD=secret&quot;</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;3306:3306&quot;</span></span><br><span class="line">  <span class="attr">adminer:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">adminer:latest</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">48763</span><span class="string">:8080</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">ADMINER_DEFAULT_SERVER:</span> <span class="string">database</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">dbdata:</span></span><br></pre></td></tr></table></figure>
+<p><code>docker-compose.yml</code>主要是設定整個架構是怎麼堆起來的。其中的服務名稱和 port 設定會影響到各個服務之間的互連。</p>
+<blockquote>
+<p>Adminer 要連線到 MariaDB 時，host 一定要寫服務的名稱(這裡是<code>database</code>)。如果在 Adminer 連線時寫<code>localhost</code>會變成 Adminer 這個服務自己去連自己的 3306 port，然而 Adminer 那邊 3306 是沒開的，因此要設定成<code>database</code>讓他自己去抓</p>
+</blockquote>
+<p><code>app.dockerfile</code></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> php:<span class="number">8.0</span>-fpm</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get install -qq git curl libmcrypt-dev libjpeg-dev libpng-dev libfreetype6-dev libbz2-dev</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get clean;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get install -y \</span></span><br><span class="line"><span class="bash">    libzip-dev \</span></span><br><span class="line"><span class="bash">    zip \</span></span><br><span class="line"><span class="bash">    &amp;&amp; docker-php-ext-install zip pdo pdo_mysql</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> docker-php-ext-install mysqli &amp;&amp; docker-php-ext-enable mysqli</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> curl --silent --show-error https://getcomposer.org/installer | php -- --install-dir=/usr/<span class="built_in">local</span>/bin --filename=composer</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> apt-get update &amp;&amp;\</span></span><br><span class="line"><span class="bash">    apt-get install -y gnupg &amp;&amp;\</span></span><br><span class="line"><span class="bash">    curl -sL https://deb.nodesource.com/setup_14.x | bash - &amp;&amp;\</span></span><br><span class="line"><span class="bash">    apt-get update &amp;&amp;\</span></span><br><span class="line"><span class="bash">    apt-get install -y nodejs &amp;&amp;\</span></span><br><span class="line"><span class="bash">    npm install --global gulp-cli</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> php-fpm</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>基本上只是把該裝的程式裝一裝，不過當初卡很久，常常環境裡面東缺西缺的，這裡的版本應該算穩定</p>
+</blockquote>
+<p><code>web.dockerfile</code></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> nginx:latest</span><br><span class="line"></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> vhost.conf /etc/nginx/conf.d/default.conf</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>只是拿專案資料夾裡面的<code>vhost.conf</code>蓋掉預設的設定檔，這樣就不用進到裡面去調。</p>
+</blockquote>
+<h2 id="laravel">Laravel</h2>
+<h3 id="starter-kits">Starter Kits</h3>
+<p>這次專案打算把 Laravel 當成全端框架，因此要搞定不少問題。一開始就先爬了一堆文來想辦法整合 Laravel 和 Vue。</p>
+<blockquote>
+<p>這次專案不打算把前端 Server 和後端 Server 分開的原因是為了減少 Server 的系統資源消耗。我記得學校虛擬機給的記憶體限制只有 2G 而且還要跟其他服務搶...</p>
+</blockquote>
+<p>最後在翻 Laravel 文檔的時候發現了 Laravel Jetstream 這個 Starter Kits，省下了後續不少開發麻煩，也為 Vue 和 Laravel 的整合提供了一個方案。</p>
+<blockquote>
+<p>這裡安裝的是 Inertia 作為前端的版本。Livewire 版本的前端是使用 blade 模板</p>
+</blockquote>
+<h3 id="jetstream-到底有多強">Jetstream 到底有多強?</h3>
+<p>以下是官方文檔給的 Features:</p>
+<ul>
+<li>Authentication</li>
+<li>Registration</li>
+<li>Profile Management</li>
+<li>Password Update</li>
+<li>Password Confirmation</li>
+<li>Two Factor Authentication</li>
+<li>Browser Sessions</li>
+<li>API</li>
+<li>Teams</li>
+</ul>
+<p>感覺已經可以搭出一個現代網站了，不過我只是要寫個管理後台系統，所以只需要開幾個功能。關於 Features 的控制可以在<code>config/jetstream.php</code>和<code>config/fortify.php</code>裡面找到。</p>
+<p><code>config/jetstream.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;features&#x27;</span> =&gt; [</span><br><span class="line">        <span class="comment">// Features::termsAndPrivacyPolicy(),</span></span><br><span class="line">        <span class="comment">// Features::profilePhotos(),</span></span><br><span class="line">        <span class="comment">// Features::api(),</span></span><br><span class="line">        <span class="comment">// Features::teams([&#x27;invitations&#x27; =&gt; true]),</span></span><br><span class="line">        <span class="comment">// Features::accountDeletion(),</span></span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+<p><code>config/fortify.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;features&#x27;</span> =&gt; [</span><br><span class="line">        Features::registration(),</span><br><span class="line">        <span class="comment">// Features::resetPasswords(),</span></span><br><span class="line">        <span class="comment">// Features::emailVerification(),</span></span><br><span class="line">        <span class="comment">// Features::updateProfileInformation(),</span></span><br><span class="line">        <span class="comment">// Features::updatePasswords(),</span></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        Features::twoFactorAuthentication([</span></span><br><span class="line"><span class="comment">            &#x27;confirmPassword&#x27; =&gt; true,</span></span><br><span class="line"><span class="comment">        ]),</span></span><br><span class="line"><span class="comment">        */</span></span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
+<p>基本上全部都關掉了，正式上線的時候會連底下的註冊都不剩。</p>
+<blockquote>
+<p>最終結果感覺就像是拿現成的網站模板來做後台...</p>
+</blockquote>
+<h3 id="database-model-and-migration">Database Model and Migration</h3>
+<p>由於登入的驗證那些 Jetstream 都幫忙弄好了，我們只要設計用來儲存認養人和認養資料的 Database model，所以直接用 Laravel 給的 artisan 工具來做檔案生成。</p>
+<p>在專案位置 cmd 下:</p>
+<p><code>php artisan make:model -a</code></p>
+<p>這個指令會幫忙把 model 的基本架構建起來，除此之外，也會幫忙生成對應的 migration、seed、controller 等。未來這些功能可能都會用到，所以先建起來也無妨。</p>
+<blockquote>
+<p>artisan 是 Laravel 給的命令列程式，可以用來執行內建或是自己擴充的指令。make 功能都是用來建立一些程式樣板的，可以加快開發速度。</p>
+</blockquote>
+<blockquote>
+<p>migration 可以用來管理資料表的版本，哪天動了 table 的格局以後可以利用 migration 做退版或升級之類的。一開始的 table 生成也要靠他。</p>
+</blockquote>
+<p>東西都建好之後就可以開始建 model 啦!</p>
+<p>節錄自<code>app/Models/Donor.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Donor</span> <span class="keyword">extends</span> <span class="title">Model</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">HasFactory</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$fillable</span> = [</span><br><span class="line">        <span class="string">&#x27;identity&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;name&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;amount&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;species&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;position&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;start_date&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;expire_date&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;message&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;email&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;has_reminded&#x27;</span></span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$casts</span> = [</span><br><span class="line">        <span class="string">&#x27;has_reminded&#x27;</span> =&gt; <span class="string">&#x27;boolean&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;start_date&#x27;</span> =&gt; <span class="string">&#x27;date:Y-m-d&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;expire_date&#x27;</span> =&gt; <span class="string">&#x27;date:Y-m-d&#x27;</span></span><br><span class="line">    ];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$attributes</span> = [</span><br><span class="line">        <span class="string">&#x27;has_reminded&#x27;</span> =&gt; <span class="literal">false</span>,</span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基本上就是照著<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/eloquent">官方文檔</a>把該填的東西填上，比較特別的地方是<code>$cast</code>可以幫忙轉型，而<code>attributes</code>可以設定初始值。</p>
+<blockquote>
+<p>之後可能會注意到資料庫裡面還多了<code>created_at</code>與<code>updated_at</code>兩個欄位，這是 Laravel 自動加上和維護的。不想要的話也可以參考官方文件把它拿掉或改名。</p>
+</blockquote>
+<p>其實只有 Model 並沒有用，我們還要定義一下 table 的格局，因此要轉至 migration 的部分。</p>
+<p>節錄自<code>database/migrations/2021_08_16_130538_create_donors_table.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CreateDonorsTable</span> <span class="keyword">extends</span> <span class="title">Migration</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">up</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Schema::create(<span class="string">&#x27;donors&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params">Blueprint <span class="variable">$table</span></span>) </span>&#123;</span><br><span class="line">            <span class="variable">$table</span>-&gt;id();</span><br><span class="line">            <span class="variable">$table</span>-&gt;string(<span class="string">&#x27;identity&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;string(<span class="string">&#x27;name&#x27;</span>);</span><br><span class="line">            <span class="variable">$table</span>-&gt;integer(<span class="string">&#x27;amount&#x27;</span>);</span><br><span class="line">            <span class="variable">$table</span>-&gt;string(<span class="string">&#x27;species&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;string(<span class="string">&#x27;position&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;date(<span class="string">&#x27;start_date&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;date(<span class="string">&#x27;expire_date&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;string(<span class="string">&#x27;message&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;string(<span class="string">&#x27;email&#x27;</span>)-&gt;nullable();</span><br><span class="line">            <span class="variable">$table</span>-&gt;boolean(<span class="string">&#x27;has_reminded&#x27;</span>);</span><br><span class="line">            <span class="variable">$table</span>-&gt;timestamps();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">down</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Schema::dropIfExists(<span class="string">&#x27;donors&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同樣沒有做太多修改，只是把 table 的定義弄上去。關於型別還有可以使用的限制一樣可以參考<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/migrations">官方文檔</a>。</p>
+<hr>
+<p>兩項東西都弄好後就可以正式上啦!一樣要動用到 artisan 幫我們完成工作，在 cmd 執行:</p>
+<p><code>php artisan migrate</code></p>
+<blockquote>
+<p>migrate 指令會去比對 migrate 資料庫中的狀態和資料表有沒有被建立，所以會在 database 裡面再看到一個 migrations 的 table，內容紀錄的都是 migration 的紀錄，如果想觀看的話可以用<code>php artisan migrate:status</code></p>
+</blockquote>
+<p>執行完畢以後在 migrate 裡面定義好的 table 就會自己出現了。</p>
+<h3 id="model-操作">Model 操作</h3>
+<h4 id="儲存">儲存</h4>
+<p>先來寫把資料存進 table 的方法，為了方便就直接去 Controller 裡面寫</p>
+<p>節錄自<code>app/Http/Controllers/DonorController.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DonorController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">store</span>(<span class="params">Request <span class="variable">$request</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$request</span>-&gt;validate([</span><br><span class="line">            <span class="string">&#x27;identity&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span> =&gt; <span class="string">&#x27;required&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;amount&#x27;</span> =&gt; <span class="string">&#x27;required|integer|gt:0&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;species&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;position&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;start_date&#x27;</span> =&gt; <span class="string">&#x27;nullable|date_format:Y-m-d&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;expire_date&#x27;</span> =&gt; <span class="string">&#x27;nullable|date_format:Y-m-d&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;message&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;email&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">        ]);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$donor</span> = <span class="keyword">new</span> Donor;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$donor</span>-&gt;identity = <span class="variable">$request</span>-&gt;identity;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;name = <span class="variable">$request</span>-&gt;name;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;amount = <span class="variable">$request</span>-&gt;amount;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;species = <span class="variable">$request</span>-&gt;species;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;position = <span class="variable">$request</span>-&gt;position;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;start_date = <span class="variable">$request</span>-&gt;start_date;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;expire_date = <span class="variable">$request</span>-&gt;expire_date;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;message = <span class="variable">$request</span>-&gt;message;</span><br><span class="line">        <span class="variable">$donor</span>-&gt;email = <span class="variable">$request</span>-&gt;email;</span><br><span class="line"></span><br><span class="line">        <span class="variable">$donor</span>-&gt;save();</span><br><span class="line">        <span class="keyword">return</span> redirect()-&gt;back();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>做的事情同樣不難，只是把 post 進來的資料各個做檢查，檢查通過以後就建一個新的<code>Donor</code>物件，把各項屬性放上去以後呼叫<code>save()</code>讓 Model 幫我們把資料存進 DB 裡。</p>
+<blockquote>
+<p>這裡的 Controller 是作為 ResourceController 使用，所以對應的函式會被套上對應的路徑和 HTTP 方法。以這裡的<code>store</code>為例，對應到的路由會是<code>/donors</code>的 post。<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/controllers#actions-handled-by-resource-controller">官方文件</a>的 ResourceController 有更詳細的說明。</p>
+</blockquote>
+<h4 id="更新">更新</h4>
+<p>建立完以後也要有辦法更新資料，這次除了要驗證對應的參數以外，還要把原本的資料抓出來。</p>
+<p>節錄自<code>app/Http/Controllers/DonorController.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DonorController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update</span>(<span class="params">Request <span class="variable">$request</span>, Donor <span class="variable">$donor</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$request</span>-&gt;validate([</span><br><span class="line">            <span class="string">&#x27;identity&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span> =&gt; <span class="string">&#x27;required&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;amount&#x27;</span> =&gt; <span class="string">&#x27;required|integer|gt:0&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;species&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;position&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;start_date&#x27;</span> =&gt; <span class="string">&#x27;nullable|date_format:Y-m-d&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;expire_date&#x27;</span> =&gt; <span class="string">&#x27;nullable|date_format:Y-m-d&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;message&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;email&#x27;</span> =&gt; <span class="string">&#x27;nullable&#x27;</span>,</span><br><span class="line">        ]);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!is_null(<span class="variable">$donor</span>)) &#123;</span><br><span class="line">            <span class="variable">$donor</span>-&gt;update(<span class="variable">$request</span>-&gt;only([<span class="string">&#x27;identity&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;amount&#x27;</span>, <span class="string">&#x27;species&#x27;</span>, <span class="string">&#x27;position&#x27;</span>, <span class="string">&#x27;start_date&#x27;</span>, <span class="string">&#x27;expire_date&#x27;</span>, <span class="string">&#x27;message&#x27;</span>, <span class="string">&#x27;email&#x27;</span>]));</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alert&#x27;</span>, <span class="string">&#x27;已更新一筆資料&#x27;</span>);</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alertStyle&#x27;</span>, <span class="string">&#x27;success&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alert&#x27;</span>, <span class="string">&#x27;更新資料失敗&#x27;</span>);</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alertStyle&#x27;</span>, <span class="string">&#x27;danger&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> redirect()-&gt;back();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>直接 call model 的<code>update()</code>並且把資料當成 array 傳進去事情就解決了。</p>
+<blockquote>
+<p>你可能很疑惑為什麼可以直接帶入 Donor 物件，而這就是 Laravel 的魔法!Laravel 的<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/container">Service Container</a>會幫忙把 Controller 上面需要的參數做注入，所以可以直接操作，我們只要做類型提示，關於這方面更詳細的文章<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/controllers#dependency-injection-and-controllers">官方文檔</a>有</p>
+</blockquote>
+<h4 id="刪除">刪除</h4>
+<p>利用上面提到的依賴注入直接把 model 抓出來刪掉就好。</p>
+<p>節錄自<code>app/Http/Controllers/DonorController.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DonorController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">destroy</span>(<span class="params">Donor <span class="variable">$donor</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!is_null(<span class="variable">$donor</span>)) &#123;</span><br><span class="line">            <span class="variable">$donor</span>-&gt;delete();</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alert&#x27;</span>, <span class="string">&#x27;已刪除一筆資料&#x27;</span>);</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alertStyle&#x27;</span>, <span class="string">&#x27;success&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alert&#x27;</span>, <span class="string">&#x27;找不到該項資料&#x27;</span>);</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alertStyle&#x27;</span>, <span class="string">&#x27;danger&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> redirect()-&gt;back();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="設定-resource-router">設定 Resource Router</h3>
+<p>基本上要設定一個 Resource Router 很簡單，只要用:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Route::resource(<span class="string">&#x27;donors&#x27;</span>, DonorController::class);</span><br></pre></td></tr></table></figure>
+<p>關於路由設定那些 Laravel 會自己去抓，我們把身分驗證那些的 middle ware 設定好就行。</p>
+<blockquote>
+<p>寫到後面我有發現使用 Inertia 的網站不適合使用 Restful API。為了配合 Inertia 的 render 方式不設計 Restful API 反而省下麻煩，不過我都寫下去了就懶得改</p>
+</blockquote>
+<blockquote>
+<p>如果實在是受不了的話可以用用看<a target="_blank" rel="noopener" href="https://github.com/AdditionApps/flexible-presenter">Flexible Presenter</a></p>
+</blockquote>
+<h3 id="匯入資料">匯入資料</h3>
+<p>對方給了一份 Excel 檔案，不過因為檔案裡面有不少錯誤跟格式不整齊的地方，所以就算寫了腳本來做匯入還是搞了很久。</p>
+<p>腳本採用有眾多套件支援而且本身開發速度又極快的 Python，對 Excel 做讀取再塞入 database 中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> openpyxl</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> api.config.config <span class="keyword">import</span> Config</span><br><span class="line"><span class="keyword">from</span> api.mysql.db <span class="keyword">import</span> DBManager</span><br><span class="line"><span class="keyword">from</span> api.mysql.tree_db <span class="keyword">import</span> TreeDB</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">sendData</span>():</span></span><br><span class="line">    workbook = openpyxl.load_workbook(<span class="string">&#x27;data.xlsx&#x27;</span>)</span><br><span class="line">    sheet = workbook[<span class="string">&#x27;工作表1&#x27;</span>]</span><br><span class="line">    tasks = []</span><br><span class="line">    <span class="keyword">for</span> y <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">198</span>):</span><br><span class="line">        row = <span class="built_in">list</span>()</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">1</span>).value)</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">2</span>).value)</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">3</span>).value)</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">4</span>).value)</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">5</span>).value)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            row.append(sheet.cell(row=y, column=<span class="number">6</span>).value.split(<span class="string">&#x27;-&#x27;</span>)[<span class="number">0</span>].replace(<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;-&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            row.append(<span class="literal">None</span>)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            row.append(sheet.cell(row=y, column=<span class="number">6</span>).value.split(<span class="string">&#x27;-&#x27;</span>)[<span class="number">1</span>].replace(<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;-&#x27;</span>))</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            row.append(<span class="literal">None</span>)</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">7</span>).value)</span><br><span class="line">        row.append(sheet.cell(row=y, column=<span class="number">8</span>).value)</span><br><span class="line">        tasks.append(asyncio.create_task(TreeDB.add_donor(row)))</span><br><span class="line">        <span class="keyword">await</span> asyncio.sleep(<span class="number">0.1</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.gather(*tasks)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;完成&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;開始檢查設定檔&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> Config.init()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;設定檔檢查完畢&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;開始檢查資料庫系統&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> DBManager.init()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;資料庫系統檢查完畢&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> sendData()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">asyncio.get_event_loop().run_until_complete(main())</span><br></pre></td></tr></table></figure>
+<p>之前在搬樹莓派資料的時候就寫過類似的程式，而且也是運用 async 來加速，所以這次就把上次的 code 拿來用。關於 Config 還有 DBManager 這兩個類別則是從過去寫過的 Discord Bot 搬過來，稍微修修改改再加上 Excel 的讀取，用來匯入資料的腳本就完成了!</p>
+<h3 id="寄信功能">寄信功能</h3>
+<p>終於來到了重頭戲了!原本這個程式的功能就是要做信件的自動通知，後台系統只是順便加上去的。一開始原本打算用 Python 的腳本來實現自動通知，不過看到 Laravel 內建了非常完整的寄信功能實作，所以讓我決定直接採用 Laravel 來串。</p>
+<h4 id="指令實作">指令實作</h4>
+<p>為了要方便 crontab 執行，把寄信的功能寫成指令應該會是最好的方法。剛好 Laravel 已經提供了一個指令的介面，要做的就只是把指令生出來而已。一如既往執行</p>
+<p><code>php artisan make:command SendEmail</code></p>
+<p>之後就在這裡面寫寄信的實作邏輯。</p>
+<blockquote>
+<p>在此先實作一個寄信的功能，再用另一個指令把最後要的功能串出來會比較靈活而且方便測試。</p>
+</blockquote>
+<p>節錄自<code>app/Console/Commands/SendMail.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SendMail</span> <span class="keyword">extends</span> <span class="title">Command</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$signature</span> = <span class="string">&#x27;mail:send &#123;donor&#125;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$description</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$donorID</span> = <span class="keyword">$this</span>-&gt;argument(<span class="string">&#x27;donor&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="variable">$donor</span> = Donor::find(<span class="variable">$donorID</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!is_null(<span class="variable">$donor</span>)) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;error(<span class="string">&#x27;寄件失敗! 找不到該名認養者!&#x27;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先寫這樣，其他像是指令描述之類的可以到<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/artisan#input-descriptions">官方文檔</a>查。</p>
+<p>上面還沒有實現寄信邏輯，只是先把指令建起來。寄信的邏輯會在下面的內容看到。</p>
+<h4 id="mail">Mail</h4>
+<h5 id="設定">設定</h5>
+<p>為了能順利發信，必須先把發信的設定先喬好。Laravel 可以用 Mailgun、Postmark、AWS SES 等服務來做發信，不過這裡是採用上級交代的電算郵件來做功能，所以要用到的就是 smtp。</p>
+<p>設定到<code>.env</code>裡面調整就可以了，不用再去動原始碼。</p>
+<p>節錄自<code>.env</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ADMIN_MAIL=admin@example.com</span><br><span class="line"></span><br><span class="line">MAIL_MAILER=smtp</span><br><span class="line">MAIL_HOST=smtp.cc.ncu.edu.tw</span><br><span class="line">MAIL_PORT=25</span><br><span class="line">MAIL_USERNAME=username</span><br><span class="line">MAIL_PASSWORD=secret</span><br><span class="line">MAIL_ENCRYPTION=tls</span><br><span class="line">MAIL_FROM_ADDRESS=address@example.com</span><br><span class="line">MAIL_FROM_NAME=&quot;$&#123;APP_NAME&#125;&quot;</span><br></pre></td></tr></table></figure>
+<p><code>ADMIN_MAIL</code>是我自己加上去的，之後直接用這個來調整要看到副本的管理員。</p>
+<blockquote>
+<p>關於 HOST 還有 PORT 那些有的沒的參數，根據自己要用到的 Server 設定就可以了。這裡的參數是學校電算給的，在網路上就可以查到。</p>
+</blockquote>
+<blockquote>
+<p>FROM_ADDRESS 可以跟寄 mail 的是不同帳號，不過對方收到以後可能會被平台當成高機率的詐騙郵件。</p>
+</blockquote>
+<blockquote>
+<p>學校的 TLS 似乎版本太舊，導致實際上要寄件的時候會被 Open SSL 擋下來。解決方法可以參考<a target="_blank" rel="noopener" href="https://askubuntu.com/questions/1233186/ubuntu-20-04-how-to-set-lower-ssl-security-level">這篇文章</a></p>
+</blockquote>
+<h5 id="建立信件">建立信件</h5>
+<p>Laravel 的信件都用 Class 來表示，為了簡化流程直接用</p>
+<p><code>php artisan make:mail ExpireAlert</code></p>
+<p>編輯生成出來的檔案，稍微加點內容就完成了</p>
+<p>節錄自<code>app/Mail/ExpireAlert.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExpireAlert</span> <span class="keyword">extends</span> <span class="title">Mailable</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">use</span> <span class="title">Queueable</span>, <span class="title">SerializesModels</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$donor</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params">Donor <span class="variable">$donorData</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;donor = <span class="variable">$donorData</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">build</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;subject(<span class="string">&#x27;mail subject&#x27;</span>)-&gt;markdown(<span class="string">&#x27;emails.expire.alert&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>比較特別的地方是傳資料給信件的部分。Laravel 會自動把 Class 裡面設定成 public 的參數傳給 view，簡化了工作流程，我們只要在<code>__construct()</code>裡面把初始值設定完即可。</p>
+<blockquote>
+<p><code>__construct()</code>其實就是建構子啦!所以 Donor 的參數就從生成物件的時候順便傳進來。</p>
+</blockquote>
+<blockquote>
+<p>用 markdown 的信件比較好寫，也可以嵌入一些已經寫好的樣板來加快開發速度。不過我在嵌入行內圖片的時候碰到了不小的問題，目前還沒解決，只能把行內圖片放棄。</p>
+</blockquote>
+<blockquote>
+<p><code>markdown()</code>裡面的<code>emails.expire.alert</code>會被解析成<code>resources/views/emails/expire/alert.blade.php</code></p>
+</blockquote>
+<p>markdown 信件樣板直接參考<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/mail#markdown-mailables">官方文擋</a>說明即可，這裡就不多贅述。</p>
+<h4 id="寄信">寄信</h4>
+<p>回到原本的寄信指令，這次要把寄信的邏輯也塞進去了，所以插入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Mail::to(<span class="variable">$donor</span>-&gt;email)-&gt;bcc(env(<span class="string">&#x27;ADMIN_MAIL&#x27;</span>, <span class="string">&#x27;&#x27;</span>))-&gt;send(<span class="keyword">new</span> ExpireAlert(<span class="variable">$donor</span>));</span><br><span class="line"><span class="keyword">$this</span>-&gt;info(<span class="string">&#x27;已將信件寄往&#x27;</span>.<span class="variable">$donor</span>-&gt;email.<span class="string">&#x27;同時副本給&#x27;</span>.env(<span class="string">&#x27;ADMIN_MAIL&#x27;</span>, <span class="string">&#x27;&#x27;</span>));</span><br><span class="line"><span class="variable">$donor</span>-&gt;has_reminded = <span class="literal">true</span>;</span><br><span class="line"><span class="variable">$donor</span>-&gt;save();</span><br></pre></td></tr></table></figure>
+<p>用<code>Mail::to()</code>就可以直接發信了，裡面的參數會自動抓<code>name</code>和<code>email</code>，這裡是明確的指定 email 進去。後面的<code>bcc()</code>直接把信件密件副本給管理員。寄件成功後對該筆資料做個紀錄，寄件的功能就寫完了。</p>
+<h4 id="完成篩選寄件">完成篩選寄件</h4>
+<h5 id="建立指令">建立指令</h5>
+<p>寄信的指令功能完成了，再來就利用現有的指令把需要的功能串起來。</p>
+<p>最終目標是要篩選認養期即將到期的人，並且寄一封信。所以現在寫一個指令來處理篩選的部分:</p>
+<p><code>php artisan make:command CheckExpireDate</code></p>
+<p>節錄自<code>app/Console/Commands/CheckExpireDate.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CheckExpireDate</span> <span class="keyword">extends</span> <span class="title">Command</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$signature</span> = <span class="string">&#x27;mail:check&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="built_in">parent</span>::__construct();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">handle</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">// do something</span></span><br><span class="line">        <span class="keyword">$this</span>-&gt;info(<span class="string">&#x27;完成!&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="篩選內容">篩選內容</h5>
+<p>弄出了一個指令樣板，接下來處理資料庫過濾的部分。這裡可以用<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/eloquent#local-scopes">scope query</a>來寫，所以到 Model 裡面去改</p>
+<p>節錄自<code>app/Models/Donor.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Donor</span> <span class="keyword">extends</span> <span class="title">Model</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">scopeNoReminded</span>(<span class="params">Builder <span class="variable">$query</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$query</span>-&gt;where(<span class="string">&#x27;has_reminded&#x27;</span>, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">scopeExpired</span>(<span class="params">Builder <span class="variable">$query</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$today</span> = date(<span class="string">&quot;Y-m-d&quot;</span>);</span><br><span class="line">        <span class="variable">$alertDay</span> = date(<span class="string">&quot;Y-m-d&quot;</span>, strtotime(<span class="variable">$today</span>.<span class="string">&quot;+2 week&quot;</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$query</span>-&gt;where(<span class="string">&#x27;expire_date&#x27;</span>, <span class="string">&#x27;&gt;&#x27;</span>, <span class="variable">$today</span>)-&gt;where(<span class="string">&#x27;expire_date&#x27;</span>, <span class="string">&#x27;&lt;&#x27;</span>, <span class="variable">$alertDay</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>做點簡單的邏輯過濾就好了，function 名稱要記得在前面加 scope 並採用駝峰式命名。</p>
+<h5 id="完成指令">完成指令</h5>
+<p>過濾邏輯已經寫好了，所以回到指令部分插入下段:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (Donor::noReminded()-&gt;expired()-&gt;get() <span class="keyword">as</span> <span class="variable">$donor</span>) &#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;call(<span class="string">&#x27;mail:send&#x27;</span>, [</span><br><span class="line">        <span class="string">&#x27;user&#x27;</span> =&gt; <span class="variable">$donor</span>-&gt;id</span><br><span class="line">    ]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用<code>call()</code>來呼叫其他指令，並且把搜到的 Donor id 帶入，讓已經寫好的指令幫忙完成其他的工作。</p>
+<p>功能到此全部完成，之後到生產環境上面用 crontab 設定每天執行就好。</p>
+<h2 id="inertia.js">Inertia.js</h2>
+<p>Inertia.js 是用來接 Vue 和 Laravel 的中間層，有一套特別的協定，可以讓 Server 的路由在定向的時候保持有如 SPA(Single Page Application)的體驗。</p>
+<h3 id="inertia-協定">Inertia 協定</h3>
+<p>當瀏覽器進到 Inertia 的頁面時，會先拿到一份 HTML 檔還有資源，之後瀏覽器就會把 Inertia 的頁面 render 出來(跟一般的 Vue 頁面差不多)。</p>
+<p>在頁面上跳轉時，會需要用到一個 Inertia 的<code>Link</code> component。下面是範例</p>
+<p><code>&lt;Link :href="/somewhere"&gt;Let's go&lt;/Link&gt;</code></p>
+<p>在頁面上點這個連結以後，Interia 會讓瀏覽器送出一個 XHR 請求，上面附上 Interia 的特殊 Header:</p>
+<p>節錄自<a target="_blank" rel="noopener" href="https://inertiajs.com/the-protocol">官方文檔</a></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">GET</span><span class="punctuation">: </span>http://example.com/events/80</span><br><span class="line"><span class="attribute">Accept</span><span class="punctuation">: </span>text/html, application/xhtml+xml</span><br><span class="line"><span class="attribute">X-Requested-With</span><span class="punctuation">: </span>XMLHttpRequest</span><br><span class="line"><span class="attribute">X-Inertia</span><span class="punctuation">: </span>true</span><br><span class="line"><span class="attribute">X-Inertia-Version</span><span class="punctuation">: </span>6b16b94d7c51cbe5b1fa42aac98241d5</span><br></pre></td></tr></table></figure>
+<p>Server 接到特殊請求後會回傳一份 json 給瀏覽器，讓瀏覽器去更新頁面</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json</span><br><span class="line"><span class="attribute">Vary</span><span class="punctuation">: </span>Accept</span><br><span class="line"><span class="attribute">X-Inertia</span><span class="punctuation">: </span>true</span><br><span class="line">&#123;</span><br><span class="line">  &quot;component&quot;: &quot;Event&quot;,</span><br><span class="line">  &quot;props&quot;: &#123;</span><br><span class="line">    &quot;event&quot;: &#123;</span><br><span class="line">      &quot;id&quot;: 80,</span><br><span class="line">      &quot;title&quot;: &quot;Birthday party&quot;,</span><br><span class="line">      &quot;start_date&quot;: &quot;2019-06-02&quot;,</span><br><span class="line">      &quot;description&quot;: &quot;Come out and celebrate Jonathan&#x27;s 36th birthday party!&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;url&quot;: &quot;/events/80&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;c32b8e4965f418ad16eaebba1d4e960f&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>內容其實就是 component 的資料，藉此達成頁面更新的效果。</p>
+<blockquote>
+<p>version 是 Interia 用來判斷 Server 的前端有沒有檔案更動用的，如果前端檔案被更動就表示頁面一定要強制刷新。如何設定 version 可以參考<a target="_blank" rel="noopener" href="https://ithelp.ithome.com.tw/articles/10234404">iT 邦幫忙</a>，寫得很清楚</p>
+</blockquote>
+<h3 id="render-頁面">render 頁面</h3>
+<p>用法跟 Laravel 原本的 Router 差不多，寫法一樣有很多種，下面的方式都是可以的。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一般的路由寫法，closure裡面的東西也可以換成Controller處理</span></span><br><span class="line">Route::get(<span class="string">&#x27;/&#x27;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Inertia::render(<span class="string">&#x27;vuepage&#x27;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// closure改寫成arrow function</span></span><br><span class="line">Route::get(<span class="string">&#x27;/&#x27;</span>, <span class="function"><span class="keyword">fn</span> (<span class="params"></span>) =&gt;</span> Inertia::render(<span class="string">&#x27;vuepage&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// Inertia::render簡寫成inertia</span></span><br><span class="line">Route::get(<span class="string">&#x27;/&#x27;</span>, <span class="function"><span class="keyword">fn</span> (<span class="params"></span>) =&gt;</span> inertia(<span class="string">&#x27;vuepage&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 連get都換掉變成inertia</span></span><br><span class="line">Route::inertia(<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;vuepage&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>如果要傳遞 props 給前端，可以參考下面的寫法:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> Inertia::render(<span class="string">&#x27;Dashboard&#x27;</span>, [<span class="string">&#x27;donorsData&#x27;</span> =&gt; Donor::all()]);</span><br></pre></td></tr></table></figure>
+<p>在 array 裡面指定好就會被傳到前端了。要注意的是傳到前端以後使用者是看得到資料的。如果 database 裡面有機敏資料一定要用<code>only()</code>過濾過，不然就變成大大大放送了。</p>
+<h3 id="error-handleing">Error Handleing</h3>
+<p>在測試環境時，Interia 碰到錯誤或是非 Interia 的 response 會直接在頁面上跳一個 iframe 出來。正式上線的時候必須改掉，就參考了 Interia 的<a target="_blank" rel="noopener" href="https://inertiajs.com/error-handling">官方文檔</a>加入一些錯誤處理的邏輯。</p>
+<p>節錄自<code>app/Exceptions/Handler.php</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handler</span> <span class="keyword">extends</span> <span class="title">ExceptionHandler</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">render</span>(<span class="params"><span class="variable">$request</span>, <span class="built_in">Throwable</span> <span class="variable">$e</span></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="variable">$response</span> = <span class="built_in">parent</span>::render(<span class="variable">$request</span>, <span class="variable">$e</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!app()-&gt;environment([<span class="string">&#x27;local&#x27;</span>, <span class="string">&#x27;testing&#x27;</span>]) &amp;&amp; in_array(<span class="variable">$response</span>-&gt;status(), [<span class="number">500</span>, <span class="number">503</span>, <span class="number">404</span>, <span class="number">403</span>])) &#123;</span><br><span class="line">            <span class="keyword">return</span> Inertia::render(<span class="string">&#x27;Error&#x27;</span>, [<span class="string">&#x27;status&#x27;</span> =&gt; <span class="variable">$response</span>-&gt;status()])</span><br><span class="line">                -&gt;toResponse(<span class="variable">$request</span>)</span><br><span class="line">                -&gt;setStatusCode(<span class="variable">$response</span>-&gt;status());</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="variable">$response</span>-&gt;status() === <span class="number">419</span>) &#123;</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alert&#x27;</span>, <span class="string">&#x27;頁面已過期，請刷新頁面後重試&#x27;</span>);</span><br><span class="line">            session()-&gt;flash(<span class="string">&#x27;flash.alertStyle&#x27;</span>, <span class="string">&#x27;danger&#x27;</span>);</span><br><span class="line">            <span class="keyword">return</span> back();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$response</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這裡檢查了錯誤代碼做對應的響應，把錯誤代碼送到前端給前端的頁面做渲染。</p>
+<p>419 的處理比較特別，是利用 session 放一個提示訊息的資料。back 後使用者會在頁面上看到渲染出來的錯誤訊息(可參考 Jetstream Banner 的實作方法)。</p>
+<blockquote>
+<p>error handle 有很多種處理方法，除了檔案裡面一開始有的<code>register()</code>，這裡的<code>render()</code>也是其中一種。各項差別<a target="_blank" rel="noopener" href="https://laravel.com/docs/8.x/errors#renderable-exceptions">官方文檔</a>有記載</p>
+</blockquote>
+<p>弄好程式部分就可以把<code>.env</code>裡面的<code>APP_ENV</code>換成<code>production</code>測試看看。</p>
+<p><img src="/2021/08/18/Laravel/404.png" alt="錯誤提示頁面"></p>
+<blockquote>
+<p>修改前端後記得執行 mix，如果懶得一直打的話可以用<code>npm run watch</code>來自動監測程式碼更動。若是沒有追蹤成功的話可以參考下面踩坑實錄的部分。</p>
+</blockquote>
+<h2 id="踩坑實錄">踩坑實錄</h2>
+<h3 id="npm-run-watch-無效">npm run watch 無效?</h3>
+<p>不知道是不是因為用 Docker 的關係，<code>npm run watch</code>沒辦法偵測到檔案變動，所以改用<code>npm run watch-poll</code>來解決問題。</p>
+<p><code>npm run watch-poll</code>會以設定好的時間定期的去檢查檔案更動，只要檔案有變動就幫忙 mix 一次。靠著這個指令可以解決<code>npm run watch</code>監測不到的問題。</p>
+<h3 id="郵件-inline-圖片嵌入失敗">郵件 inline 圖片嵌入失敗</h3>
+<p>網路上不少人都有碰到圖片不能嵌入的問題，目前我也還沒找到解法。最接近的解應該是用 base64 把<code>&lt;img /&gt;</code>插在信件裡面，但是收郵件的平台還是會因為安全性問題把圖片的<code>src</code>吃掉。郵件附件再引入的方法可能可行，不過這部分我還要再研究一下。</p>
+<blockquote>
+<p><del>最好的方法就是不要放圖片</del></p>
+</blockquote>
+<h1 id="結語">結語</h1>
+<p>花了很久終於把這篇超長文章打完。由於程式部署不會這麼快，所以部署篇之後再分一篇文章出來。這篇文章就到此為止，有錯誤的話請用 GitHub 或其他方式聯絡我。感謝你的觀看。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/PHP/" rel="tag"># PHP</a>
+              <a href="/tags/Laravel/" rel="tag"># Laravel</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/MySQL/" rel="tag"># MySQL</a>
+              <a href="/tags/MariaDB/" rel="tag"># MariaDB</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/CSS/" rel="tag"># CSS</a>
+              <a href="/tags/Vue-js/" rel="tag"># Vue.js</a>
+              <a href="/tags/Inertia-js/" rel="tag"># Inertia.js</a>
+              <a href="/tags/Laravel-Jetstream/" rel="tag"># Laravel Jetstream</a>
+              <a href="/tags/asyncio/" rel="tag"># asyncio</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/14/NCUFresh/" rel="prev" title="2021新生知訊網開發筆記">
+                  <i class="fa fa-chevron-left"></i> 2021新生知訊網開發筆記
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/02/Raspberry64/" rel="next" title="樹莓派的重啟人生">
+                  樹莓派的重啟人生 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ppodds</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
