@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 這篇文章記錄了我在寫組合語言與系統程式這門課的期末 project 時的過程和期間碰到的問題與解決辦法。內容主要為 FFmpeg 的 libavcodec、Qt 的 QMediaPlayer、QThread 等，還有一些關於用 Visual C++和 Assembly 對接的知識。 這次選擇的題目是 ASCII Animation Player，希望能達成  從檔案系統讀取視訊檔案並">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AAAAnimation - ASCII Art Animation Player開發筆記">
+<meta property="og:url" content="https://ppodds.github.io/2021/12/30/AAAAnimation/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 這篇文章記錄了我在寫組合語言與系統程式這門課的期末 project 時的過程和期間碰到的問題與解決辦法。內容主要為 FFmpeg 的 libavcodec、Qt 的 QMediaPlayer、QThread 等，還有一些關於用 Visual C++和 Assembly 對接的知識。 這次選擇的題目是 ASCII Animation Player，希望能達成  從檔案系統讀取視訊檔案並">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://raw.githubusercontent.com/leandromoreira/ffmpeg-libav-tutorial/master/img/decoding.png">
+<meta property="og:image" content="https://docs.microsoft.com/en-us/cpp/build/media/vcamd_conv_ex_5.png?view=msvc-170">
+<meta property="article:published_time" content="2021-12-30T11:04:05.000Z">
+<meta property="article:modified_time" content="2022-01-01T08:04:26.972Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Assembly">
+<meta property="article:tag" content="MASM64">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="FFmpeg">
+<meta property="article:tag" content="Qt">
+<meta property="article:tag" content="Multimedia">
+<meta property="article:tag" content="ASCII Animation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/leandromoreira/ffmpeg-libav-tutorial/master/img/decoding.png">
+
+
+<link rel="canonical" href="https://ppodds.github.io/2021/12/30/AAAAnimation/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2021/12/30/AAAAnimation/","path":"2021/12/30/AAAAnimation/","title":"AAAAnimation - ASCII Art Animation Player開發筆記"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AAAAnimation - ASCII Art Animation Player開發筆記 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">36</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">10</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A6%96%E8%A8%8A%E8%A7%A3%E7%A2%BC"><span class="nav-number">2.1.</span> <span class="nav-text">視訊解碼</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#libavcodec-%E6%9E%B6%E6%A7%8B"><span class="nav-number">2.1.1.</span> <span class="nav-text">libavcodec 架構</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E7%A2%BC%E6%B5%81%E7%A8%8B%E5%AF%A6%E4%BD%9C"><span class="nav-number">2.1.2.</span> <span class="nav-text">解碼流程實作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%87%E5%9C%96%E5%83%8F%E8%BD%89%E6%8F%9B%E7%82%BA-ascii-art"><span class="nav-number">2.2.</span> <span class="nav-text">將圖像轉換為 ASCII Art</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#microsoft-x64-calling-convention"><span class="nav-number">2.2.1.</span> <span class="nav-text">Microsoft x64 calling convention</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8-assembly-%E8%BD%89%E6%8F%9B%E6%98%8E%E5%BA%A6%E7%82%BA-ascii-art"><span class="nav-number">2.2.2.</span> <span class="nav-text">用 Assembly 轉換明度為 ASCII Art</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%AD%E6%94%BE-ascii-animation"><span class="nav-number">2.3.</span> <span class="nav-text">播放 ASCII Animation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E9%9F%B3%E8%A6%96%E8%A8%8A"><span class="nav-number">2.4.</span> <span class="nav-text">播放音視訊</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#qt-%E5%AE%89%E8%A3%9D%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A0%85"><span class="nav-number">2.4.1.</span> <span class="nav-text">Qt 安裝注意事項</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qt-application"><span class="nav-number">2.4.2.</span> <span class="nav-text">Qt Application</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5-mediaplayer-%E8%88%87-asciiplayer"><span class="nav-number">2.5.</span> <span class="nav-text">同步 MediaPlayer 與 AsciiPlayer</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#asciiplayerthread"><span class="nav-number">2.5.1.</span> <span class="nav-text">AsciiPlayerThread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mediaplayer"><span class="nav-number">2.5.2.</span> <span class="nav-text">MediaPlayer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%9C%AA%E8%A7%A3%E6%B1%BA%E6%88%96%E4%B8%8D%E7%9F%A5%E9%81%93%E8%A9%B3%E7%B4%B0%E5%8E%9F%E5%9B%A0%E7%9A%84-bug"><span class="nav-number">2.6.</span> <span class="nav-text">一些未解決或不知道詳細原因的 bug</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%AD%E6%94%BE%E6%99%82%E5%8F%AF%E8%83%BD%E6%9C%83%E8%A7%B8%E7%99%BC%E7%B3%BB%E7%B5%B1%E9%9F%B3%E6%95%88"><span class="nav-number">2.6.1.</span> <span class="nav-text">播放時可能會觸發系統音效</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A8%AD%E5%AE%9A%E7%9A%84%E5%AD%97%E9%AB%94%E5%9C%A8%E4%B8%8D%E5%90%8C%E9%9B%BB%E8%85%A6%E4%B8%8A%E5%8F%AF%E8%83%BD%E7%84%A1%E6%B3%95%E6%AD%A3%E5%B8%B8%E9%81%8B%E4%BD%9C"><span class="nav-number">2.6.2.</span> <span class="nav-text">設定的字體在不同電腦上可能無法正常運作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ascii-animation-%E5%9C%A8%E6%9C%89%E4%BA%9B%E8%A3%9D%E7%BD%AE%E4%B8%8A%E4%B8%8D%E6%9C%83%E6%AD%A3%E5%B8%B8%E6%92%AD%E6%94%BE%E4%BD%86%E5%A4%9A%E8%A9%A6%E5%B9%BE%E6%AC%A1%E5%8D%BB%E5%8F%AF%E4%BB%A5%E6%AD%A3%E5%B8%B8%E9%81%8B%E4%BD%9C"><span class="nav-number">2.6.3.</span> <span class="nav-text">ASCII Animation 在有些裝置上不會正常播放，但多試幾次卻可以正常運作</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/12/30/AAAAnimation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AAAAnimation - ASCII Art Animation Player開發筆記
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-12-30 19:04:05" itemprop="dateCreated datePublished" datetime="2021-12-30T19:04:05+08:00">2021-12-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新於</span>
+        <time title="修改時間：2022-01-01 16:04:26" itemprop="dateModified" datetime="2022-01-01T16:04:26+08:00">2022-01-01</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言">前言</h1>
+<p>這篇文章記錄了我在寫組合語言與系統程式這門課的期末 project 時的過程和期間碰到的問題與解決辦法。內容主要為 FFmpeg 的 libavcodec、Qt 的 QMediaPlayer、QThread 等，還有一些關於用 Visual C++和 Assembly 對接的知識。</p>
+<p>這次選擇的題目是 ASCII Animation Player，希望能達成</p>
+<ul>
+<li>從檔案系統讀取視訊檔案並解碼</li>
+<li>把解碼的圖像資料轉換成 ASCII Art</li>
+<li>即時播放在 Console，並能和音訊同步</li>
+<li>同時開啟一個播放原影片的視窗當作對照組</li>
+</ul>
+<p>這邊我原本打算只用 FFmpeg 做音視訊解碼，再同時送給 MediaPlayer 和做 ASCII 轉換的執行序，但後來時間不太夠，就直接讓播影片的對照組用 QMediaPlayer 簡單了事了。我自己覺得非常可惜。</p>
+<h1 id="正文">正文</h1>
+<h2 id="視訊解碼">視訊解碼</h2>
+<h3 id="libavcodec-架構">libavcodec 架構</h3>
+<p><img src="https://raw.githubusercontent.com/leandromoreira/ffmpeg-libav-tutorial/master/img/decoding.png"> <a target="_blank" rel="noopener" href="https://github.com/leandromoreira/ffmpeg-libav-tutorial">來源</a></p>
+<p>上圖可以看出來，一個影片可以分為 format context 和音訊與視訊串流。經由 format context 可以取得音視訊的串流，再由串流取得編碼資訊，最後用編碼資訊取得解碼器。有了解碼器後就可以用 AVPacket 的結構向 format context 取得編碼過的資料並餵給解碼器解碼，再用 AVFrame 的結構把解碼後的資料存起來。</p>
+<h3 id="解碼流程實作">解碼流程實作</h3>
+<p>我們製作的過程比較像是隕石開發，沒有先做好完善的規劃，但是我還是有設計了一些類別用來處理解碼，下面是一些我寫的爛 code 的節錄。</p>
+<p><code>ffmpeg/video_decoder.h</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;stream_wrapper.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">VideoDecoder</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">VideoDecoder</span>(std::string video_path);</span><br><span class="line">	~<span class="built_in">VideoDecoder</span>();</span><br><span class="line">	<span class="function">AVFrame* <span class="title">next_frame</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">get_video_width</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">get_video_height</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">AVRational <span class="title">get_video_timebase</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	AVFormatContext* format_context;</span><br><span class="line">	StreamWrapper video;</span><br><span class="line">	StreamWrapper audio;</span><br><span class="line">	AVPacket* temp_packet;</span><br><span class="line">	AVFrame* current_frame;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>ffmpeg/video_decoder.cpp</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;video_decoder.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;stream_wrapper.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;exception&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">VideoDecoder::<span class="built_in">VideoDecoder</span>(std::string video_path) &#123;</span><br><span class="line">	format_context = <span class="built_in">avformat_alloc_context</span>();</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">avformat_open_input</span>(&amp;format_context, video_path.<span class="built_in">c_str</span>(), <span class="literal">nullptr</span>, <span class="literal">nullptr</span>) != <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">throw</span> std::<span class="built_in">exception</span>(<span class="string">&quot;Encounter error while opening video file!&quot;</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; format_context-&gt;nb_streams; i++) &#123;</span><br><span class="line">		AVStream* in_stream = format_context-&gt;streams[i];</span><br><span class="line">		AVCodecParameters* code_par = in_stream-&gt;codecpar;</span><br><span class="line">		<span class="keyword">if</span> (code_par-&gt;codec_type == AVMEDIA_TYPE_VIDEO)</span><br><span class="line">			video = <span class="built_in">StreamWrapper</span>(in_stream, code_par);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (code_par-&gt;codec_type == AVMEDIA_TYPE_AUDIO)</span><br><span class="line">			audio = <span class="built_in">StreamWrapper</span>(in_stream, code_par);</span><br><span class="line">	&#125;</span><br><span class="line">	video.<span class="built_in">load_codec_context</span>();</span><br><span class="line">	audio.<span class="built_in">load_codec_context</span>();</span><br><span class="line">	temp_packet = <span class="literal">nullptr</span>;</span><br><span class="line">	current_frame = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">VideoDecoder::~<span class="built_in">VideoDecoder</span>()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">avformat_close_input</span>(&amp;format_context);</span><br><span class="line">	<span class="built_in">av_packet_free</span>(&amp;temp_packet);</span><br><span class="line">	<span class="built_in">av_frame_free</span>(&amp;current_frame);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">AVFrame* <span class="title">VideoDecoder::next_frame</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (temp_packet == <span class="literal">nullptr</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		temp_packet = <span class="built_in">av_packet_alloc</span>();</span><br><span class="line">		current_frame = <span class="built_in">av_frame_alloc</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">av_packet_unref</span>(temp_packet);</span><br><span class="line">		<span class="built_in">av_frame_unref</span>(current_frame);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span> (<span class="built_in">av_read_frame</span>(format_context, temp_packet) &gt;= <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		AVCodecContext* codec_context;</span><br><span class="line">		<span class="keyword">if</span> (temp_packet-&gt;stream_index == video.<span class="built_in">get_stream</span>()-&gt;index)</span><br><span class="line">			codec_context = video.<span class="built_in">get_codec_context</span>();</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (temp_packet-&gt;stream_index == audio.<span class="built_in">get_stream</span>()-&gt;index)</span><br><span class="line">			codec_context = audio.<span class="built_in">get_codec_context</span>();</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			<span class="keyword">continue</span>;</span><br><span class="line">		<span class="built_in">avcodec_send_packet</span>(codec_context, temp_packet);</span><br><span class="line">		<span class="built_in">avcodec_receive_frame</span>(codec_context, current_frame);</span><br><span class="line">		<span class="keyword">return</span> current_frame;</span><br><span class="line">	&#125;</span><br><span class="line">	current_frame = <span class="literal">nullptr</span>;</span><br><span class="line">	<span class="keyword">return</span> current_frame;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>ffmpeg/stream_wrapper.h</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;libavformat/avformat.h&gt;</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StreamWrapper</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">StreamWrapper</span>();</span><br><span class="line">	~<span class="built_in">StreamWrapper</span>();</span><br><span class="line">	<span class="built_in">StreamWrapper</span>(AVStream* stream, AVCodecParameters* codec_par);</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">load_codec_context</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">AVCodecContext* <span class="title">get_codec_context</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">AVStream* <span class="title">get_stream</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	AVStream* stream;</span><br><span class="line">	AVCodecParameters* codec_par;</span><br><span class="line">	AVCodec* codec;</span><br><span class="line">	AVCodecContext* codec_context;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>ffmpeg/stream_wrapper.cpp</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;stream_wrapper.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;exception&gt;</span></span></span><br><span class="line"></span><br><span class="line">StreamWrapper::<span class="built_in">StreamWrapper</span>() &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">StreamWrapper::~<span class="built_in">StreamWrapper</span>()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">avcodec_free_context</span>(&amp;codec_context);</span><br><span class="line">&#125;</span><br><span class="line">StreamWrapper::<span class="built_in">StreamWrapper</span>(AVStream* stream, AVCodecParameters* codec_par) &#123;</span><br><span class="line">	<span class="keyword">this</span>-&gt;stream = stream;</span><br><span class="line">	<span class="keyword">this</span>-&gt;codec_par = codec_par;</span><br><span class="line">	codec = <span class="built_in">avcodec_find_decoder</span>(codec_par-&gt;codec_id);</span><br><span class="line">	<span class="keyword">if</span> (!codec)</span><br><span class="line">		<span class="keyword">throw</span> std::<span class="built_in">exception</span>(<span class="string">&quot;Unsupported video codec!&quot;</span>);</span><br><span class="line">	codec_context = <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">StreamWrapper::load_codec_context</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	codec_context = <span class="built_in">avcodec_alloc_context3</span>(codec);</span><br><span class="line">	<span class="keyword">if</span> (!codec_context)</span><br><span class="line">		<span class="keyword">throw</span> std::<span class="built_in">exception</span>(<span class="string">&quot;Failed to allocated memory for AVCodecContext.&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">avcodec_parameters_to_context</span>(codec_context, codec_par) &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">throw</span> std::<span class="built_in">exception</span>(<span class="string">&quot;Failed to copy codec params to codec context.&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">avcodec_open2</span>(codec_context, codec, <span class="literal">nullptr</span>) &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">throw</span> std::<span class="built_in">exception</span>(<span class="string">&quot;Encounter error while trying open context.&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">AVCodecContext* <span class="title">StreamWrapper::get_codec_context</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> codec_context;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">AVStream* <span class="title">StreamWrapper::get_stream</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> stream;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之後在使用上流程會輕鬆很多，大部分麻煩的處理都包裝在 class 裡面了。</p>
+<p>舉個簡單的使用範例:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">VideoDecoder video_decoder = <span class="built_in">VideoDecoder</span>(file_path);</span><br><span class="line">AVFrame* frame = video_decoder.<span class="built_in">next_frame</span>();</span><br><span class="line"><span class="keyword">while</span> (frame != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">	<span class="comment">// check whether the frame is a video frame</span></span><br><span class="line">	<span class="keyword">if</span> (frame-&gt;pict_type != AV_PICTURE_TYPE_NONE)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// do something</span></span><br><span class="line">	&#125;</span><br><span class="line">	frame = video_decoder.<span class="built_in">next_frame</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="將圖像轉換為-ascii-art">將圖像轉換為 ASCII Art</h2>
+<h3 id="microsoft-x64-calling-convention">Microsoft x64 calling convention</h3>
+<p>由於轉換明度為 ASCII 的程式碼是用 Assembly 寫的，我們就要注意 C++ 能不能正常的呼叫 Assembly 寫的 procedure。為此，我們除了要設定 IDE 在編譯時的行為，還必須了解 C++ 中函式呼叫是如何傳遞參數的。</p>
+<p>我們這次用的是 MSVC v142，calling convention 使用預設的<code>__cdecl</code>，所以我是翻微軟的文件來看，下面簡述一下重點。</p>
+<ul>
+<li>眾所周知，參數在傳遞的時候通常是從最後一個參數開始設定再一路向前，這邊也一樣。</li>
+<li>傳遞參數依序使用 RCX、RDX、R8、R9，超過的部分就放進 Stack。</li>
+<li>浮點數在傳遞時依序使用 XMM0、XMM1、XMM2、XMM3，超過的部分放進 Stack。</li>
+<li>如果同時傳遞一般參數和浮點數，會交錯使用
+<ul>
+<li><code>void foo(int a, float b, int c, float d)</code></li>
+<li><code>RCX =&gt; a, XMM1 =&gt; b, R8 =&gt; c, XMM3 =&gt; d</code></li>
+</ul></li>
+<li>放進 stack 的參數從左邊數來第一個應該會在<code>[rbp+30h]</code>(如果 callee 有做 function prolog 的話)，接下來的應該是<code>[rbp+38h]</code>，以此類推。</li>
+</ul>
+<p><img src="https://docs.microsoft.com/en-us/cpp/build/media/vcamd_conv_ex_5.png?view=msvc-170"> <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/cpp/build/stack-usage?view=msvc-170">來源</a></p>
+<p>這張圖可以看出來，Compiler 會先處理要 push 到 stack 上面的參數，push 完後在呼叫前把 <code>RCX</code>、<code>RDX</code>、<code>R8</code>、<code>R9</code> 放到 stack 上(用來還原這四個暫存器的狀態)。</p>
+<p>第一個在 stack 上的參數之所以會在<code>[rbp+30h]</code>可以由上圖算出來。</p>
+<p>假設我們的 procedure 長這樣:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">foo PROTO</span><br><span class="line">	push rbp</span><br><span class="line">	mov rbp, rsp</span><br><span class="line">	...</span><br><span class="line">	leave</span><br><span class="line">	ret</span><br></pre></td></tr></table></figure>
+<p>由於我們把<code>RBP</code>指向 stack 的頂端了，剛好建出一個 procedure 的 stack frame，<code>[rbp]</code>會是 caller 的<code>RBP</code>，<code>[rbp+8h]</code>會是<code>return address</code>(指向 caller 的 code 段)，接下來四個依序是 caller 保存的<code>RCX</code>、<code>RDX</code>、<code>R8</code>、<code>R9</code>(<code>[rbp+10h]</code>、<code>[rbp+18h]</code>、<code>[rbp+20h]</code>、<code>[rbp+28h]</code>)，再上面就會是傳進來的參數，所以會是<code>[rbp+30h]</code>。</p>
+<h3 id="用-assembly-轉換明度為-ascii-art">用 Assembly 轉換明度為 ASCII Art</h3>
+<p>第一個問題是要如何讓 C++可以呼叫 Assembly 的 procedure。解決方法其實很簡單，只要用<code>extern "C"</code> 宣告過函式 prototype 就可以用了(前提是 linker 設定正確)。</p>
+<p>不知道如何設定可以參考看看這本放在 GitHub 的原文書。Appendix B 和 Appendix E 分別是環境安裝和呼叫方法(<a target="_blank" rel="noopener" href="https://github.com/brianrhall/Assembly/">GitHub 連結</a>)。</p>
+<p><code>transform.h</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> <span class="function"><span class="keyword">void</span> <span class="title">transform</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span>*, <span class="keyword">unsigned</span> <span class="keyword">char</span>*, <span class="keyword">unsigned</span> <span class="keyword">int</span>, <span class="keyword">unsigned</span> <span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>簡單的使用範例，需要注意的是影片的顏色編碼，下面的 code 是以 <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/YUV">YUV</a> 格式寫的，所以送入的資料是<code>frame-&gt;data[0]</code>，對應到 Y 的部分，也就是明度。之後只要根據明度大小決定要用哪個 ASCII 就行了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;transfrom.h&gt;</span></span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	VideoDecoder video_decoder = <span class="built_in">VideoDecoder</span>(file_path);</span><br><span class="line">	AVFrame* frame = video_decoder.<span class="built_in">next_frame</span>();</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span>* arr = <span class="literal">nullptr</span>;</span><br><span class="line">	<span class="keyword">while</span> (frame != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (frame-&gt;pict_type != AV_PICTURE_TYPE_NONE &amp;&amp; position &lt;= play_time)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span> (arr == <span class="literal">nullptr</span>)</span><br><span class="line">				arr = <span class="keyword">new</span> <span class="keyword">unsigned</span> <span class="keyword">char</span>[(<span class="keyword">long</span> <span class="keyword">long</span>)frame-&gt;height * (frame-&gt;width + <span class="number">1</span>)]();</span><br><span class="line">			<span class="built_in">transform</span>(frame-&gt;data[<span class="number">0</span>], arr, frame-&gt;width, frame-&gt;height, frame-&gt;linesize[<span class="number">0</span>]);</span><br><span class="line">			std::cout &lt;&lt; arr;</span><br><span class="line">		&#125;</span><br><span class="line">		frame = video_decoder.<span class="built_in">next_frame</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">delete</span>[] arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下是簡單的明度轉 ASCII 程式碼實作。</p>
+<p>利用傳入的 image raw data(這裡傳入的是 YUV 的 Y，即明度)，轉換成 ASCII，並把轉換後的結果寫到 C++ 已經分配好的 Heap 空間內。</p>
+<p><code>transform.asm</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line">transform PROTO</span><br><span class="line">; arguments</span><br><span class="line">; rcx: BYTE PTR image raw data pointer</span><br><span class="line">; rdx: BYTE PTR ascii frame data pointer</span><br><span class="line">; r8: DWORD frame width</span><br><span class="line">; r9: DWORD frame height</span><br><span class="line">; rbp+30h: DWORD image raw data linesize</span><br><span class="line">; this procedure modify rdi&#x27;s byte array as ascii frame data</span><br><span class="line">.CODE</span><br><span class="line">transform PROC</span><br><span class="line">    push rbp</span><br><span class="line">    mov rbp, rsp</span><br><span class="line">    push rbx</span><br><span class="line">    push rsi</span><br><span class="line">    push rdi</span><br><span class="line">    push r10</span><br><span class="line">    mov rsi, rcx</span><br><span class="line">    mov rdi, rdx</span><br><span class="line">    mov rcx, r9</span><br><span class="line">    L1:</span><br><span class="line">        push rcx</span><br><span class="line">        mov rcx, r8</span><br><span class="line">        L2:</span><br><span class="line">            mov bl, [rsi]</span><br><span class="line">            cmp bl, 47</span><br><span class="line">            jb L4</span><br><span class="line">            cmp bl, 70</span><br><span class="line">            jb L5</span><br><span class="line">            cmp bl, 93</span><br><span class="line">            jb L6</span><br><span class="line">            cmp bl, 116</span><br><span class="line">            jb L7</span><br><span class="line">            cmp bl, 139</span><br><span class="line">            jb L8</span><br><span class="line">            cmp bl, 162</span><br><span class="line">            jb L9</span><br><span class="line">            cmp bl, 185</span><br><span class="line">            jb L10</span><br><span class="line">            cmp bl, 208</span><br><span class="line">            jb L11</span><br><span class="line">            cmp bl, 231</span><br><span class="line">            jb L12</span><br><span class="line">            cmp bl, 255</span><br><span class="line">            jbe L13</span><br><span class="line">            L4:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27; &#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L5:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;.&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L6:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;:&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L7:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;!&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L8:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;+&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L9:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;*&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L10:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;e&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L11:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;$&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L12:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;@&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L13:</span><br><span class="line">                mov BYTE PTR [rdi], &#x27;8&#x27;</span><br><span class="line">                jmp L14</span><br><span class="line">            L14:</span><br><span class="line">                inc rdi</span><br><span class="line">                inc rsi</span><br><span class="line">            loop L2</span><br><span class="line">        mov BYTE PTR [rdi], 0Ah</span><br><span class="line">        inc rdi</span><br><span class="line">        movsxd r10, SDWORD PTR [rbp+30h]</span><br><span class="line">        sub r10,r8</span><br><span class="line">        add rsi, r10</span><br><span class="line">        pop rcx</span><br><span class="line">    dec rcx ; loop can only do small jump</span><br><span class="line">    jne L1 ; we need to use this replace loop</span><br><span class="line">    pop r10</span><br><span class="line">    pop rdi</span><br><span class="line">    pop rsi</span><br><span class="line">    pop rbx</span><br><span class="line">    leave</span><br><span class="line">    ret</span><br><span class="line">transform ENDP</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+<p>利用這種手刻的方式應該是很接近查表的速度，如果用<code>div</code>來算各 ASCII 之間的範圍再到 ASCII array 上面取反而跑得慢很多。這次的專案是邊解碼並轉換成 ASCII 邊播放，沒有先算完存起來，所以採用跑比較快的方法，避免程式跑不夠快需要 drop frame。</p>
+<h2 id="播放-ascii-animation">播放 ASCII Animation</h2>
+<p>要播放 ASCII animation 並不複雜，由於上面的<code>transform</code>已經把資料轉換成 ASCII，已經可以直接播放了。不過經過測試，如果要清屏再輸出新的一幀會跑得非常慢，而且閃屏嚴重。後來找到的做法是用 ANSI 控制碼把游標移到最左上方後直接輸出。輸出內容會蓋掉原本螢幕上的文字，可以達到相同的目的。另外，為了要控制字體大小還有主控台的文字行列數，我們也必須直接操作控制台或是用虛擬主控台給的方法。由於虛擬主控台不能控制所有的內容，這裡大多是用<code>windows.h</code>給的函式來操作主控台。</p>
+<blockquote>
+<p>虛擬主控台的支援，微軟在 Windows 10 後某版才加入，可參考<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences">這篇文章</a></p>
+</blockquote>
+<p>我寫了一個 class 裡面用來集成一些關於主控台的操作</p>
+<p><code>console/console_controller.h</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Windows.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConsoleController</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">ConsoleController</span>();</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">top</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">set_console_mode</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">set_console_font</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">set_console_screen_buffer</span><span class="params">(<span class="keyword">short</span> width, <span class="keyword">short</span> height)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	HANDLE stdout_handle;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>console/console_controller.cpp</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;console_controller.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line">ConsoleController::<span class="built_in">ConsoleController</span>()</span><br><span class="line">&#123;</span><br><span class="line">	stdout_handle = <span class="built_in">GetStdHandle</span>(STD_OUTPUT_HANDLE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// set the cursor position to the top of the screen buffer</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConsoleController::top</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;\x1B[H&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConsoleController::set_console_mode</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DWORD mode = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">GetConsoleMode</span>(stdout_handle, &amp;mode);</span><br><span class="line">	mode = mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING;</span><br><span class="line">	<span class="built_in">SetConsoleMode</span>(stdout_handle, mode);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// set console font size, weight and family</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConsoleController::set_console_font</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	CONSOLE_FONT_INFOEX cfi;</span><br><span class="line">	cfi.cbSize = <span class="built_in"><span class="keyword">sizeof</span></span>(cfi);</span><br><span class="line">	<span class="built_in">GetCurrentConsoleFontEx</span>(stdout_handle, FALSE, &amp;cfi);</span><br><span class="line">	cfi.dwFontSize.Y = <span class="number">1</span>;</span><br><span class="line">	<span class="comment">// replace Lucida Console with MS Gothic</span></span><br><span class="line">	<span class="comment">// Lucida Console is not compatible with some device</span></span><br><span class="line">	std::<span class="built_in">mbstowcs</span>(cfi.FaceName, <span class="string">&quot;MS Gothic&quot;</span>, <span class="number">32</span>);</span><br><span class="line">	<span class="comment">// 700 is bold</span></span><br><span class="line">	cfi.FontWeight = <span class="number">700</span>;</span><br><span class="line">	<span class="built_in">SetCurrentConsoleFontEx</span>(stdout_handle, FALSE, &amp;cfi);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConsoleController::set_console_screen_buffer</span><span class="params">(<span class="keyword">short</span> width, <span class="keyword">short</span> height)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	CONSOLE_SCREEN_BUFFER_INFOEX csbi;</span><br><span class="line">	csbi.cbSize = <span class="built_in"><span class="keyword">sizeof</span></span>(csbi);</span><br><span class="line">	<span class="built_in">GetConsoleScreenBufferInfoEx</span>(stdout_handle, &amp;csbi);</span><br><span class="line">	csbi.dwSize.X = width;</span><br><span class="line">	csbi.dwSize.Y = height;</span><br><span class="line">	csbi.srWindow.Left = <span class="number">0</span>;</span><br><span class="line">	csbi.srWindow.Top = <span class="number">0</span>;</span><br><span class="line">	csbi.dwMaximumWindowSize.X = width;</span><br><span class="line">	csbi.dwMaximumWindowSize.Y = height;</span><br><span class="line">	<span class="built_in">SetConsoleScreenBufferInfoEx</span>(stdout_handle, &amp;csbi);</span><br><span class="line">	COORD screen_buffer_size = &#123; width, height &#125;;</span><br><span class="line">	<span class="built_in">SetConsoleScreenBufferSize</span>(stdout_handle, screen_buffer_size);</span><br><span class="line">	SMALL_RECT console_window = &#123;<span class="number">0</span>, <span class="number">0</span>, width<span class="number">-1</span>, height<span class="number">-1</span>&#125;;</span><br><span class="line">	<span class="built_in">SetConsoleWindowInfo</span>(stdout_handle, TRUE, &amp;console_window);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>補充幾個可能看不懂的地方，<code>top()</code>其實就是把游標移到最左上方，<code>"\x1B[H"</code>就是<code>ESC[H</code>，是 ANSI 用來把游標移到開頭的控制碼。<code>set_console_mode()</code>是設定控制台的模式，這裡開啟終端機的虛擬主控台模式，才能支援上面的 ANSI 控制碼。<code>set_console_font()</code>設定字型大小到最小(其實已經突破系統限制了，可能不是每台電腦都行)，並且把字型改成 <code>MS Gothic</code>且粗體(這字型粗體時剛好是 1:1)。<code>set_console_screen_buffer()</code>設定主控台的螢幕緩衝區大小，這裡設定成影片的寬高，剛好可以滿幅顯示，除此之外，還要設定主控台視窗的大小，這裡把它設為寬高各-1，最後出來的大小剛好可以塞下上面的螢幕緩衝區。</p>
+<blockquote>
+<p>這些關於主控台設定的 struct，很多都要先設定過<code>cbSize</code>才能正常使用，我也不知道真正的確切原因。有些有被寫在官方的文件上，不過實測後發現就算官方文件沒寫這函式要先設定<code>cbSize</code>，沒設定還是無法正常使用。</p>
+</blockquote>
+<p>再來只要考慮什麼時候要讓下一個 frame 播放即可。最直覺的方式是直接用<code>sleep</code>讓執行序暫停<code>1/fps</code>的時間，但若仔細想過以後就會發現程式執行也是會佔時間的，特別是解碼和轉換的操作，因此這個方法會造成很嚴重的播放延遲。</p>
+<p>正確的想法是要根據該 frame 本身應該出現的時間讓它出現，在此必須介紹一下<code>pts</code>的概念。<code>pts</code>直覺來說是 frame 在影片時間軸上面的時間戳，所以我們只要用<code>pts</code>來決定<code>frame</code>的播放時間即可。更多相關的內容就留到下面的同步章節再講。</p>
+<h2 id="播放音視訊">播放音視訊</h2>
+<p>為了降低工作量，直接使用 QMediaPlayer 來處理音視訊的播放，就不用 FFmpeg 解碼完的資料了。要使用 Qt 提供的內容，除了要下載 Qt 以外還要做點處理才能在 Visual Studio 的專案中使用。</p>
+<h3 id="qt-安裝注意事項">Qt 安裝注意事項</h3>
+<p>在執行 Online Intaller 時，選擇 Qt 版本時我們選用<code>Qt 6.2.2 MSVC</code>，來確保可以支援 Visual Studio (MinGW 的環境我沒測過就是)，安裝時要記得把<code>Additional Library</code>裝上，之後在使用特定模組時才不會發生沒有安裝的慘況(或是可以到時再補安裝)。我們這次用到的<code>Qt Multimedia</code>就是<code>Additional Library</code>的一部分。安裝完後開啟 Visual Studio，還要再安裝<code>Qt VS Tools</code>的<code>Extension</code>，Visual Studio 才能正常管理 Qt 專案。</p>
+<h3 id="qt-application">Qt Application</h3>
+<p>在程式的進入點，要實體化一個<code>QApplication</code>物件，後續才能使用大多 Qt 的功能。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">QApplication <span class="title">a</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> a.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最基本的範例長這樣，接下要做的就是建立播放影片的視窗，並設定播放影片的設定。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QVideoWidget&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">QApplication <span class="title">a</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Enter an video file path:&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::string file_path;</span><br><span class="line">	std::cin &gt;&gt; file_path;</span><br><span class="line">	QVideoWidget video_widget;</span><br><span class="line">	video_widget.<span class="built_in">show</span>();</span><br><span class="line">	<span class="keyword">return</span> a.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先從使用者輸入把要播放的影片檔案路徑讀進來，之後再開啟影片播放的視窗。需要注意的是 Qt 的視窗一定要都寫在主線程中，不然會出狀況。同時我們也要注意在主線程中不能有 Blocking 的操作，否則會造成程式假死(視窗完全沒反應，無法操作互動)。</p>
+<p>下面我們就要用 QMediaPlayer 來播放影片並且在 QVideoWidget 上顯示。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QVideoWidget&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QMediaPlayer&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QAudioOutput&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QMediaDevices&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QAudioDevice&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">QApplication <span class="title">a</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Enter an video file path:&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::string file_path;</span><br><span class="line">	std::cin &gt;&gt; file_path;</span><br><span class="line">	QVideoWidget video_widget;</span><br><span class="line">	video_widget.<span class="built_in">show</span>();</span><br><span class="line">	QMediaPlayer player; <span class="comment">// 建立一個QMediaPlayer物件</span></span><br><span class="line">	QAudioOutput audio_output; <span class="comment">// 建立一個QAudioOutput物件</span></span><br><span class="line">	audio_output.<span class="built_in">setDevice</span>(QMediaDevices::<span class="built_in">defaultAudioOutput</span>()); <span class="comment">// 設定QAudioOutput的輸出裝置為電腦的預設裝置</span></span><br><span class="line">	player.<span class="built_in">setSource</span>(QUrl::<span class="built_in">fromLocalFile</span>(file_path.<span class="built_in">c_str</span>())); <span class="comment">// 設定要播放的影片路徑</span></span><br><span class="line">	player.<span class="built_in">setVideoOutput</span>(&amp;video_widget); <span class="comment">// 設定播放影片的視窗</span></span><br><span class="line">	player.<span class="built_in">setAudioOutput</span>(&amp;audio_output); <span class="comment">// 設定音訊輸出</span></span><br><span class="line">	player.<span class="built_in">play</span>(); <span class="comment">// 開始影片播放</span></span><br><span class="line">	<span class="keyword">return</span> a.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>短短幾行就可以寫一個最簡單的影片播放了，非常方便，省下了手刻的時間，如果連影片播放都手刻人就要沒了。</p>
+<h2 id="同步-mediaplayer-與-asciiplayer">同步 MediaPlayer 與 AsciiPlayer</h2>
+<p>差不多到了最後階段了，這章節的內容著重在同步 MediaPlayer 和 AsciiPlayer 的播放進度，同時因為 AsciiPlayer 會阻塞線程，我們必須把它搬到別的執行序裡面跑，再想辦法和影片播放的時間同步。</p>
+<h3 id="asciiplayerthread">AsciiPlayerThread</h3>
+<p>這邊設計一個 AsciiPlayerThread 的類別來跑 ASCII Animation，實作的方式是用<code>QThread</code>，然後用<code>slot</code>的方式讓外界有辦法把播放的時間傳進來。</p>
+<p><code>player/ascii_player_thread.h</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> once</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QThread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AsciiPlayerThread</span> :</span> <span class="keyword">public</span> QThread</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">AsciiPlayerThread</span>();</span><br><span class="line">    <span class="built_in">AsciiPlayerThread</span>(std::string file_path);</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">public</span> slots:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setPosition</span><span class="params">(qint64 position)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::string file_path;</span><br><span class="line">    qint64 position;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>我們的程式要覆寫掉<code>run()</code>，這個函式是執行序執行時的主函式。<code>public slots</code>裡面定義的是 Qt 的<code>slot</code>，可以用信號傳遞的方式把值傳進來，關於信號傳遞的方式，可以參考<a target="_blank" rel="noopener" href="https://doc.qt.io/qt-6/signalsandslots.html">Qt 文件</a></p>
+<p><code>player/ascii_player_thread.cpp</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ascii_player_thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;../ffmpeg/video_decoder.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;../console/console_controller.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;../transform.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;../utils.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QThread&gt;</span></span></span><br><span class="line"></span><br><span class="line">AsciiPlayerThread::<span class="built_in">AsciiPlayerThread</span>()</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AsciiPlayerThread::<span class="built_in">AsciiPlayerThread</span>(std::string file_path)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">this</span>-&gt;file_path = file_path;</span><br><span class="line">	<span class="keyword">this</span>-&gt;position = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">AsciiPlayerThread::run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span>* buf = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="number">1024</span> * <span class="number">256</span>];</span><br><span class="line">	<span class="built_in">setbuf</span>(stdout, buf);</span><br><span class="line">	VideoDecoder video_decoder = <span class="built_in">VideoDecoder</span>(file_path);</span><br><span class="line">	ConsoleController console_controller;</span><br><span class="line">	console_controller.<span class="built_in">set_console_mode</span>();</span><br><span class="line">	console_controller.<span class="built_in">set_console_font</span>();</span><br><span class="line">	console_controller.<span class="built_in">set_console_screen_buffer</span>(video_decoder.<span class="built_in">get_video_width</span>(), video_decoder.<span class="built_in">get_video_height</span>());</span><br><span class="line">	AVFrame* frame = video_decoder.<span class="built_in">next_frame</span>();</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">char</span>* arr = <span class="literal">nullptr</span>;</span><br><span class="line">	AVRational timebase_rational = video_decoder.<span class="built_in">get_video_timebase</span>();</span><br><span class="line">	<span class="comment">// timebase in second</span></span><br><span class="line">	<span class="keyword">float</span> timebase = (<span class="keyword">float</span>)timebase_rational.num / (<span class="keyword">float</span>)timebase_rational.den;</span><br><span class="line">	<span class="keyword">while</span> (frame != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">		<span class="comment">// the time which frame should be played in ms</span></span><br><span class="line">		<span class="keyword">float</span> play_time = frame-&gt;pts * timebase * <span class="number">1000</span>;</span><br><span class="line">		<span class="keyword">if</span> (frame-&gt;pict_type != AV_PICTURE_TYPE_NONE &amp;&amp; position &lt;= play_time)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">int</span> height = frame-&gt;height;</span><br><span class="line">			<span class="keyword">int</span> width = frame-&gt;width;</span><br><span class="line">			<span class="keyword">if</span> (arr == <span class="literal">nullptr</span>)</span><br><span class="line">				arr = <span class="keyword">new</span> <span class="keyword">unsigned</span> <span class="keyword">char</span>[(<span class="keyword">long</span> <span class="keyword">long</span>)height * (width + <span class="number">1</span>)]();</span><br><span class="line">			<span class="built_in">transform</span>(frame-&gt;data[<span class="number">0</span>], arr, width, height, frame-&gt;linesize[<span class="number">0</span>]);</span><br><span class="line">			<span class="comment">// check time again</span></span><br><span class="line">			<span class="comment">// wait until the proper time and play this frame</span></span><br><span class="line">			<span class="built_in">wait_until_smaller</span>(play_time - <span class="number">150</span>, &amp;position); <span class="comment">// 150ms offset to avoid drop too many frames</span></span><br><span class="line">			std::cout &lt;&lt; arr;</span><br><span class="line">			console_controller.<span class="built_in">top</span>();</span><br><span class="line">		&#125;</span><br><span class="line">		frame = video_decoder.<span class="built_in">next_frame</span>();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">delete</span>[] arr;</span><br><span class="line">	<span class="keyword">delete</span>[] buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">AsciiPlayerThread::setPosition</span><span class="params">(qint64 position)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">this</span>-&gt;position = position;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>因為我們程式是多線程的，其實<code>position</code>的 property 可能會隨時改變(被其他執行序呼叫<code>setPosition</code>)，因此在寫程式的時候要考慮<code>position</code>可能會改變的狀況。例如跑完<code>transform</code>可能已經過了幾 ms，剛好更新了 <code>position</code> 的值，原本<code>position &lt; play_time</code>就變成<code>position &gt; play_time</code>。 如果不希望發生同時存取的狀況，最好設個互斥鎖之類的。</p>
+</blockquote>
+<p>這裡的想法是當讀取的 frame 已經超過應該播放的時間，就直接跳過去讀取下一個 frame，如果沒有超過，就拿去餵給 Assembly 轉成 ASCII 然後在該播的時間顯示。實作是利用外部傳進來的影片播放時間(<code>position</code>)去對<code>pts</code>達成同步，<code>play_time</code>就是該 frame 應該要播放的時間(ms)。</p>
+<p>這邊先為<code>timebase</code>還有<code>pts</code>舉個例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">fps = 30</span><br><span class="line">timebase = 1/15360</span><br><span class="line"></span><br><span class="line">frame 1</span><br><span class="line">pts = 0</span><br><span class="line">frame 2</span><br><span class="line">pts = 512</span><br><span class="line">frame 3</span><br><span class="line">pts = 1024</span><br><span class="line">...</span><br><span class="line">frame 30</span><br><span class="line">pts = 15360</span><br></pre></td></tr></table></figure>
+<p>從上面可以看出把<code>timebase * pts</code>即為該 frame 要播放的秒數，將它乘上 1000 就可以換算成 ms 和<code>position</code>做比較。這就是<code>play_time</code>的用意。</p>
+<blockquote>
+<p>補充一下<code>get_video_timebase()</code>的實作</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">AVRational <span class="title">VideoDecoder::get_video_timebase</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> video.<span class="built_in">get_stream</span>()-&gt;time_base;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要留意的是 stream 的 timebase 和 codec 的 timebase 不一定相同，在使用上要根據情況變換。</p>
+</blockquote>
+<p>再來是<code>wait_until_smaller</code>，這個函式的作用是等待直到<code>play_time-150</code>小於<code>position</code>。原本有用過<code>msleep</code>來實作，但是由於執行序繼續執行的時間很不穩定，而且一定會偏晚，後來嘗試使用<code>while(play_time-150 &gt; position);</code>的空轉迴圈來代替，效果不錯，但是 compiler 開了 O2 以後就把這段直接優化掉了，只好改成用 Assembly 去做相同的功能。</p>
+<p>以下是<code>wait_until_smaller</code>的實作</p>
+<p><code>utils.asm</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">wait_until_smaller PROTO</span><br><span class="line">; arguments</span><br><span class="line">; xmm0: REAL4 a REAL4 variable need to be compared</span><br><span class="line">; rdx: SQWORD PTR a SQWORD pointer which value be pointed would increase</span><br><span class="line">; this procedure would block the thread until the condition is fulfilled</span><br><span class="line">; Caution: it may cause the thread is blocked by a infinite loop</span><br><span class="line">.CODE</span><br><span class="line">wait_until_smaller PROC</span><br><span class="line">    push rbp</span><br><span class="line">    mov rbp, rsp</span><br><span class="line">compare:</span><br><span class="line">    cvtsi2ss xmm1, SQWORD PTR [rdx] ; convert rdx to REAL4 type and store it in xmm1</span><br><span class="line">    comiss xmm0,xmm1 ; compare xmm0 with xmm1</span><br><span class="line">    jbe fufilled ; jump to fufilled if xmm0 &lt;= xmm1</span><br><span class="line">    jmp compare ; jump to compare if xmm0 &gt; xmm1</span><br><span class="line">fufilled:</span><br><span class="line">    leave</span><br><span class="line">    ret</span><br><span class="line">wait_until_smaller ENDP</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+<p>註解寫得很清楚，其實就只是一直重複做比較直到條件滿足而已。跟原本的空轉迴圈是一樣的效果。</p>
+<p>以上全部綜合起來，就完成和<code>position</code>做影片同步了</p>
+<h3 id="mediaplayer">MediaPlayer</h3>
+<p>回到主線程，我們要想個辦法把影片的播放時間傳給正在播放 ASCII Animation 的執行序。由於我們已經留好一個<code>slot</code>用來設定<code>position</code>了，在主線程就只要把<code>signal</code>綁定上去就好。</p>
+<p><code>main.cpp</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;player/ascii_player_thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QVideoWidget&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QMediaPlayer&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QAudioOutput&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QMediaDevices&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;QAudioDevice&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="function">QApplication <span class="title">a</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Enter an video file path:&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">	std::string file_path;</span><br><span class="line">	std::cin &gt;&gt; file_path;</span><br><span class="line">	QVideoWidget video_widget;</span><br><span class="line">	video_widget.<span class="built_in">show</span>();</span><br><span class="line">	<span class="function">AsciiPlayerThread <span class="title">ascii_player_thread</span><span class="params">(file_path)</span></span>;</span><br><span class="line">	QMediaPlayer player;</span><br><span class="line">	QAudioOutput audio_output;</span><br><span class="line">	audio_output.<span class="built_in">setDevice</span>(QMediaDevices::<span class="built_in">defaultAudioOutput</span>());</span><br><span class="line">	player.<span class="built_in">setSource</span>(QUrl::<span class="built_in">fromLocalFile</span>(file_path.<span class="built_in">c_str</span>()));</span><br><span class="line">	player.<span class="built_in">setVideoOutput</span>(&amp;video_widget);</span><br><span class="line">	player.<span class="built_in">setAudioOutput</span>(&amp;audio_output);</span><br><span class="line">	ascii_player_thread.<span class="built_in">start</span>();</span><br><span class="line">	QObject::<span class="built_in">connect</span>(&amp;player, &amp;QMediaPlayer::positionChanged, &amp;ascii_player_thread, &amp;AsciiPlayerThread::setPosition);</span><br><span class="line">	player.<span class="built_in">play</span>();</span><br><span class="line">	<span class="keyword">return</span> a.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因為<code>QThread</code>有繼承<code>QObject</code>，所以可用<code>QObject::connect</code>來綁定<code>positionChanged</code>的<code>signal</code>到<code>setPosition</code>的<code>slot</code>上面。綁定過後，只要<code>positionChanged</code>的<code>signal</code>被送出，<code>setPosition</code>就會將收到的<code>position</code>拿來更新<code>AsciiPlayerThread</code>的<code>position</code>的值。</p>
+<p>自此就完成了兩者的同步。</p>
+<h2 id="一些未解決或不知道詳細原因的-bug">一些未解決或不知道詳細原因的 bug</h2>
+<h3 id="播放時可能會觸發系統音效">播放時可能會觸發系統音效</h3>
+<p>經過幾次測試，大概整理一下觸發系統音效的情況</p>
+<ul>
+<li>ASCII Animation 畫面會頓一下</li>
+<li>時間都很短</li>
+</ul>
+<p>目前猜測是用<code>msleep</code>或是有 blocking 操作的時候，作業系統認為執行序當掉了，因此發出系統音效。這個問題不是每次都會發生，到現在還沒解決。</p>
+<h3 id="設定的字體在不同電腦上可能無法正常運作">設定的字體在不同電腦上可能無法正常運作</h3>
+<p>根據微軟給的<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/typography/fonts/windows_10_font_list">文件</a>，一開始我使用的<code>Lucida Console</code>應該是 Windows 10 的電腦上都有。我自己測試的時候卻發現只有筆電的主控台可以選這個字體，桌機的就只能選其他的少少幾個。所以後來改用兩個裝置都有的<code>MS Gothic</code>，希望在各裝置的相容性會好一點。</p>
+<h3 id="ascii-animation-在有些裝置上不會正常播放但多試幾次卻可以正常運作">ASCII Animation 在有些裝置上不會正常播放，但多試幾次卻可以正常運作</h3>
+<p>一樣是我在桌機上測試時才發現的問題，在桌機上，有時開啟程式輸入完影片路徑後，程式有正常的跳出播放影片的視窗，也有正確的縮放並調整主控台的設定，但卻沒有開始播放畫面。我猜原因應該跟<code>Signal/Slot</code>有關係，這個問題目前還沒測出來，希望有人有裝置可以嘗試用 Debugger 找找看問題點。</p>
+<h1 id="結語">結語</h1>
+<p>這個組語期末 Project 花的研究時間比想像中久很多，踩到的雷點也很特別，其中學習到的知識特別難得。這還是人生第一次因為開編譯優化(O2)導致程式執行出現問題的。練習使用 Qt、FFmpeg 還有多執行序也是非常難得的經驗，總而言之，花個 40 幾個小時寫這個期末專案絕對值得。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Assembly/" rel="tag"># Assembly</a>
+              <a href="/tags/MASM64/" rel="tag"># MASM64</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/C/" rel="tag"># C</a>
+              <a href="/tags/FFmpeg/" rel="tag"># FFmpeg</a>
+              <a href="/tags/Qt/" rel="tag"># Qt</a>
+              <a href="/tags/Multimedia/" rel="tag"># Multimedia</a>
+              <a href="/tags/ASCII-Animation/" rel="tag"># ASCII Animation</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/24/LaravelProxy/" rel="prev" title="從零開始的Laravel生活(部署篇-踩坑實錄)">
+                  <i class="fa fa-chevron-left"></i> 從零開始的Laravel生活(部署篇-踩坑實錄)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ppodds</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
