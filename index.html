@@ -87,9 +87,9 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">36</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">39</span></a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">10</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">11</span></a></li>
   </ul>
 </nav>
 
@@ -132,7 +132,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -143,7 +143,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -186,6 +186,192 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2022/02/08/NCUPlusFrontend/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/02/08/NCUPlusFrontend/" class="post-title-link" itemprop="url">NCU+ Frontend開發筆記</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2022-02-08 12:47:57 / 修改時間：16:23:34" itemprop="dateCreated datePublished" datetime="2022-02-08T12:47:57+08:00">2022-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NCU+ 是一個學生自主開發的網站平台，希望在未來能夠取代學校在臉書版上所有不好用的交流平台。藉由新平台的建立，創造更優質的校園資訊分享與討論版。</span><br></pre></td></tr></table></figure>
+<p>計畫的源起是我在翻交大的課程資料時，發現了<a target="_blank" rel="noopener" href="https://plus.nctu.edu.tw/">NCTU+</a>，在課程資料分享上的功能非常齊全，相較之下，中央校園內使用的臉書討論版無論是在功能或是資訊搜尋方面都遠遠不及，為了改善這個問題，我決定開始著手建立一個類似的網站。</p>
+<p>這次的文章會分成幾個段落，把不同的 tech stack 拆開，在看文章的時候會比較好找到想讀的內容。</p>
+<h1 id="正文">正文</h1>
+<h2 id="typescript">TypeScript</h2>
+<h3 id="簡介">簡介</h3>
+<p>這次無論是前端和後端都是用 TypeScript 撰寫，前端採用的是 Vite(Vue3 with TypeScript)，後端則是用 Nest.js。</p>
+<p>TS 比起 JS 多了型別檢查，在寫 code 的時候常常可以檢查出一些常見錯誤，增快我們的開發效率。當專案變大時，型別宣告也能幫助我們理解程式碼。除此之外，擴增的封裝、介面、抽象等特性讓我們在設計程式碼的時候更加靈活。</p>
+<blockquote>
+<p>寫過以後，我覺得 TS 是 JS 的無痛升級版</p>
+</blockquote>
+<h3 id="tsconfig.json">tsconfig.json</h3>
+<p>tsconfig 是 typescript 的設定檔，TypeScript 的 compiler 會自動讀取裡面的設定。</p>
+<p>比較常用的設定</p>
+<ul>
+<li>compilerOptions
+<ul>
+<li>target
+<ul>
+<li>編譯的目標 es 版本</li>
+</ul></li>
+<li>module
+<ul>
+<li>module 的編譯方式，調整這個可以對應到不同平台的 module 宣告</li>
+</ul></li>
+<li>moduleResolution
+<ul>
+<li>module 的解析方式</li>
+</ul></li>
+<li>resolveJsonModule
+<ul>
+<li>是否可以解析 json 檔，沒開的話就不能 import json 了</li>
+</ul></li>
+<li>esModuleInterop
+<ul>
+<li>參考<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/tsconfig#esModuleInterop">這篇文</a></li>
+<li>基本上是 import default 產生的問題，如果 import 出問題的話就開吧</li>
+</ul></li>
+<li>types
+<ul>
+<li>指示 TypeScript 要去哪邊抓型別檔案來用</li>
+</ul></li>
+<li>paths
+<ul>
+<li>可以改寫 import 路徑 (path remapping)</li>
+</ul></li>
+<li>skipLibCheck
+<ul>
+<li>在編譯時跳過型別聲明文件的型別檢查，可以加速編譯，偶爾有一些型別文件的錯誤也可以用這個方法規避</li>
+</ul></li>
+</ul></li>
+<li>include
+<ul>
+<li>要包含在程式裡面的檔案</li>
+</ul></li>
+<li>exclude
+<ul>
+<li>有被 include 描述到但是要跳過的檔案</li>
+</ul></li>
+</ul>
+<p>ex.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;target&quot;</span>: <span class="string">&quot;esnext&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;useDefineForClassFields&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;esnext&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;moduleResolution&quot;</span>: <span class="string">&quot;node&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;strict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;jsx&quot;</span>: <span class="string">&quot;preserve&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;sourceMap&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;resolveJsonModule&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;esModuleInterop&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;lib&quot;</span>: [<span class="string">&quot;esnext&quot;</span>, <span class="string">&quot;dom&quot;</span>],</span><br><span class="line">    <span class="attr">&quot;types&quot;</span>: [<span class="string">&quot;vite/client&quot;</span>, <span class="string">&quot;@types/jest&quot;</span>, <span class="string">&quot;@types/node&quot;</span>],</span><br><span class="line">    <span class="attr">&quot;paths&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;@/*&quot;</span>: [<span class="string">&quot;./src/*&quot;</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;skipLibCheck&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;include&quot;</span>: [<span class="string">&quot;src/**/*.ts&quot;</span>, <span class="string">&quot;src/**/*.d.ts&quot;</span>, <span class="string">&quot;src/**/*.tsx&quot;</span>, <span class="string">&quot;src/**/*.vue&quot;</span>],</span><br><span class="line">  <span class="attr">&quot;exclude&quot;</span>: [<span class="string">&quot;node_modules&quot;</span>, <span class="string">&quot;dist&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.typescriptlang.org/tsconfig">官方的 tsconfig 文件</a></p>
+<h3 id="型別聲明轉型">型別聲明/轉型</h3>
+<h4 id="型別聲明">型別聲明</h4>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自動抓型別</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="number">1</span>; <span class="comment">// number</span></span><br><span class="line"><span class="comment">// 手動宣告</span></span><br><span class="line"><span class="keyword">let</span> b: <span class="built_in">number</span> = <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 型別錯誤</span></span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">number</span>;</span><br><span class="line">c = <span class="string">&quot;1&quot;</span>; <span class="comment">// error</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// array型別宣告</span></span><br><span class="line"><span class="keyword">let</span> d: <span class="built_in">number</span>[] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="comment">// 其他寫法</span></span><br><span class="line"><span class="keyword">let</span> e: <span class="built_in">Array</span>&lt;<span class="built_in">number</span>&gt; = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// object型別宣告</span></span><br><span class="line"><span class="keyword">let</span> obj: &#123; <span class="attr">name</span>: <span class="built_in">string</span>; age: <span class="built_in">number</span> &#125; = &#123; <span class="attr">name</span>: <span class="string">&quot;John&quot;</span>, <span class="attr">age</span>: <span class="number">30</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 常見用例</span></span><br><span class="line"><span class="keyword">let</span> f: <span class="built_in">string</span>[] = [];</span><br><span class="line">f.push(<span class="string">&quot;item&quot;</span>); <span class="comment">// ok</span></span><br><span class="line">f.push(<span class="number">1</span>); <span class="comment">// error</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 型別聯集</span></span><br><span class="line"><span class="keyword">let</span> g: <span class="built_in">string</span> | <span class="built_in">number</span> = <span class="number">1</span>;</span><br><span class="line">g = <span class="string">&quot;1&quot;</span>; <span class="comment">// ok</span></span><br></pre></td></tr></table></figure>
+<p>值得注意的是，假設一個 function 接受<code>string</code>型別的參數，如果我們要塞<code>string | null</code>的型別進去會是不合法的。</p>
+<h4 id="轉型">轉型</h4>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 兩種寫法</span></span><br><span class="line"><span class="comment">// as</span></span><br><span class="line">a <span class="keyword">as</span> <span class="built_in">string</span>;</span><br><span class="line"><span class="comment">// 用&lt;&gt;刮起來</span></span><br><span class="line">&lt;<span class="built_in">string</span>&gt;a;</span><br></pre></td></tr></table></figure>
+<p>雖然能轉型但不一定跑起來會正確，有可能跑起來以後因為錯誤的型別跳 error。除此之外，如果 TypeScript 不讓我們轉型，也可以用下面的方法強制轉。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a <span class="keyword">as</span> unknown <span class="keyword">as</span> <span class="built_in">string</span>;</span><br></pre></td></tr></table></figure>
+<p>要謹慎使用。</p>
+<h3 id="interface-class">interface / class</h3>
+<p>TypeScript 的 interface 和其他語言的不太一樣，比較像是用來定義資料型別的，compile 過後基本會直接不見，但會留下型別宣告檔。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Person &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="built_in">string</span>;</span><br><span class="line">  age: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>class 多了修飾子，可以達成封裝。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> name: <span class="built_in">string</span>;</span><br><span class="line">  <span class="keyword">private</span> age: <span class="built_in">number</span>;</span><br><span class="line">  <span class="keyword">public</span> getName(): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.name;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> getAge(): <span class="built_in">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.age;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外還有抽象類別和方法可以用，這邊不做介紹了。</p>
+<h2 id="vue3-composition-api-with-sfc">Vue3 Composition API with SFC</h2>
+<p>由於 Vite(Vue3 + TypeScript)的專案已經是用 SFC 了，此外還有用到<code>&lt;script setup&gt;</code>，讓我一開始摸不著頭續。經過了解之後，發現這是 Vue3 加的新東西，可以讓我們寫 SFC 的時候更乾淨，下面來簡單介紹一下。</p>
+<h3 id="setup-vs-script-setup"><code>setup()</code> vs <code>&lt;script setup&gt;</code>?</h3>
+<p>直接說結論，<code>setup()</code>是 composition api 的進入點，後者也差不多，不過可以省略掉前者寫法的一大段，如下面的例子</p>
+<p><code>setup()</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params">props, context</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> data = ref(<span class="string">&quot;data can be used in template&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      data,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>&lt;script setup&gt;</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> data = ref(<span class="string">&quot;data can be used in template&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>變得非常整潔，下面會再說明 props 和 emit 等用法，其他剩下的部分就到官方文件上面翻吧。</p>
+<h3 id="props-emits">props / emits</h3>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> props = defineProps&lt;&#123; <span class="attr">name</span>: <span class="built_in">string</span>; age: <span class="built_in">number</span> &#125;&gt;();</span><br><span class="line"><span class="keyword">const</span> emits = defineEmits&lt;&#123;</span><br><span class="line">  (event: <span class="string">&quot;custom-event&quot;</span>): <span class="built_in">void</span>;</span><br><span class="line">  (event: <span class="string">&quot;another-event&quot;</span>, <span class="attr">data</span>: <span class="built_in">number</span>): <span class="built_in">void</span>;</span><br><span class="line">&#125;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// emit costom-event</span></span><br><span class="line">emits(<span class="string">&quot;custom-event&quot;</span>);</span><br><span class="line"><span class="comment">// with data</span></span><br><span class="line">emits(<span class="string">&quot;another-event&quot;</span>, <span class="number">123</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// use props</span></span><br><span class="line"><span class="built_in">console</span>.log(props.name);</span><br><span class="line"><span class="built_in">console</span>.log(props.age);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>這些帶有型別宣告的 emit 是 TypeScript 才支援的</p>
+</blockquote>
+<h2 id="vite">Vite</h2>
+<h3 id="簡介-1">簡介</h3>
+<p>Vite 是新的前端開發工具，支援 React 和 Vue 等主流框架，<del>不過沒有支援 Angular</del>。最核心的特色是快還要更快，在開發的時候，啟動和 hot reload 的速度屌打使用其他打包方式的工具，用過都說讚。能這麼快的原因是在開發過程中，Vite 用 esbuild 來做打包，esbuild 本身就比其他打包工具快了不知道幾倍，最後的結果就是完美的開發體驗。</p>
+<h3 id="坑點">坑點</h3>
+<ul>
+<li>Vite 是一個前端開發工具，而不是前端框架，在專案開發時，專案架構/測試框架那些都要自己手動搞定，不太適合用在大型網站開發。</li>
+<li>雖然官方文檔寫支援 SSR，但是實際上支援度不太好，還要自己搞定很多設定，而且還可能踩到很多 bug。</li>
+</ul>
+<blockquote>
+<p>Nuxt3 beta 現在有實驗性的 Vite 打包支援，改天我再去玩玩看</p>
+</blockquote>
+<h3 id="踩坑實錄">踩坑實錄</h3>
+<h4 id="vite-環境變數在配合-jest-測試時錯誤">Vite 環境變數在配合 jest 測試時錯誤</h4>
+<p>Vite 的環境變數可以在程式中用<code>import.meta.env</code>來取得，但 jest 再跑測試的時候跑到<code>import.meta</code>就會出錯。</p>
+<p>最後找到的 dirty solution</p>
+<p><code>vite.config.ts</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineConfig &#125; <span class="keyword">from</span> <span class="string">&quot;vite&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> vue <span class="keyword">from</span> <span class="string">&quot;@vitejs/plugin-vue&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> path <span class="keyword">from</span> <span class="string">&quot;path&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> dotenv <span class="keyword">from</span> <span class="string">&quot;dotenv&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// https://vitejs.dev/config/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> defineConfig(<span class="function">(<span class="params">&#123; command, mode &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (mode === <span class="string">&quot;production&quot;</span>) &#123;</span><br><span class="line">    dotenv.config(&#123; <span class="attr">path</span>: <span class="string">&quot;.env.production.local&quot;</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">define</span>: &#123;</span><br><span class="line">        <span class="string">&quot;process.env.VITE_APP_API_URL&quot;</span>: <span class="string">`&quot;<span class="subst">$&#123;process.env.VITE_APP_API_URL&#125;</span>&quot;`</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">plugins</span>: [vue()],</span><br><span class="line">      <span class="attr">resolve</span>: &#123;</span><br><span class="line">        <span class="attr">alias</span>: &#123; <span class="string">&quot;@/&quot;</span>: <span class="string">`<span class="subst">$&#123;path.resolve(__dirname, <span class="string">&quot;src&quot;</span>)&#125;</span>/`</span> &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    dotenv.config(&#123; <span class="attr">path</span>: <span class="string">&quot;.env.local&quot;</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">define</span>: &#123;</span><br><span class="line">        <span class="string">&quot;process.env.VITE_APP_API_URL&quot;</span>: <span class="string">`&quot;<span class="subst">$&#123;process.env.VITE_APP_API_URL&#125;</span>&quot;`</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">plugins</span>: [vue()],</span><br><span class="line">      <span class="attr">resolve</span>: &#123;</span><br><span class="line">        <span class="attr">alias</span>: &#123; <span class="string">&quot;@/&quot;</span>: <span class="string">`<span class="subst">$&#123;path.resolve(__dirname, <span class="string">&quot;src&quot;</span>)&#125;</span>/`</span> &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>寫成<code>process.env</code>再用 Vite 來把字串取代掉...</p>
+<h1 id="結語">結語</h1>
+<p>寫了這麼多天，主要就在這些東西上打轉，另外有摸了一下 GitHub Actions，之後會再另外寫一篇小文章紀錄關於 GitHub Actions 和 Unit Test 的一些觀念。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/12/30/AAAAnimation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -217,7 +403,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2022-01-01 16:04:26" itemprop="dateModified" datetime="2022-01-01T16:04:26+08:00">2022-01-01</time>
+        <time title="修改時間：2022-02-08 16:24:20" itemprop="dateModified" datetime="2022-02-08T16:24:20+08:00">2022-02-08</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -372,6 +558,9 @@
 <p>目前猜測是用<code>msleep</code>或是有 blocking 操作的時候，作業系統認為執行序當掉了，因此發出系統音效。這個問題不是每次都會發生，到現在還沒解決。</p>
 <h3 id="設定的字體在不同電腦上可能無法正常運作">設定的字體在不同電腦上可能無法正常運作</h3>
 <p>根據微軟給的<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/typography/fonts/windows_10_font_list">文件</a>，一開始我使用的<code>Lucida Console</code>應該是 Windows 10 的電腦上都有。我自己測試的時候卻發現只有筆電的主控台可以選這個字體，桌機的就只能選其他的少少幾個。所以後來改用兩個裝置都有的<code>MS Gothic</code>，希望在各裝置的相容性會好一點。</p>
+<blockquote>
+<p>後來發現原因是主控台的預設字碼頁，在中文環境預設下的<code>cp950</code>就只有幾種字型能選，如果切換回<code>65001</code>(UTF-8)就可以選擇其他字型。不過就算切換了字碼，每次重開主控台都會被重置，所以可以直接到電腦控制台開啟下圖的功能解決問題。 <img src="/2021/12/30/AAAAnimation/locale.png"></p>
+</blockquote>
 <h3 id="ascii-animation-在有些裝置上不會正常播放但多試幾次卻可以正常運作">ASCII Animation 在有些裝置上不會正常播放，但多試幾次卻可以正常運作</h3>
 <p>一樣是我在桌機上測試時才發現的問題，在桌機上，有時開啟程式輸入完影片路徑後，程式有正常的跳出播放影片的視窗，也有正確的縮放並調整主控台的設定，但卻沒有開始播放畫面。我猜原因應該跟<code>Signal/Slot</code>有關係，這個問題目前還沒測出來，希望有人有裝置可以嘗試用 Debugger 找找看問題點。</p>
 <h1 id="結語">結語</h1>
@@ -1635,157 +1824,9 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2020/08/02/DiscordBot/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌新的學習筆記">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/08/02/DiscordBot/" class="post-title-link" itemprop="url">用萬能的樹莓派實現24h Discord Bot(Python)</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">發表於</span>
-
-      <time title="創建時間：2020-08-02 20:12:00" itemprop="dateCreated datePublished" datetime="2020-08-02T20:12:00+08:00">2020-08-02</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-08-14 17:37:30" itemprop="dateModified" datetime="2021-08-14T17:37:30+08:00">2021-08-14</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分類於</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="前言">前言</h1>
-<p>從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Raspberry Pi 4 model B 4GB ver《技術規格》</span><br><span class="line">* Broadcom BCM2711, Quad core Cortex-A72 (ARM v8) 64-bit SoC @ 1.5GHz</span><br><span class="line">* 4GB LPDDR4-3200 SDRAM</span><br><span class="line">* CYW43455 2.4 GHz/5.0 GHz IEEE 802.11ac wireless, Bluetooth 5.0, BLE</span><br><span class="line">* Gigabit Ethernet</span><br><span class="line">* 2x USB 3.0 ports; 2x USB 2.0 ports.</span><br><span class="line">* Raspberry Pi standard 40 pin GPIO header</span><br><span class="line">* 2 × micro-HDMI ports (up to 4kp60 supported)</span><br><span class="line">* 2-lane MIPI DSI display port</span><br><span class="line">* 2-lane MIPI CSI camera port</span><br><span class="line">* 4-pole stereo audio and composite video port</span><br><span class="line">* 265 (4kp60 decode), H264 (1080p60 decode, 1080p30 encode)</span><br><span class="line">* OpenGL ES 3.0 graphics</span><br><span class="line">* Micro-SD card slot for loading operating system and data storage</span><br><span class="line">* 5V DC via USB-C connector (minimum 3A*)</span><br><span class="line">* 5V DC via GPIO header (minimum 3A*)</span><br><span class="line">* Power over Ethernet (PoE) enabled (requires separate PoE HAT)</span><br><span class="line">* Operating temperature: 0 – 50 degrees C ambient</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">From 維基百科</span><br></pre></td></tr></table></figure>
-<h1 id="正文">正文</h1>
-<h2 id="開機前的準備">開機前的準備</h2>
-<p>由於樹莓派本身沒有自帶儲存裝置，所以我們會需要mircoSD卡作為他的儲存裝置(插槽在電路板背面)，而在插入前必須先格式化並灌入作業系統(可參考這裡)。</p>
-<p>在安裝OS這方面，我是利用樹莓派官網給的Imager跟Raspberry Pi OS(Raspbian)做安裝，如果不想這麼麻煩也可以用NOOBS，基本上結果是差不多的，但是用前者方法會快得多。</p>
-<p>補充:Raspberry Pi OS是基於Debian的作業系統，把他想成Linux(Unbutu)就可以了，當中預裝了一些程式，像是Python跟輕量化版本的Chromium，<del>使用起來算非常順暢</del>。</p>
-<blockquote>
-<p>用久了以後發現瀏覽器常常讓系統崩潰，使用順暢這句話就當作我沒說過</p>
-</blockquote>
-<p>上述作業完成後，就可以接上螢幕和鍵盤滑鼠準備開機(螢幕接口在這代改用micro HDMI，我只好跑去黃色鬼屋買一條1M的micro HDMI to HDMI，一條就將近500元.... )</p>
-<h2 id="環境的建置">環境的建置</h2>
-<p>開機確認過狀況以後，先到樹莓派設定中開啟ssh，再到cmd輸入</p>
-<p><code>sudo apt-get install xrdp</code></p>
-<p>來安裝xrdp，之後我們就可以利用這ssh和Windows的遠端桌面連線來操作樹莓派了(遠端桌面連線控制起來延遲感嚴重，如果需要長期操作建議乖乖接螢幕)，另外，預設的使用者(pi)的密碼是raspberry，建議在一開始就改掉。 最後執行</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
-<p>執行完以後發現Python版本還在3.7.3，那就只能接受他了。 再來安裝Visual Studio Code時會出現問題，目前找到最快的解決方法是這個，只要兩條指令就能解決，缺點是更新不像一般VS Code一樣方便，但是不影響我的使用，所以我還是裝了(只靠Vim對我來說實在是太難了)。</p>
-<blockquote>
-<p>後來發現OS裡面已經裝好了Nano，作為輕量的console文字編輯器相當方便，視窗下方也會提示按鍵快捷，若是Vim用的很不習慣可以考慮使用Nano</p>
-</blockquote>
-<p>MySQL(MariaDB)與phpmyadmin安裝</p>
-<p>參考<a target="_blank" rel="noopener" href="http://yhhuang1966.blogspot.com/2019/12/apachemysqlphp7.html">這裡</a>有非常詳盡的介紹，可配合程式儲存資料。</p>
-<blockquote>
-<p>重灌過後我把phpmyadmin替換成<a target="_blank" rel="noopener" href="https://www.adminer.org/">Adminer</a>，Web server則是從Apache換成<a target="_blank" rel="noopener" href="http://nginx.org/en/download.html">NGINX</a></p>
-</blockquote>
-<h2 id="部屬discord-bot">部屬Discord Bot</h2>
-<p>感覺環境都弄的差不多了，接下來就使用Git把原始碼pull下來就好，找個不錯的位置執行(自行替換repository URL)</p>
-<p><code>git clone https://github.com/ppodds/Yue.git</code></p>
-<p>接下來進入該資料夾把該弄的設定和雜務做完(我的路徑為~/Documents/Yue，請依上個步驟放置程式碼的路徑自行替換)，再建立Python虛擬環境(Windows跟Linux的虛擬環境應該是不一樣的，推薦上傳時不要把venv的資料夾上傳上去)。</p>
-<p>為了建立Python虛擬環境，要執行以下指令(自行替換路徑)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/Documents/Yue</span><br><span class="line">python3 -m venv venv</span><br></pre></td></tr></table></figure>
-<p>稍等一下後就會在程式的目錄建立名稱為<code>venv</code>的虛擬環境資料夾。</p>
-<p>補充:第二個<code>venv</code>可自行替換，影響虛擬環境資料夾的名稱。</p>
-<p>若要執行程式時，要使用虛擬環境的Python，需要先啟動虛擬環境。執行(路徑自行替換)</p>
-<p><code>source ~/Documents/Yue/venv/bin/activate</code></p>
-<p>之後就會發現cmd的前面多了(<code>venv</code>)，代表虛擬環境啟動中(如果是在VS Code中執行Python，如果設定正確就會自動進入venv)。</p>
-<p>接下來就該開始安裝需要的套件了，這裡就用pip完成就好</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install discord.py</span><br><span class="line">python -m pip install PyNaCl</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>如果你有放<code>requirements.txt</code>的話也可以直接用</p>
-<p><code>python -m pip install -r requirements.txt</code></p>
-<p>最後測試執行(路徑自行替換為自己的Bot主程式)</p>
-<p><code>python Bot/Yue.py</code></p>
-<p>如果測試執行無誤的話就可以進行下一步。</p>
-<h2 id="隨時隨地的控制樹莓派">隨時隨地的控制樹莓派!</h2>
-<p>說到隨時隨地都在用的電子產品，常常會想到手機，於是我想到要用手機控制樹莓派(有申辦固定IP使用起來會方便的多)。為了不受區域網路限制，要先調整好路由器設定，基本上要動以下兩項。</p>
-<ol type="1">
-<li>固定樹莓派的區網ip</li>
-<li>設定外部連入時指向到樹梅派(ip forwarding , 虛擬伺服器設定)</li>
-</ol>
-<p>補充:預設的ssh port是22，沒有特別需求的話就設定22 -&gt; 22</p>
-<p>第二項和Minecraft等其他遊戲伺服器設定差不多，可以參考相關文章。</p>
-<p>接下來需要在手機安裝ssh軟體，我採用JuiceSSH(軟體繁多大同小異，隨便選一個就好了)。</p>
-<p>啟動JuiceSSH，選取快速連線，輸入</p>
-<p><code>pi@ip位址</code></p>
-<p>並輸入密碼就可以用pi的身分連入，使用狀況和cmd沒什麼差別，之後就可以利用ssh對樹莓派做操作了。</p>
-<p>補充:在ssh執行的程式，只要ssh中斷連線就會被終止。</p>
-<blockquote>
-<p>補充: 上面這些登入ssh的操作其實風險極高，公網上有非常多人會嘗試使用暴力破解登入ssh。如果不小心被猜到密碼就會導致主機淪為肉雞。 除了更改預設的使用者名稱再加上複雜密碼外，可以再搭配<a target="_blank" rel="noopener" href="https://www.fail2ban.org/wiki/index.php/Main_Page">Fail2ban</a>來防止密碼暴力破解。 最安全的方法就是直接關閉密碼驗證，改用全面公鑰登入。有興趣的人可以參考<a target="_blank" rel="noopener" href="https://blog.gtwang.org/linux/linux-ssh-public-key-authentication/">這篇文章</a></p>
-</blockquote>
-<h2 id="編寫shell-script來快速啟動bot">編寫Shell Script來快速啟動Bot</h2>
-<p>由於Python的venv啟動起來很麻煩，因此可以編寫腳本來解決問題，執行以下指令(自行替換名稱及路徑)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch YueLauncher.sh</span><br><span class="line">chmod +x YueLauncher.sh</span><br></pre></td></tr></table></figure>
-<p>解釋:建立名為<code>YueLauncher.sh</code>的檔案，並更改為可執行檔</p>
-<p>接下來用Vim或是文字編輯器在檔案中加入以下內容(自行替換名稱及路徑)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">source ~/Documents/Yue/venv/bin/activate</span><br><span class="line">cd ~/Documents/Yue/</span><br><span class="line">nohup python -W ignore Bot/Yue.py &amp;&gt; Log.txt &amp;</span><br></pre></td></tr></table></figure>
-<p>解釋:啟動虛擬環境，在背景下利用Python執行Yue.py，且使用者登出時不關閉程式(包含ssh)</p>
-<p>最後，啟動這個腳本來啟動程式(如果已經在家目錄下，不須執行cd，因此可以在剛登入ssh後就立刻執行)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">./YueLauncher.sh</span><br></pre></td></tr></table></figure>
-<p>之後cmd不會有任何提示，但是Bot就會默默啟動了，並且在關閉以後把紀錄丟到目錄裡面的Log.txt裡面。如果要關閉Bot可以從cmd用指令kill掉處理程序，或是在Discord Bot加入關閉或重啟的指令，就可以從Discord客戶端控制。</p>
-<h2 id="結語">結語</h2>
-<p>樹莓派有非常多玩法，用來掛Discord Bot只是其中一種，各位有空也可以來玩玩看樹莓派喔!</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一頁"></i></a>
+  </nav>
 
 </div>
   </main>

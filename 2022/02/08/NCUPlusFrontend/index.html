@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="前言 1NCU+ 是一個學生自主開發的網站平台，希望在未來能夠取代學校在臉書版上所有不好用的交流平台。藉由新平台的建立，創造更優質的校園資訊分享與討論版。 計畫的源起是我在翻交大的課程資料時，發現了NCTU+，在課程資料分享上的功能非常齊全，相較之下，中央校園內使用的臉書討論版無論是在功能或是資訊搜尋方面都遠遠不及，為了改善這個問題，我決定開始著手建立一個類似的網站。 這次的文章會分成幾個段">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NCU+ Frontend開發筆記">
+<meta property="og:url" content="https://ppodds.github.io/2022/02/08/NCUPlusFrontend/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 1NCU+ 是一個學生自主開發的網站平台，希望在未來能夠取代學校在臉書版上所有不好用的交流平台。藉由新平台的建立，創造更優質的校園資訊分享與討論版。 計畫的源起是我在翻交大的課程資料時，發現了NCTU+，在課程資料分享上的功能非常齊全，相較之下，中央校園內使用的臉書討論版無論是在功能或是資訊搜尋方面都遠遠不及，為了改善這個問題，我決定開始著手建立一個類似的網站。 這次的文章會分成幾個段">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2022-02-08T04:47:57.000Z">
+<meta property="article:modified_time" content="2022-02-08T08:23:34.862Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="TypeScript">
+<meta property="article:tag" content="Vue.js">
+<meta property="article:tag" content="Vue3">
+<meta property="article:tag" content="Vite">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://ppodds.github.io/2022/02/08/NCUPlusFrontend/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2022/02/08/NCUPlusFrontend/","path":"2022/02/08/NCUPlusFrontend/","title":"NCU+ Frontend開發筆記"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NCU+ Frontend開發筆記 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">39</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">11</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#typescript"><span class="nav-number">2.1.</span> <span class="nav-text">TypeScript</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B0%A1%E4%BB%8B"><span class="nav-number">2.1.1.</span> <span class="nav-text">簡介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tsconfig.json"><span class="nav-number">2.1.2.</span> <span class="nav-text">tsconfig.json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9E%8B%E5%88%A5%E8%81%B2%E6%98%8E%E8%BD%89%E5%9E%8B"><span class="nav-number">2.1.3.</span> <span class="nav-text">型別聲明&#x2F;轉型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9E%8B%E5%88%A5%E8%81%B2%E6%98%8E"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">型別聲明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%89%E5%9E%8B"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">轉型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#interface-class"><span class="nav-number">2.1.4.</span> <span class="nav-text">interface &#x2F; class</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vue3-composition-api-with-sfc"><span class="nav-number">2.2.</span> <span class="nav-text">Vue3 Composition API with SFC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setup-vs-script-setup"><span class="nav-number">2.2.1.</span> <span class="nav-text">setup() vs &lt;script setup&gt;?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#props-emits"><span class="nav-number">2.2.2.</span> <span class="nav-text">props &#x2F; emits</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vite"><span class="nav-number">2.3.</span> <span class="nav-text">Vite</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B0%A1%E4%BB%8B-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">簡介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%91%E9%BB%9E"><span class="nav-number">2.3.2.</span> <span class="nav-text">坑點</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B8%A9%E5%9D%91%E5%AF%A6%E9%8C%84"><span class="nav-number">2.3.3.</span> <span class="nav-text">踩坑實錄</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#vite-%E7%92%B0%E5%A2%83%E8%AE%8A%E6%95%B8%E5%9C%A8%E9%85%8D%E5%90%88-jest-%E6%B8%AC%E8%A9%A6%E6%99%82%E9%8C%AF%E8%AA%A4"><span class="nav-number">2.3.3.1.</span> <span class="nav-text">Vite 環境變數在配合 jest 測試時錯誤</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2022/02/08/NCUPlusFrontend/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NCU+ Frontend開發筆記
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2022-02-08 12:47:57 / 修改時間：16:23:34" itemprop="dateCreated datePublished" datetime="2022-02-08T12:47:57+08:00">2022-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="前言">前言</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NCU+ 是一個學生自主開發的網站平台，希望在未來能夠取代學校在臉書版上所有不好用的交流平台。藉由新平台的建立，創造更優質的校園資訊分享與討論版。</span><br></pre></td></tr></table></figure>
+<p>計畫的源起是我在翻交大的課程資料時，發現了<a target="_blank" rel="noopener" href="https://plus.nctu.edu.tw/">NCTU+</a>，在課程資料分享上的功能非常齊全，相較之下，中央校園內使用的臉書討論版無論是在功能或是資訊搜尋方面都遠遠不及，為了改善這個問題，我決定開始著手建立一個類似的網站。</p>
+<p>這次的文章會分成幾個段落，把不同的 tech stack 拆開，在看文章的時候會比較好找到想讀的內容。</p>
+<h1 id="正文">正文</h1>
+<h2 id="typescript">TypeScript</h2>
+<h3 id="簡介">簡介</h3>
+<p>這次無論是前端和後端都是用 TypeScript 撰寫，前端採用的是 Vite(Vue3 with TypeScript)，後端則是用 Nest.js。</p>
+<p>TS 比起 JS 多了型別檢查，在寫 code 的時候常常可以檢查出一些常見錯誤，增快我們的開發效率。當專案變大時，型別宣告也能幫助我們理解程式碼。除此之外，擴增的封裝、介面、抽象等特性讓我們在設計程式碼的時候更加靈活。</p>
+<blockquote>
+<p>寫過以後，我覺得 TS 是 JS 的無痛升級版</p>
+</blockquote>
+<h3 id="tsconfig.json">tsconfig.json</h3>
+<p>tsconfig 是 typescript 的設定檔，TypeScript 的 compiler 會自動讀取裡面的設定。</p>
+<p>比較常用的設定</p>
+<ul>
+<li>compilerOptions
+<ul>
+<li>target
+<ul>
+<li>編譯的目標 es 版本</li>
+</ul></li>
+<li>module
+<ul>
+<li>module 的編譯方式，調整這個可以對應到不同平台的 module 宣告</li>
+</ul></li>
+<li>moduleResolution
+<ul>
+<li>module 的解析方式</li>
+</ul></li>
+<li>resolveJsonModule
+<ul>
+<li>是否可以解析 json 檔，沒開的話就不能 import json 了</li>
+</ul></li>
+<li>esModuleInterop
+<ul>
+<li>參考<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/tsconfig#esModuleInterop">這篇文</a></li>
+<li>基本上是 import default 產生的問題，如果 import 出問題的話就開吧</li>
+</ul></li>
+<li>types
+<ul>
+<li>指示 TypeScript 要去哪邊抓型別檔案來用</li>
+</ul></li>
+<li>paths
+<ul>
+<li>可以改寫 import 路徑 (path remapping)</li>
+</ul></li>
+<li>skipLibCheck
+<ul>
+<li>在編譯時跳過型別聲明文件的型別檢查，可以加速編譯，偶爾有一些型別文件的錯誤也可以用這個方法規避</li>
+</ul></li>
+</ul></li>
+<li>include
+<ul>
+<li>要包含在程式裡面的檔案</li>
+</ul></li>
+<li>exclude
+<ul>
+<li>有被 include 描述到但是要跳過的檔案</li>
+</ul></li>
+</ul>
+<p>ex.</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;compilerOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;target&quot;</span>: <span class="string">&quot;esnext&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;useDefineForClassFields&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;module&quot;</span>: <span class="string">&quot;esnext&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;moduleResolution&quot;</span>: <span class="string">&quot;node&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;strict&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;jsx&quot;</span>: <span class="string">&quot;preserve&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;sourceMap&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;resolveJsonModule&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;esModuleInterop&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;lib&quot;</span>: [<span class="string">&quot;esnext&quot;</span>, <span class="string">&quot;dom&quot;</span>],</span><br><span class="line">    <span class="attr">&quot;types&quot;</span>: [<span class="string">&quot;vite/client&quot;</span>, <span class="string">&quot;@types/jest&quot;</span>, <span class="string">&quot;@types/node&quot;</span>],</span><br><span class="line">    <span class="attr">&quot;paths&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;@/*&quot;</span>: [<span class="string">&quot;./src/*&quot;</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;skipLibCheck&quot;</span>: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;include&quot;</span>: [<span class="string">&quot;src/**/*.ts&quot;</span>, <span class="string">&quot;src/**/*.d.ts&quot;</span>, <span class="string">&quot;src/**/*.tsx&quot;</span>, <span class="string">&quot;src/**/*.vue&quot;</span>],</span><br><span class="line">  <span class="attr">&quot;exclude&quot;</span>: [<span class="string">&quot;node_modules&quot;</span>, <span class="string">&quot;dist&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.typescriptlang.org/tsconfig">官方的 tsconfig 文件</a></p>
+<h3 id="型別聲明轉型">型別聲明/轉型</h3>
+<h4 id="型別聲明">型別聲明</h4>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自動抓型別</span></span><br><span class="line"><span class="keyword">let</span> a = <span class="number">1</span>; <span class="comment">// number</span></span><br><span class="line"><span class="comment">// 手動宣告</span></span><br><span class="line"><span class="keyword">let</span> b: <span class="built_in">number</span> = <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 型別錯誤</span></span><br><span class="line"><span class="keyword">let</span> c: <span class="built_in">number</span>;</span><br><span class="line">c = <span class="string">&quot;1&quot;</span>; <span class="comment">// error</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// array型別宣告</span></span><br><span class="line"><span class="keyword">let</span> d: <span class="built_in">number</span>[] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="comment">// 其他寫法</span></span><br><span class="line"><span class="keyword">let</span> e: <span class="built_in">Array</span>&lt;<span class="built_in">number</span>&gt; = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// object型別宣告</span></span><br><span class="line"><span class="keyword">let</span> obj: &#123; <span class="attr">name</span>: <span class="built_in">string</span>; age: <span class="built_in">number</span> &#125; = &#123; <span class="attr">name</span>: <span class="string">&quot;John&quot;</span>, <span class="attr">age</span>: <span class="number">30</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 常見用例</span></span><br><span class="line"><span class="keyword">let</span> f: <span class="built_in">string</span>[] = [];</span><br><span class="line">f.push(<span class="string">&quot;item&quot;</span>); <span class="comment">// ok</span></span><br><span class="line">f.push(<span class="number">1</span>); <span class="comment">// error</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 型別聯集</span></span><br><span class="line"><span class="keyword">let</span> g: <span class="built_in">string</span> | <span class="built_in">number</span> = <span class="number">1</span>;</span><br><span class="line">g = <span class="string">&quot;1&quot;</span>; <span class="comment">// ok</span></span><br></pre></td></tr></table></figure>
+<p>值得注意的是，假設一個 function 接受<code>string</code>型別的參數，如果我們要塞<code>string | null</code>的型別進去會是不合法的。</p>
+<h4 id="轉型">轉型</h4>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 兩種寫法</span></span><br><span class="line"><span class="comment">// as</span></span><br><span class="line">a <span class="keyword">as</span> <span class="built_in">string</span>;</span><br><span class="line"><span class="comment">// 用&lt;&gt;刮起來</span></span><br><span class="line">&lt;<span class="built_in">string</span>&gt;a;</span><br></pre></td></tr></table></figure>
+<p>雖然能轉型但不一定跑起來會正確，有可能跑起來以後因為錯誤的型別跳 error。除此之外，如果 TypeScript 不讓我們轉型，也可以用下面的方法強制轉。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a <span class="keyword">as</span> unknown <span class="keyword">as</span> <span class="built_in">string</span>;</span><br></pre></td></tr></table></figure>
+<p>要謹慎使用。</p>
+<h3 id="interface-class">interface / class</h3>
+<p>TypeScript 的 interface 和其他語言的不太一樣，比較像是用來定義資料型別的，compile 過後基本會直接不見，但會留下型別宣告檔。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Person &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="built_in">string</span>;</span><br><span class="line">  age: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>class 多了修飾子，可以達成封裝。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> name: <span class="built_in">string</span>;</span><br><span class="line">  <span class="keyword">private</span> age: <span class="built_in">number</span>;</span><br><span class="line">  <span class="keyword">public</span> getName(): <span class="built_in">string</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.name;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">public</span> getAge(): <span class="built_in">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.age;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外還有抽象類別和方法可以用，這邊不做介紹了。</p>
+<h2 id="vue3-composition-api-with-sfc">Vue3 Composition API with SFC</h2>
+<p>由於 Vite(Vue3 + TypeScript)的專案已經是用 SFC 了，此外還有用到<code>&lt;script setup&gt;</code>，讓我一開始摸不著頭續。經過了解之後，發現這是 Vue3 加的新東西，可以讓我們寫 SFC 的時候更乾淨，下面來簡單介紹一下。</p>
+<h3 id="setup-vs-script-setup"><code>setup()</code> vs <code>&lt;script setup&gt;</code>?</h3>
+<p>直接說結論，<code>setup()</code>是 composition api 的進入點，後者也差不多，不過可以省略掉前者寫法的一大段，如下面的例子</p>
+<p><code>setup()</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  <span class="function"><span class="title">setup</span>(<span class="params">props, context</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> data = ref(<span class="string">&quot;data can be used in template&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      data,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>&lt;script setup&gt;</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> data = ref(<span class="string">&quot;data can be used in template&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>變得非常整潔，下面會再說明 props 和 emit 等用法，其他剩下的部分就到官方文件上面翻吧。</p>
+<h3 id="props-emits">props / emits</h3>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> props = defineProps&lt;&#123; <span class="attr">name</span>: <span class="built_in">string</span>; age: <span class="built_in">number</span> &#125;&gt;();</span><br><span class="line"><span class="keyword">const</span> emits = defineEmits&lt;&#123;</span><br><span class="line">  (event: <span class="string">&quot;custom-event&quot;</span>): <span class="built_in">void</span>;</span><br><span class="line">  (event: <span class="string">&quot;another-event&quot;</span>, <span class="attr">data</span>: <span class="built_in">number</span>): <span class="built_in">void</span>;</span><br><span class="line">&#125;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// emit costom-event</span></span><br><span class="line">emits(<span class="string">&quot;custom-event&quot;</span>);</span><br><span class="line"><span class="comment">// with data</span></span><br><span class="line">emits(<span class="string">&quot;another-event&quot;</span>, <span class="number">123</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// use props</span></span><br><span class="line"><span class="built_in">console</span>.log(props.name);</span><br><span class="line"><span class="built_in">console</span>.log(props.age);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>這些帶有型別宣告的 emit 是 TypeScript 才支援的</p>
+</blockquote>
+<h2 id="vite">Vite</h2>
+<h3 id="簡介-1">簡介</h3>
+<p>Vite 是新的前端開發工具，支援 React 和 Vue 等主流框架，<del>不過沒有支援 Angular</del>。最核心的特色是快還要更快，在開發的時候，啟動和 hot reload 的速度屌打使用其他打包方式的工具，用過都說讚。能這麼快的原因是在開發過程中，Vite 用 esbuild 來做打包，esbuild 本身就比其他打包工具快了不知道幾倍，最後的結果就是完美的開發體驗。</p>
+<h3 id="坑點">坑點</h3>
+<ul>
+<li>Vite 是一個前端開發工具，而不是前端框架，在專案開發時，專案架構/測試框架那些都要自己手動搞定，不太適合用在大型網站開發。</li>
+<li>雖然官方文檔寫支援 SSR，但是實際上支援度不太好，還要自己搞定很多設定，而且還可能踩到很多 bug。</li>
+</ul>
+<blockquote>
+<p>Nuxt3 beta 現在有實驗性的 Vite 打包支援，改天我再去玩玩看</p>
+</blockquote>
+<h3 id="踩坑實錄">踩坑實錄</h3>
+<h4 id="vite-環境變數在配合-jest-測試時錯誤">Vite 環境變數在配合 jest 測試時錯誤</h4>
+<p>Vite 的環境變數可以在程式中用<code>import.meta.env</code>來取得，但 jest 再跑測試的時候跑到<code>import.meta</code>就會出錯。</p>
+<p>最後找到的 dirty solution</p>
+<p><code>vite.config.ts</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; defineConfig &#125; <span class="keyword">from</span> <span class="string">&quot;vite&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> vue <span class="keyword">from</span> <span class="string">&quot;@vitejs/plugin-vue&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> path <span class="keyword">from</span> <span class="string">&quot;path&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> dotenv <span class="keyword">from</span> <span class="string">&quot;dotenv&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// https://vitejs.dev/config/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> defineConfig(<span class="function">(<span class="params">&#123; command, mode &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (mode === <span class="string">&quot;production&quot;</span>) &#123;</span><br><span class="line">    dotenv.config(&#123; <span class="attr">path</span>: <span class="string">&quot;.env.production.local&quot;</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">define</span>: &#123;</span><br><span class="line">        <span class="string">&quot;process.env.VITE_APP_API_URL&quot;</span>: <span class="string">`&quot;<span class="subst">$&#123;process.env.VITE_APP_API_URL&#125;</span>&quot;`</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">plugins</span>: [vue()],</span><br><span class="line">      <span class="attr">resolve</span>: &#123;</span><br><span class="line">        <span class="attr">alias</span>: &#123; <span class="string">&quot;@/&quot;</span>: <span class="string">`<span class="subst">$&#123;path.resolve(__dirname, <span class="string">&quot;src&quot;</span>)&#125;</span>/`</span> &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    dotenv.config(&#123; <span class="attr">path</span>: <span class="string">&quot;.env.local&quot;</span> &#125;);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">define</span>: &#123;</span><br><span class="line">        <span class="string">&quot;process.env.VITE_APP_API_URL&quot;</span>: <span class="string">`&quot;<span class="subst">$&#123;process.env.VITE_APP_API_URL&#125;</span>&quot;`</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">plugins</span>: [vue()],</span><br><span class="line">      <span class="attr">resolve</span>: &#123;</span><br><span class="line">        <span class="attr">alias</span>: &#123; <span class="string">&quot;@/&quot;</span>: <span class="string">`<span class="subst">$&#123;path.resolve(__dirname, <span class="string">&quot;src&quot;</span>)&#125;</span>/`</span> &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>寫成<code>process.env</code>再用 Vite 來把字串取代掉...</p>
+<h1 id="結語">結語</h1>
+<p>寫了這麼多天，主要就在這些東西上打轉，另外有摸了一下 GitHub Actions，之後會再另外寫一篇小文章紀錄關於 GitHub Actions 和 Unit Test 的一些觀念。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/TypeScript/" rel="tag"># TypeScript</a>
+              <a href="/tags/Vue-js/" rel="tag"># Vue.js</a>
+              <a href="/tags/Vue3/" rel="tag"># Vue3</a>
+              <a href="/tags/Vite/" rel="tag"># Vite</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/12/30/AAAAnimation/" rel="prev" title="AAAAnimation - ASCII Art Animation Player開發筆記">
+                  <i class="fa fa-chevron-left"></i> AAAAnimation - ASCII Art Animation Player開發筆記
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ppodds</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
