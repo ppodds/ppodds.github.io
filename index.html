@@ -87,9 +87,9 @@
 <nav class="site-nav">
   <ul class="main-menu menu">
         <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">39</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">4</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">11</span></a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">47</span></a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">5</span></a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">12</span></a></li>
   </ul>
 </nav>
 
@@ -132,18 +132,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分類</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -177,6 +177,188 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2022/02/08/CI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/02/08/CI/" class="post-title-link" itemprop="url">CI / Unit Test 初體驗</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2022-02-08 16:37:50 / 修改時間：19:45:16" itemprop="dateCreated datePublished" datetime="2022-02-08T16:37:50+08:00">2022-02-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>之前就一直想做一個簡單的 CI 來維持程式碼品質，這次剛好開始寫 NCU+的專案，就順便引入單元測試和 CI。這篇文章記錄了一些學習到的觀念和一些設定範例。</p>
+<h1 id="正文">正文</h1>
+<h2 id="單元測試">單元測試</h2>
+<h3 id="撰寫測試的-3a-原則">撰寫測試的 3A 原則</h3>
+<ol type="1">
+<li>Arrange
+<ul>
+<li>初始化測資/設定測試預期值</li>
+</ul></li>
+<li>Act
+<ul>
+<li>執行測試程式碼</li>
+</ul></li>
+<li>Assert
+<ul>
+<li>檢查測試結果是否符合預期</li>
+</ul></li>
+</ol>
+<p>遵照上面的原則可以大概知道單元測試要如何撰寫，接下來介紹 jest 在這三階段分別要如何應用。</p>
+<h3 id="實際案例">實際案例</h3>
+<p>這邊使用 jest with ts-jest 來實作單元測試。jest 是一個 JavaScript 的測試框架，但他不支援 TypeScript 的語法，因此要透過 ts-jest 來對 ts 檔案做處理才跑得起來。</p>
+<h4 id="設定-jest">設定 jest</h4>
+<p>jest 的設定可以在<code>package.json</code>裡調整或是另外建一個<code>jest.config.js</code>來設定。以下以<code>package.json</code>的設定舉例：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;dependencies&quot;</span>: &#123;</span><br><span class="line">      ...</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;jest&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;testEnvironment&quot;</span>: <span class="string">&quot;jsdom&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;globals&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;ts-jest&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;tsConfig&quot;</span>: <span class="string">&quot;tsconfig.json&quot;</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;moduleFileExtensions&quot;</span>: [</span><br><span class="line">      <span class="string">&quot;js&quot;</span>,</span><br><span class="line">      <span class="string">&quot;ts&quot;</span>,</span><br><span class="line">      <span class="string">&quot;json&quot;</span>,</span><br><span class="line">      <span class="string">&quot;vue&quot;</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;transform&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;^.+\\.ts$&quot;</span>: <span class="string">&quot;ts-jest&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;^.+\\.vue$&quot;</span>: <span class="string">&quot;@vue/vue3-jest&quot;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;moduleNameMapper&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;@/(.*)$&quot;</span>: <span class="string">&quot;&lt;rootDir&gt;/src/$1&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>testEnvironment</code> 選擇 jsdom 是因為晚點會對 Vue 的 component 做測試。</p>
+<p><code>globals</code>區塊裡可以針對 ts-jest 的設定進行細項調整。</p>
+<p><code>moduleFileExtensions</code>是設定你的 module 名稱結尾的 extension。</p>
+<p><code>transform</code>可以設定不同檔案的轉換方式，例如 jest 本身是不支援 TypeScript 的，不過經由 ts-jest 轉換後可以被 jest 讀取。Vue 也是同理。</p>
+<p><code>moduleNameMapper</code>可以設定 module 對應到的 mock，也能直接當成 path mapping 用。</p>
+<h4 id="撰寫第一個測試">撰寫第一個測試</h4>
+<p><code>add.ts</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a: <span class="built_in">number</span>, b: <span class="built_in">number</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>add.spec.ts</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; add &#125; <span class="keyword">from</span> <span class="string">&quot;./add&quot;</span>;</span><br><span class="line"></span><br><span class="line">describe(<span class="string">&quot;add test&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  test(<span class="string">&quot;1 + 2 should be 3&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// arrange</span></span><br><span class="line">    <span class="keyword">const</span> a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">const</span> b = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">const</span> expected = <span class="number">3</span>;</span><br><span class="line">    <span class="comment">// act / assert</span></span><br><span class="line">    expect(add(a, b)).toBe(expected);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>寫完後可以執行<code>jest</code>看看結果如何。</p>
+<h4 id="vue-的-component-測試">Vue 的 component 測試</h4>
+<p>component 的測試就沒有上面這麼簡單了，首先我們要搞清楚哪些部份需要撰寫測試、要測試到哪種程度、要如何撰寫...</p>
+<p>問題接踵而來，以下一一解決。</p>
+<h5 id="該測試哪些部分">該測試哪些部分</h5>
+<p>關於這部分，其實<a target="_blank" rel="noopener" href="https://test-utils.vuejs.org/guide/essentials/easy-to-test.html">Vue Test Utils 的文檔</a>有給出很詳細的回答。</p>
+<p>他們給出的結論是除了實作細節以外都可以撰寫測試，下面是我把官方文檔這部分翻譯後的內容。</p>
+<ul>
+<li>輸入
+<ul>
+<li>使用者互動
+<ul>
+<li>點擊、輸入等人類操作</li>
+</ul></li>
+<li>props
+<ul>
+<li>component 拿到的參數</li>
+</ul></li>
+<li>資料流
+<ul>
+<li>api calls 或接受外部訊息等</li>
+</ul></li>
+</ul></li>
+<li>輸出
+<ul>
+<li>DOM 元素
+<ul>
+<li>有被渲染出來的元素</li>
+</ul></li>
+<li>事件
+<ul>
+<li>是否有正確的 emit 出事件</li>
+</ul></li>
+<li>副作用
+<ul>
+<li>api calls 或是對外部的修改互動等</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>不測試實作細節是指沒有測試組件的內部函式和資料，只關注於最終組件的表現。這樣的測試在未來組件程式碼有變動時，基本不需要改動，因為內部程式實作改變並不影響最終表現的結果。</p>
+<h5 id="該如何撰寫">該如何撰寫</h5>
+<p>這部分會用到<code>vue test utils</code>，它可以幫助我們把 vue 的 component mount 起來，還提供 css selector 的方式取得裡面的 dom 元素，並且檢查狀態。</p>
+<p>文檔上的例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Nav = &#123;</span><br><span class="line">  <span class="attr">template</span>: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;nav&gt;</span></span><br><span class="line"><span class="string">      &lt;a id=&quot;profile&quot; href=&quot;/profile&quot;&gt;My Profile&lt;/a&gt;</span></span><br><span class="line"><span class="string">      &lt;a v-if=&quot;admin&quot; id=&quot;admin&quot; href=&quot;/admin&quot;&gt;Admin&lt;/a&gt;</span></span><br><span class="line"><span class="string">    &lt;/nav&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="attr">admin</span>: <span class="literal">false</span>,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">test(<span class="string">&quot;renders a profile link&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> wrapper = mount(Nav);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Here we are implicitly asserting that the</span></span><br><span class="line">  <span class="comment">// element #profile exists.</span></span><br><span class="line">  <span class="keyword">const</span> profileLink = wrapper.get(<span class="string">&quot;#profile&quot;</span>);</span><br><span class="line"></span><br><span class="line">  expect(profileLink.text()).toEqual(<span class="string">&quot;My Profile&quot;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>toEqual()</code>和<code>toBe()</code>的差別可以參考<a target="_blank" rel="noopener" href="https://jestjs.io/docs/expect#toequalvalue">這裡</a></p>
+</blockquote>
+<h2 id="ci">CI</h2>
+<h3 id="簡述">簡述</h3>
+<p>CI 是 Continuous Integration 的縮寫，意義為持續整合，通常和 CD 一起出現(持續整合/持續部屬/交付)。CI 透過自動化的流程，維持程式碼的高品質，並搭配 CD 讓開發者在很短的時間內對程式碼做修改且確保程式碼有足夠高的品質可以發布。</p>
+<p>市面上有很多工具可以達成 CI/CD 的目的。常見的有 GitHub Actions、GitLab CI/CD pipelines、Travis CI(今年開始沒有免費版了)、Circle CI 等。</p>
+<blockquote>
+<p>之前有看到文章有介紹 Dapper，可以用 Docker 容器自幹 CI/CD。</p>
+</blockquote>
+<h3 id="github-actions">GitHub Actions</h3>
+<h4 id="簡述-1">簡述</h4>
+<p>GitHub Actions 是 GitHub 免費開給開源 repo 的 CI/CD 工具，但是在 private repo 裡面也能夠使用。Free User 每個月有 2000 分鐘的額度，Pro User 則是 3000 分鐘。</p>
+<p>下面簡單介紹一下怎麼用 GitHub Actions 對 node 專案做測試。</p>
+<h4 id="設定說明">設定說明</h4>
+<p>GitHub Actions 的檔案要放在 repo 根目錄的<code>.github/workflows</code>資料夾下。</p>
+<p>隨便建個 yml 的檔案，這邊取<code>ci.yml</code></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">CI</span></span><br><span class="line"></span><br><span class="line"><span class="attr">on:</span></span><br><span class="line">  <span class="attr">push:</span></span><br><span class="line">    <span class="attr">branches:</span> [<span class="string">master</span>]</span><br><span class="line"></span><br><span class="line"><span class="attr">jobs:</span></span><br><span class="line">  <span class="attr">build:</span></span><br><span class="line">    <span class="attr">runs-on:</span> <span class="string">ubuntu-latest</span></span><br><span class="line">    <span class="attr">strategy:</span></span><br><span class="line">      <span class="attr">matrix:</span></span><br><span class="line">        <span class="attr">node-version:</span> [<span class="number">16</span>]</span><br><span class="line"></span><br><span class="line">    <span class="attr">name:</span> <span class="string">&quot;Build&amp;Test: node-$<span class="template-variable">&#123;&#123; matrix.node_version &#125;&#125;</span>&quot;</span></span><br><span class="line">    <span class="attr">steps:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">uses:</span> <span class="string">actions/checkout@v2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Set</span> <span class="string">node</span> <span class="string">version</span> <span class="string">to</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node-version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">        <span class="attr">uses:</span> <span class="string">actions/setup-node@v2</span></span><br><span class="line">        <span class="attr">with:</span></span><br><span class="line">          <span class="attr">node-version:</span> <span class="string">$&#123;&#123;</span> <span class="string">matrix.node-version</span> <span class="string">&#125;&#125;</span></span><br><span class="line">          <span class="attr">cache:</span> <span class="string">&quot;npm&quot;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Install</span> <span class="string">deps</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">install</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">Run</span> <span class="string">unit</span> <span class="string">tests</span></span><br><span class="line">        <span class="attr">run:</span> <span class="string">npm</span> <span class="string">run</span> <span class="string">test</span></span><br></pre></td></tr></table></figure>
+<p>最上面的<code>name</code>表示的是這個 workflow 的名稱，點 GitHub Actions 的頁籤就可以看到所有 workflow 的執行結果。</p>
+<p><code>on</code>裡面設定的是 workflow 的觸發條件，<code>push</code>即有人 push 到 repo 的時候觸發，也有<code>pull_request</code>、<code>schedule</code>等可以用。</p>
+<blockquote>
+<p><code>schedule</code>是一個特別的事件，可以用<code>cron</code>設定觸發的時間 事件清單的<a target="_blank" rel="noopener" href="https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#available-events">官方文件</a></p>
+</blockquote>
+<p><code>jobs</code>裡面可以設定要執行的工作，每個設定的工作都會平行執行，如果要指定某個工作的前置工作，可以用<code>needs</code>來指定。</p>
+<p>接下來是每個工作的設定。<code>strategy</code>可以調整工作的執行方式，裡面的<code>matrix</code>設定很常用，可以拿來指定工作參數，像是 OS 類型或 node 版本等。利用<code>matrix</code>可以在不同的 OS 和 node 版本下執行測試。</p>
+<p><code>steps</code>用來指定一項工作的步驟，工作在執行時會依序執行每個步驟，如果中間有任何一個步驟失敗，就會中斷執行。</p>
+<p><code>uses</code>可以執行執行別人設定好的工作步驟。<code>actions/checkout@v2</code>是 GitHub 提供的步驟，可以 checkout 到 repo 內，讓 workflow 可以存取。<code>with</code>適用來指定參數的，參數要如何設定要參考提供者給的文件。以這個步驟來說，說明在<a target="_blank" rel="noopener" href="https://github.com/actions/checkout#usage">這裡</a>。</p>
+<p><code>run</code>可以執行 shell 指令，像是執行<code>npm</code>、<code>rm -rf</code>等都行。</p>
+<h1 id="結語">結語</h1>
+<p>這次只有簡單的玩了一下 CI 和 Unit Test，沒有太過深入的研究，之後會再嘗試導入 CI 到現有的個人專案內。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1678,134 +1860,6 @@
 <li>到 <code>~/.config/qterminal.org</code> 的路徑下修改副檔名為 <code>.ini</code> 的設定檔 (此步驟不能經由Qterminal完成，要用其他文字編輯器)</li>
 <li>將設定檔權限設為唯讀，可以避免平時檔案遭到Qterminal覆寫</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2020/08/08/Asyncio/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌新的學習筆記">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2020/08/08/Asyncio/" class="post-title-link" itemprop="url">Python asyncio簡單整理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">發表於</span>
-
-      <time title="創建時間：2020-08-08 20:22:45" itemprop="dateCreated datePublished" datetime="2020-08-08T20:22:45+08:00">2020-08-08</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-08-14 18:46:03" itemprop="dateModified" datetime="2021-08-14T18:46:03+08:00">2021-08-14</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分類於</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="前言">前言</h1>
-<p>Python為了避免產生blocking問題，替耗時的IO、計算或網路相關操作提供了asyncio，可以用並發的方式完成工作，同時最大限度地提高作業效率。</p>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/413721/">並發和並行的比較</a></p>
-</blockquote>
-<h1 id="正文">正文</h1>
-<h2 id="協程和任務coroutines-and-tasks">協程和任務(Coroutines and Tasks)</h2>
-<h3 id="何謂協程"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-task.html#id1">何謂協程?</a></h3>
-<p>協程指的是有宣告為async的函式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;world&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>此時<code>main()</code>就是協程，無法直接被執行</p>
-<h3 id="何謂任務"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-task.html#task-object">何謂任務?</a></h3>
-<p>協程可以被裝成任務，接續上面的程式碼</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">task = asyncio.create_task(main())</span><br></pre></td></tr></table></figure>
-<p>此時<code>task</code>會是一個任務，任務比起一般協程能做出更多流程控制。</p>
-<h3 id="協程和任務的使用">協程和任務的使用</h3>
-<p>若要使用協程和任務，可使用<code>await</code>關鍵字</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> task</span><br><span class="line"><span class="keyword">await</span> main()</span><br></pre></td></tr></table></figure>
-<p>在這邊要注意，<code>await task</code>和<code>await main()</code>都會回傳<code>main</code>函式的執行結果，但是<code>task</code>是在<code>create_task()</code>沒多久後就執行了(會被丟進事件迴圈等待執行)，後者則是執行<code>await main()</code>時才會被執行。</p>
-<blockquote>
-<p>使用<code>await</code>的關鍵字，表示要Python等待後方任務或協程執行完畢再繼續執行下去。在等待執行完畢的期間，Python會不斷切換工作執行，直到等待中的任務完成。</p>
-</blockquote>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://mozillazg.com/2017/08/python-asyncio-note-task-usage.html">關於task的那些事(必看)</a></p>
-</blockquote>
-<blockquote>
-<p>雖然<code>asyncio.run()</code>可以用來執行協程和任務，但它其實是用於async程式的進入點，因此在正常情況下，一個async只能有一個<code>asyncio.run()</code>，否則會引發錯誤</p>
-</blockquote>
-<h2 id="queue-lock與event">Queue Lock與Event</h2>
-<p>可以用來控制執行情況</p>
-<h3 id="queue-佇列"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-queue.html#queues">Queue 佇列</a></h3>
-<blockquote>
-<p>先進先出</p>
-</blockquote>
-<p>可以塞入需要處理的物件，在音樂機器人等需要有佇列時很有用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue = asyncio.Queue()</span><br><span class="line"><span class="keyword">await</span> queue.put(Obj)</span><br><span class="line">something = <span class="keyword">await</span> queue.get()</span><br></pre></td></tr></table></figure>
-<h3 id="lock-鎖"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-sync.html#lock">Lock 鎖</a></h3>
-<p>能調控IO資源的取得，上鎖以後不能被使用，直到鎖被釋放為止，通常搭配<code>async with</code>使用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lock = asyncio.Lock()</span><br><span class="line"></span><br><span class="line"><span class="comment">#程式會等到鎖被釋放才進入該區塊</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">with</span> lock:</span><br><span class="line">    <span class="comment">#access shared state</span></span><br></pre></td></tr></table></figure>
-<h3 id="event-事件"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-sync.html#event">Event 事件</a></h3>
-<p>能調控程式是否要繼續向下執行(<code>wait()</code>)，常用於callback函數中。 內部有個參數預設是<code>false</code>，可透過函數控制。當執行<code>wait()</code>時，若參數是<code>true</code>就會立刻繼續執行，否則會持續等待。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">waiter</span>(<span class="params">event</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;waiting for it ...&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> event.wait()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;... got it!&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># Create an Event object.</span></span><br><span class="line">    event = asyncio.Event()</span><br><span class="line">    <span class="comment"># Spawn a Task to wait until &#x27;event&#x27; is set.</span></span><br><span class="line">    waiter_task = asyncio.create_task(waiter(event))</span><br><span class="line">    <span class="comment"># Sleep for 1 second and set the event.</span></span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)</span><br><span class="line">    event.<span class="built_in">set</span>()</span><br><span class="line">    <span class="comment"># Wait until the waiter task is finished.</span></span><br><span class="line">    <span class="keyword">await</span> waiter_task</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-<h2 id="對抗耗時的io操作">對抗耗時的IO操作</h2>
-<p>面對耗時的IO操作，可以使用比較低層的操作方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">blocking_io</span>():</span></span><br><span class="line">    <span class="comment">#do something</span></span><br><span class="line">    asyncio.sleep(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Fuck My Life&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    loop = asyncio.get_running_loop()</span><br><span class="line">    result = <span class="keyword">await</span> loop.run_in_executor(<span class="literal">None</span>, blocking_io)</span><br><span class="line">    <span class="built_in">print</span>(result)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-<p>用這種方法處理，主線程就不會卡住，在Discord Bot上常常用到。</p>
-<h1 id="結語">結語</h1>
-<p>其實這篇是整理幾個重點給我自己看的，文中只有簡單帶過常用的東西，如果需要更深層的知識需要自己去搜尋。</p>
-<p>有任何錯誤請通知我。</p>
 
       
     </div>
