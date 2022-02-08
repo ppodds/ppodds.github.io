@@ -267,6 +267,7 @@
 <p><img src="/2021/08/14/NCUFresh/project.png" alt="專案架構圖"></p>
 <p>User View 表示使用者操作的瀏覽器視圖，一開始 Server 收到前端頁面的 request 時，會先經過 NGINX 的反向代理，再轉給 Nuxt 的前端伺服器去處理。Nuxt 就會把需要的資源還有整個 Vue app 傳給 client。client 解析完就會看到我們精心打造的網頁了!</p>
 <p>當使用者在視圖上操作時，Vue app 會即時的在前端把畫面刷新。若是需要用到後端資料的話，則利用<code>axios</code>對 Server 提出 api request，請求經過 NGINX 的反向代理轉給 Nuxt，再由 Nuxt 的 proxy 設定轉給 Express Server，Server 回應 client 後再由 Vue 刷新使用者的視圖。</p>
+<span id="more"></span>
 <h2 id="關於-nuxt">關於 Nuxt</h2>
 <h3 id="簡介">簡介</h3>
 <p>Nuxt.js 是一個 Vue 的 SSR(Server Side Rendering)框架，可以解決純 js 網頁沒辦法被搜尋引擎爬蟲抓到的問題(SEO)。</p>

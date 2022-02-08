@@ -20,12 +20,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="前言 從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。 123456789101112131415161718192021Raspberry Pi 4 model B 4GB ver《技術規格》* Broadcom BCM2711, Quad core">
+<meta name="description" content="前言 從我開始寫 Discord Bot 的時候，就一直缺少一個能讓程式 24h 運行的平台。由於 Bot 功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了 4B 版本來實現我的需求。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用萬能的樹莓派實現24h Discord Bot(Python)">
 <meta property="og:url" content="https://ppodds.github.io/2020/08/02/DiscordBot/index.html">
 <meta property="og:site_name" content="萌新的學習筆記">
-<meta property="og:description" content="前言 從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。 123456789101112131415161718192021Raspberry Pi 4 model B 4GB ver《技術規格》* Broadcom BCM2711, Quad core">
+<meta property="og:description" content="前言 從我開始寫 Discord Bot 的時候，就一直缺少一個能讓程式 24h 運行的平台。由於 Bot 功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了 4B 版本來實現我的需求。">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2020-08-02T12:12:00.000Z">
 <meta property="article:modified_time" content="2021-08-14T09:37:30.000Z">
@@ -124,7 +124,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E6%A9%9F%E5%89%8D%E7%9A%84%E6%BA%96%E5%82%99"><span class="nav-number">2.1.</span> <span class="nav-text">開機前的準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E7%9A%84%E5%BB%BA%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">環境的建置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E5%B1%ACdiscord-bot"><span class="nav-number">2.3.</span> <span class="nav-text">部屬Discord Bot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%A8%E6%99%82%E9%9A%A8%E5%9C%B0%E7%9A%84%E6%8E%A7%E5%88%B6%E6%A8%B9%E8%8E%93%E6%B4%BE"><span class="nav-number">2.4.</span> <span class="nav-text">隨時隨地的控制樹莓派!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B7%A8%E5%AF%ABshell-script%E4%BE%86%E5%BF%AB%E9%80%9F%E5%95%9F%E5%8B%95bot"><span class="nav-number">2.5.</span> <span class="nav-text">編寫Shell Script來快速啟動Bot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">2.6.</span> <span class="nav-text">結語</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%96%8B%E6%A9%9F%E5%89%8D%E7%9A%84%E6%BA%96%E5%82%99"><span class="nav-number">2.1.</span> <span class="nav-text">開機前的準備</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%92%B0%E5%A2%83%E7%9A%84%E5%BB%BA%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">環境的建置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E5%B1%AC-discord-bot"><span class="nav-number">2.3.</span> <span class="nav-text">部屬 Discord Bot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%A8%E6%99%82%E9%9A%A8%E5%9C%B0%E7%9A%84%E6%8E%A7%E5%88%B6%E6%A8%B9%E8%8E%93%E6%B4%BE"><span class="nav-number">2.4.</span> <span class="nav-text">隨時隨地的控制樹莓派!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B7%A8%E5%AF%AB-shell-script-%E4%BE%86%E5%BF%AB%E9%80%9F%E5%95%9F%E5%8B%95-bot"><span class="nav-number">2.5.</span> <span class="nav-text">編寫 Shell Script 來快速啟動 Bot</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">2.6.</span> <span class="nav-text">結語</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -246,77 +246,78 @@
     
     <div class="post-body" itemprop="articleBody">
         <h1 id="前言">前言</h1>
-<p>從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。</p>
+<p>從我開始寫 Discord Bot 的時候，就一直缺少一個能讓程式 24h 運行的平台。由於 Bot 功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了 4B 版本來實現我的需求。</p>
+<span id="more"></span>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Raspberry Pi 4 model B 4GB ver《技術規格》</span><br><span class="line">* Broadcom BCM2711, Quad core Cortex-A72 (ARM v8) 64-bit SoC @ 1.5GHz</span><br><span class="line">* 4GB LPDDR4-3200 SDRAM</span><br><span class="line">* CYW43455 2.4 GHz/5.0 GHz IEEE 802.11ac wireless, Bluetooth 5.0, BLE</span><br><span class="line">* Gigabit Ethernet</span><br><span class="line">* 2x USB 3.0 ports; 2x USB 2.0 ports.</span><br><span class="line">* Raspberry Pi standard 40 pin GPIO header</span><br><span class="line">* 2 × micro-HDMI ports (up to 4kp60 supported)</span><br><span class="line">* 2-lane MIPI DSI display port</span><br><span class="line">* 2-lane MIPI CSI camera port</span><br><span class="line">* 4-pole stereo audio and composite video port</span><br><span class="line">* 265 (4kp60 decode), H264 (1080p60 decode, 1080p30 encode)</span><br><span class="line">* OpenGL ES 3.0 graphics</span><br><span class="line">* Micro-SD card slot for loading operating system and data storage</span><br><span class="line">* 5V DC via USB-C connector (minimum 3A*)</span><br><span class="line">* 5V DC via GPIO header (minimum 3A*)</span><br><span class="line">* Power over Ethernet (PoE) enabled (requires separate PoE HAT)</span><br><span class="line">* Operating temperature: 0 – 50 degrees C ambient</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">From 維基百科</span><br></pre></td></tr></table></figure>
 <h1 id="正文">正文</h1>
 <h2 id="開機前的準備">開機前的準備</h2>
-<p>由於樹莓派本身沒有自帶儲存裝置，所以我們會需要mircoSD卡作為他的儲存裝置(插槽在電路板背面)，而在插入前必須先格式化並灌入作業系統(可參考這裡)。</p>
-<p>在安裝OS這方面，我是利用樹莓派官網給的Imager跟Raspberry Pi OS(Raspbian)做安裝，如果不想這麼麻煩也可以用NOOBS，基本上結果是差不多的，但是用前者方法會快得多。</p>
-<p>補充:Raspberry Pi OS是基於Debian的作業系統，把他想成Linux(Unbutu)就可以了，當中預裝了一些程式，像是Python跟輕量化版本的Chromium，<del>使用起來算非常順暢</del>。</p>
+<p>由於樹莓派本身沒有自帶儲存裝置，所以我們會需要 mircoSD 卡作為他的儲存裝置(插槽在電路板背面)，而在插入前必須先格式化並灌入作業系統(可參考這裡)。</p>
+<p>在安裝 OS 這方面，我是利用樹莓派官網給的 Imager 跟 Raspberry Pi OS(Raspbian)做安裝，如果不想這麼麻煩也可以用 NOOBS，基本上結果是差不多的，但是用前者方法會快得多。</p>
+<p>補充:Raspberry Pi OS 是基於 Debian 的作業系統，把他想成 Linux(Unbutu)就可以了，當中預裝了一些程式，像是 Python 跟輕量化版本的 Chromium，<del>使用起來算非常順暢</del>。</p>
 <blockquote>
 <p>用久了以後發現瀏覽器常常讓系統崩潰，使用順暢這句話就當作我沒說過</p>
 </blockquote>
-<p>上述作業完成後，就可以接上螢幕和鍵盤滑鼠準備開機(螢幕接口在這代改用micro HDMI，我只好跑去黃色鬼屋買一條1M的micro HDMI to HDMI，一條就將近500元.... )</p>
+<p>上述作業完成後，就可以接上螢幕和鍵盤滑鼠準備開機(螢幕接口在這代改用 micro HDMI，我只好跑去黃色鬼屋買一條 1M 的 micro HDMI to HDMI，一條就將近 500 元.... )</p>
 <h2 id="環境的建置">環境的建置</h2>
-<p>開機確認過狀況以後，先到樹莓派設定中開啟ssh，再到cmd輸入</p>
+<p>開機確認過狀況以後，先到樹莓派設定中開啟 ssh，再到 cmd 輸入</p>
 <p><code>sudo apt-get install xrdp</code></p>
-<p>來安裝xrdp，之後我們就可以利用這ssh和Windows的遠端桌面連線來操作樹莓派了(遠端桌面連線控制起來延遲感嚴重，如果需要長期操作建議乖乖接螢幕)，另外，預設的使用者(pi)的密碼是raspberry，建議在一開始就改掉。 最後執行</p>
+<p>來安裝 xrdp，之後我們就可以利用這 ssh 和 Windows 的遠端桌面連線來操作樹莓派了(遠端桌面連線控制起來延遲感嚴重，如果需要長期操作建議乖乖接螢幕)，另外，預設的使用者(pi)的密碼是 raspberry，建議在一開始就改掉。 最後執行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
-<p>執行完以後發現Python版本還在3.7.3，那就只能接受他了。 再來安裝Visual Studio Code時會出現問題，目前找到最快的解決方法是這個，只要兩條指令就能解決，缺點是更新不像一般VS Code一樣方便，但是不影響我的使用，所以我還是裝了(只靠Vim對我來說實在是太難了)。</p>
+<p>執行完以後發現 Python 版本還在 3.7.3，那就只能接受他了。 再來安裝 Visual Studio Code 時會出現問題，目前找到最快的解決方法是這個，只要兩條指令就能解決，缺點是更新不像一般 VS Code 一樣方便，但是不影響我的使用，所以我還是裝了(只靠 Vim 對我來說實在是太難了)。</p>
 <blockquote>
-<p>後來發現OS裡面已經裝好了Nano，作為輕量的console文字編輯器相當方便，視窗下方也會提示按鍵快捷，若是Vim用的很不習慣可以考慮使用Nano</p>
+<p>後來發現 OS 裡面已經裝好了 Nano，作為輕量的 console 文字編輯器相當方便，視窗下方也會提示按鍵快捷，若是 Vim 用的很不習慣可以考慮使用 Nano</p>
 </blockquote>
-<p>MySQL(MariaDB)與phpmyadmin安裝</p>
+<p>MySQL(MariaDB)與 phpmyadmin 安裝</p>
 <p>參考<a target="_blank" rel="noopener" href="http://yhhuang1966.blogspot.com/2019/12/apachemysqlphp7.html">這裡</a>有非常詳盡的介紹，可配合程式儲存資料。</p>
 <blockquote>
-<p>重灌過後我把phpmyadmin替換成<a target="_blank" rel="noopener" href="https://www.adminer.org/">Adminer</a>，Web server則是從Apache換成<a target="_blank" rel="noopener" href="http://nginx.org/en/download.html">NGINX</a></p>
+<p>重灌過後我把 phpmyadmin 替換成<a target="_blank" rel="noopener" href="https://www.adminer.org/">Adminer</a>，Web server 則是從 Apache 換成<a target="_blank" rel="noopener" href="http://nginx.org/en/download.html">NGINX</a></p>
 </blockquote>
-<h2 id="部屬discord-bot">部屬Discord Bot</h2>
-<p>感覺環境都弄的差不多了，接下來就使用Git把原始碼pull下來就好，找個不錯的位置執行(自行替換repository URL)</p>
+<h2 id="部屬-discord-bot">部屬 Discord Bot</h2>
+<p>感覺環境都弄的差不多了，接下來就使用 Git 把原始碼 pull 下來就好，找個不錯的位置執行(自行替換 repository URL)</p>
 <p><code>git clone https://github.com/ppodds/Yue.git</code></p>
-<p>接下來進入該資料夾把該弄的設定和雜務做完(我的路徑為~/Documents/Yue，請依上個步驟放置程式碼的路徑自行替換)，再建立Python虛擬環境(Windows跟Linux的虛擬環境應該是不一樣的，推薦上傳時不要把venv的資料夾上傳上去)。</p>
-<p>為了建立Python虛擬環境，要執行以下指令(自行替換路徑)</p>
+<p>接下來進入該資料夾把該弄的設定和雜務做完(我的路徑為~/Documents/Yue，請依上個步驟放置程式碼的路徑自行替換)，再建立 Python 虛擬環境(Windows 跟 Linux 的虛擬環境應該是不一樣的，推薦上傳時不要把 venv 的資料夾上傳上去)。</p>
+<p>為了建立 Python 虛擬環境，要執行以下指令(自行替換路徑)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/Documents/Yue</span><br><span class="line">python3 -m venv venv</span><br></pre></td></tr></table></figure>
 <p>稍等一下後就會在程式的目錄建立名稱為<code>venv</code>的虛擬環境資料夾。</p>
 <p>補充:第二個<code>venv</code>可自行替換，影響虛擬環境資料夾的名稱。</p>
-<p>若要執行程式時，要使用虛擬環境的Python，需要先啟動虛擬環境。執行(路徑自行替換)</p>
+<p>若要執行程式時，要使用虛擬環境的 Python，需要先啟動虛擬環境。執行(路徑自行替換)</p>
 <p><code>source ~/Documents/Yue/venv/bin/activate</code></p>
-<p>之後就會發現cmd的前面多了(<code>venv</code>)，代表虛擬環境啟動中(如果是在VS Code中執行Python，如果設定正確就會自動進入venv)。</p>
-<p>接下來就該開始安裝需要的套件了，這裡就用pip完成就好</p>
+<p>之後就會發現 cmd 的前面多了(<code>venv</code>)，代表虛擬環境啟動中(如果是在 VS Code 中執行 Python，如果設定正確就會自動進入 venv)。</p>
+<p>接下來就該開始安裝需要的套件了，這裡就用 pip 完成就好</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install discord.py</span><br><span class="line">python -m pip install PyNaCl</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
 <p>如果你有放<code>requirements.txt</code>的話也可以直接用</p>
 <p><code>python -m pip install -r requirements.txt</code></p>
-<p>最後測試執行(路徑自行替換為自己的Bot主程式)</p>
+<p>最後測試執行(路徑自行替換為自己的 Bot 主程式)</p>
 <p><code>python Bot/Yue.py</code></p>
 <p>如果測試執行無誤的話就可以進行下一步。</p>
 <h2 id="隨時隨地的控制樹莓派">隨時隨地的控制樹莓派!</h2>
-<p>說到隨時隨地都在用的電子產品，常常會想到手機，於是我想到要用手機控制樹莓派(有申辦固定IP使用起來會方便的多)。為了不受區域網路限制，要先調整好路由器設定，基本上要動以下兩項。</p>
+<p>說到隨時隨地都在用的電子產品，常常會想到手機，於是我想到要用手機控制樹莓派(有申辦固定 IP 使用起來會方便的多)。為了不受區域網路限制，要先調整好路由器設定，基本上要動以下兩項。</p>
 <ol type="1">
-<li>固定樹莓派的區網ip</li>
+<li>固定樹莓派的區網 ip</li>
 <li>設定外部連入時指向到樹梅派(ip forwarding , 虛擬伺服器設定)</li>
 </ol>
-<p>補充:預設的ssh port是22，沒有特別需求的話就設定22 -&gt; 22</p>
-<p>第二項和Minecraft等其他遊戲伺服器設定差不多，可以參考相關文章。</p>
-<p>接下來需要在手機安裝ssh軟體，我採用JuiceSSH(軟體繁多大同小異，隨便選一個就好了)。</p>
-<p>啟動JuiceSSH，選取快速連線，輸入</p>
+<p>補充:預設的 ssh port 是 22，沒有特別需求的話就設定 22 -&gt; 22</p>
+<p>第二項和 Minecraft 等其他遊戲伺服器設定差不多，可以參考相關文章。</p>
+<p>接下來需要在手機安裝 ssh 軟體，我採用 JuiceSSH(軟體繁多大同小異，隨便選一個就好了)。</p>
+<p>啟動 JuiceSSH，選取快速連線，輸入</p>
 <p><code>pi@ip位址</code></p>
-<p>並輸入密碼就可以用pi的身分連入，使用狀況和cmd沒什麼差別，之後就可以利用ssh對樹莓派做操作了。</p>
-<p>補充:在ssh執行的程式，只要ssh中斷連線就會被終止。</p>
+<p>並輸入密碼就可以用 pi 的身分連入，使用狀況和 cmd 沒什麼差別，之後就可以利用 ssh 對樹莓派做操作了。</p>
+<p>補充:在 ssh 執行的程式，只要 ssh 中斷連線就會被終止。</p>
 <blockquote>
-<p>補充: 上面這些登入ssh的操作其實風險極高，公網上有非常多人會嘗試使用暴力破解登入ssh。如果不小心被猜到密碼就會導致主機淪為肉雞。 除了更改預設的使用者名稱再加上複雜密碼外，可以再搭配<a target="_blank" rel="noopener" href="https://www.fail2ban.org/wiki/index.php/Main_Page">Fail2ban</a>來防止密碼暴力破解。 最安全的方法就是直接關閉密碼驗證，改用全面公鑰登入。有興趣的人可以參考<a target="_blank" rel="noopener" href="https://blog.gtwang.org/linux/linux-ssh-public-key-authentication/">這篇文章</a></p>
+<p>補充: 上面這些登入 ssh 的操作其實風險極高，公網上有非常多人會嘗試使用暴力破解登入 ssh。如果不小心被猜到密碼就會導致主機淪為肉雞。 除了更改預設的使用者名稱再加上複雜密碼外，可以再搭配<a target="_blank" rel="noopener" href="https://www.fail2ban.org/wiki/index.php/Main_Page">Fail2ban</a>來防止密碼暴力破解。 最安全的方法就是直接關閉密碼驗證，改用全面公鑰登入。有興趣的人可以參考<a target="_blank" rel="noopener" href="https://blog.gtwang.org/linux/linux-ssh-public-key-authentication/">這篇文章</a></p>
 </blockquote>
-<h2 id="編寫shell-script來快速啟動bot">編寫Shell Script來快速啟動Bot</h2>
-<p>由於Python的venv啟動起來很麻煩，因此可以編寫腳本來解決問題，執行以下指令(自行替換名稱及路徑)</p>
+<h2 id="編寫-shell-script-來快速啟動-bot">編寫 Shell Script 來快速啟動 Bot</h2>
+<p>由於 Python 的 venv 啟動起來很麻煩，因此可以編寫腳本來解決問題，執行以下指令(自行替換名稱及路徑)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch YueLauncher.sh</span><br><span class="line">chmod +x YueLauncher.sh</span><br></pre></td></tr></table></figure>
 <p>解釋:建立名為<code>YueLauncher.sh</code>的檔案，並更改為可執行檔</p>
-<p>接下來用Vim或是文字編輯器在檔案中加入以下內容(自行替換名稱及路徑)</p>
+<p>接下來用 Vim 或是文字編輯器在檔案中加入以下內容(自行替換名稱及路徑)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">source ~/Documents/Yue/venv/bin/activate</span><br><span class="line">cd ~/Documents/Yue/</span><br><span class="line">nohup python -W ignore Bot/Yue.py &amp;&gt; Log.txt &amp;</span><br></pre></td></tr></table></figure>
-<p>解釋:啟動虛擬環境，在背景下利用Python執行Yue.py，且使用者登出時不關閉程式(包含ssh)</p>
-<p>最後，啟動這個腳本來啟動程式(如果已經在家目錄下，不須執行cd，因此可以在剛登入ssh後就立刻執行)</p>
+<p>解釋:啟動虛擬環境，在背景下利用 Python 執行 Yue.py，且使用者登出時不關閉程式(包含 ssh)</p>
+<p>最後，啟動這個腳本來啟動程式(如果已經在家目錄下，不須執行 cd，因此可以在剛登入 ssh 後就立刻執行)</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">./YueLauncher.sh</span><br></pre></td></tr></table></figure>
-<p>之後cmd不會有任何提示，但是Bot就會默默啟動了，並且在關閉以後把紀錄丟到目錄裡面的Log.txt裡面。如果要關閉Bot可以從cmd用指令kill掉處理程序，或是在Discord Bot加入關閉或重啟的指令，就可以從Discord客戶端控制。</p>
+<p>之後 cmd 不會有任何提示，但是 Bot 就會默默啟動了，並且在關閉以後把紀錄丟到目錄裡面的 Log.txt 裡面。如果要關閉 Bot 可以從 cmd 用指令 kill 掉處理程序，或是在 Discord Bot 加入關閉或重啟的指令，就可以從 Discord 客戶端控制。</p>
 <h2 id="結語">結語</h2>
-<p>樹莓派有非常多玩法，用來掛Discord Bot只是其中一種，各位有空也可以來玩玩看樹莓派喔!</p>
+<p>樹莓派有非常多玩法，用來掛 Discord Bot 只是其中一種，各位有空也可以來玩玩看樹莓派喔!</p>
 
     </div>
 

@@ -240,55 +240,18 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="前言">前言</h1>
-<p>Python為了避免產生blocking問題，替耗時的IO、計算或網路相關操作提供了asyncio，可以用並發的方式完成工作，同時最大限度地提高作業效率。</p>
+<p>Python 為了避免產生 blocking 問題，替耗時的 IO、計算或網路相關操作提供了 asyncio，可以用並發的方式完成工作，同時最大限度地提高作業效率。</p>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/413721/">並發和並行的比較</a></p>
 </blockquote>
-<h1 id="正文">正文</h1>
-<h2 id="協程和任務coroutines-and-tasks">協程和任務(Coroutines and Tasks)</h2>
-<h3 id="何謂協程"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-task.html#id1">何謂協程?</a></h3>
-<p>協程指的是有宣告為async的函式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;hello&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;world&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p>此時<code>main()</code>就是協程，無法直接被執行</p>
-<h3 id="何謂任務"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-task.html#task-object">何謂任務?</a></h3>
-<p>協程可以被裝成任務，接續上面的程式碼</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">task = asyncio.create_task(main())</span><br></pre></td></tr></table></figure>
-<p>此時<code>task</code>會是一個任務，任務比起一般協程能做出更多流程控制。</p>
-<h3 id="協程和任務的使用">協程和任務的使用</h3>
-<p>若要使用協程和任務，可使用<code>await</code>關鍵字</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> task</span><br><span class="line"><span class="keyword">await</span> main()</span><br></pre></td></tr></table></figure>
-<p>在這邊要注意，<code>await task</code>和<code>await main()</code>都會回傳<code>main</code>函式的執行結果，但是<code>task</code>是在<code>create_task()</code>沒多久後就執行了(會被丟進事件迴圈等待執行)，後者則是執行<code>await main()</code>時才會被執行。</p>
-<blockquote>
-<p>使用<code>await</code>的關鍵字，表示要Python等待後方任務或協程執行完畢再繼續執行下去。在等待執行完畢的期間，Python會不斷切換工作執行，直到等待中的任務完成。</p>
-</blockquote>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://mozillazg.com/2017/08/python-asyncio-note-task-usage.html">關於task的那些事(必看)</a></p>
-</blockquote>
-<blockquote>
-<p>雖然<code>asyncio.run()</code>可以用來執行協程和任務，但它其實是用於async程式的進入點，因此在正常情況下，一個async只能有一個<code>asyncio.run()</code>，否則會引發錯誤</p>
-</blockquote>
-<h2 id="queue-lock與event">Queue Lock與Event</h2>
-<p>可以用來控制執行情況</p>
-<h3 id="queue-佇列"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-queue.html#queues">Queue 佇列</a></h3>
-<blockquote>
-<p>先進先出</p>
-</blockquote>
-<p>可以塞入需要處理的物件，在音樂機器人等需要有佇列時很有用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue = asyncio.Queue()</span><br><span class="line"><span class="keyword">await</span> queue.put(Obj)</span><br><span class="line">something = <span class="keyword">await</span> queue.get()</span><br></pre></td></tr></table></figure>
-<h3 id="lock-鎖"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-sync.html#lock">Lock 鎖</a></h3>
-<p>能調控IO資源的取得，上鎖以後不能被使用，直到鎖被釋放為止，通常搭配<code>async with</code>使用</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lock = asyncio.Lock()</span><br><span class="line"></span><br><span class="line"><span class="comment">#程式會等到鎖被釋放才進入該區塊</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">with</span> lock:</span><br><span class="line">    <span class="comment">#access shared state</span></span><br></pre></td></tr></table></figure>
-<h3 id="event-事件"><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/asyncio-sync.html#event">Event 事件</a></h3>
-<p>能調控程式是否要繼續向下執行(<code>wait()</code>)，常用於callback函數中。 內部有個參數預設是<code>false</code>，可透過函數控制。當執行<code>wait()</code>時，若參數是<code>true</code>就會立刻繼續執行，否則會持續等待。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">waiter</span>(<span class="params">event</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;waiting for it ...&#x27;</span>)</span><br><span class="line">    <span class="keyword">await</span> event.wait()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;... got it!&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    <span class="comment"># Create an Event object.</span></span><br><span class="line">    event = asyncio.Event()</span><br><span class="line">    <span class="comment"># Spawn a Task to wait until &#x27;event&#x27; is set.</span></span><br><span class="line">    waiter_task = asyncio.create_task(waiter(event))</span><br><span class="line">    <span class="comment"># Sleep for 1 second and set the event.</span></span><br><span class="line">    <span class="keyword">await</span> asyncio.sleep(<span class="number">1</span>)</span><br><span class="line">    event.<span class="built_in">set</span>()</span><br><span class="line">    <span class="comment"># Wait until the waiter task is finished.</span></span><br><span class="line">    <span class="keyword">await</span> waiter_task</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-<h2 id="對抗耗時的io操作">對抗耗時的IO操作</h2>
-<p>面對耗時的IO操作，可以使用比較低層的操作方法</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> asyncio</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">blocking_io</span>():</span></span><br><span class="line">    <span class="comment">#do something</span></span><br><span class="line">    asyncio.sleep(<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;Fuck My Life&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line">    loop = asyncio.get_running_loop()</span><br><span class="line">    result = <span class="keyword">await</span> loop.run_in_executor(<span class="literal">None</span>, blocking_io)</span><br><span class="line">    <span class="built_in">print</span>(result)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-<p>用這種方法處理，主線程就不會卡住，在Discord Bot上常常用到。</p>
-<h1 id="結語">結語</h1>
-<p>其實這篇是整理幾個重點給我自己看的，文中只有簡單帶過常用的東西，如果需要更深層的知識需要自己去搜尋。</p>
-<p>有任何錯誤請通知我。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/08/08/Asyncio/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -368,78 +331,15 @@
     
     <div class="post-body" itemprop="articleBody">
           <h1 id="前言">前言</h1>
-<p>從我開始寫Discord Bot的時候，就一直缺少一個能讓程式24h運行的平台。由於Bot功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了4B版本來實現我的需求。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Raspberry Pi 4 model B 4GB ver《技術規格》</span><br><span class="line">* Broadcom BCM2711, Quad core Cortex-A72 (ARM v8) 64-bit SoC @ 1.5GHz</span><br><span class="line">* 4GB LPDDR4-3200 SDRAM</span><br><span class="line">* CYW43455 2.4 GHz/5.0 GHz IEEE 802.11ac wireless, Bluetooth 5.0, BLE</span><br><span class="line">* Gigabit Ethernet</span><br><span class="line">* 2x USB 3.0 ports; 2x USB 2.0 ports.</span><br><span class="line">* Raspberry Pi standard 40 pin GPIO header</span><br><span class="line">* 2 × micro-HDMI ports (up to 4kp60 supported)</span><br><span class="line">* 2-lane MIPI DSI display port</span><br><span class="line">* 2-lane MIPI CSI camera port</span><br><span class="line">* 4-pole stereo audio and composite video port</span><br><span class="line">* 265 (4kp60 decode), H264 (1080p60 decode, 1080p30 encode)</span><br><span class="line">* OpenGL ES 3.0 graphics</span><br><span class="line">* Micro-SD card slot for loading operating system and data storage</span><br><span class="line">* 5V DC via USB-C connector (minimum 3A*)</span><br><span class="line">* 5V DC via GPIO header (minimum 3A*)</span><br><span class="line">* Power over Ethernet (PoE) enabled (requires separate PoE HAT)</span><br><span class="line">* Operating temperature: 0 – 50 degrees C ambient</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">From 維基百科</span><br></pre></td></tr></table></figure>
-<h1 id="正文">正文</h1>
-<h2 id="開機前的準備">開機前的準備</h2>
-<p>由於樹莓派本身沒有自帶儲存裝置，所以我們會需要mircoSD卡作為他的儲存裝置(插槽在電路板背面)，而在插入前必須先格式化並灌入作業系統(可參考這裡)。</p>
-<p>在安裝OS這方面，我是利用樹莓派官網給的Imager跟Raspberry Pi OS(Raspbian)做安裝，如果不想這麼麻煩也可以用NOOBS，基本上結果是差不多的，但是用前者方法會快得多。</p>
-<p>補充:Raspberry Pi OS是基於Debian的作業系統，把他想成Linux(Unbutu)就可以了，當中預裝了一些程式，像是Python跟輕量化版本的Chromium，<del>使用起來算非常順暢</del>。</p>
-<blockquote>
-<p>用久了以後發現瀏覽器常常讓系統崩潰，使用順暢這句話就當作我沒說過</p>
-</blockquote>
-<p>上述作業完成後，就可以接上螢幕和鍵盤滑鼠準備開機(螢幕接口在這代改用micro HDMI，我只好跑去黃色鬼屋買一條1M的micro HDMI to HDMI，一條就將近500元.... )</p>
-<h2 id="環境的建置">環境的建置</h2>
-<p>開機確認過狀況以後，先到樹莓派設定中開啟ssh，再到cmd輸入</p>
-<p><code>sudo apt-get install xrdp</code></p>
-<p>來安裝xrdp，之後我們就可以利用這ssh和Windows的遠端桌面連線來操作樹莓派了(遠端桌面連線控制起來延遲感嚴重，如果需要長期操作建議乖乖接螢幕)，另外，預設的使用者(pi)的密碼是raspberry，建議在一開始就改掉。 最後執行</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
-<p>執行完以後發現Python版本還在3.7.3，那就只能接受他了。 再來安裝Visual Studio Code時會出現問題，目前找到最快的解決方法是這個，只要兩條指令就能解決，缺點是更新不像一般VS Code一樣方便，但是不影響我的使用，所以我還是裝了(只靠Vim對我來說實在是太難了)。</p>
-<blockquote>
-<p>後來發現OS裡面已經裝好了Nano，作為輕量的console文字編輯器相當方便，視窗下方也會提示按鍵快捷，若是Vim用的很不習慣可以考慮使用Nano</p>
-</blockquote>
-<p>MySQL(MariaDB)與phpmyadmin安裝</p>
-<p>參考<a target="_blank" rel="noopener" href="http://yhhuang1966.blogspot.com/2019/12/apachemysqlphp7.html">這裡</a>有非常詳盡的介紹，可配合程式儲存資料。</p>
-<blockquote>
-<p>重灌過後我把phpmyadmin替換成<a target="_blank" rel="noopener" href="https://www.adminer.org/">Adminer</a>，Web server則是從Apache換成<a target="_blank" rel="noopener" href="http://nginx.org/en/download.html">NGINX</a></p>
-</blockquote>
-<h2 id="部屬discord-bot">部屬Discord Bot</h2>
-<p>感覺環境都弄的差不多了，接下來就使用Git把原始碼pull下來就好，找個不錯的位置執行(自行替換repository URL)</p>
-<p><code>git clone https://github.com/ppodds/Yue.git</code></p>
-<p>接下來進入該資料夾把該弄的設定和雜務做完(我的路徑為~/Documents/Yue，請依上個步驟放置程式碼的路徑自行替換)，再建立Python虛擬環境(Windows跟Linux的虛擬環境應該是不一樣的，推薦上傳時不要把venv的資料夾上傳上去)。</p>
-<p>為了建立Python虛擬環境，要執行以下指令(自行替換路徑)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/Documents/Yue</span><br><span class="line">python3 -m venv venv</span><br></pre></td></tr></table></figure>
-<p>稍等一下後就會在程式的目錄建立名稱為<code>venv</code>的虛擬環境資料夾。</p>
-<p>補充:第二個<code>venv</code>可自行替換，影響虛擬環境資料夾的名稱。</p>
-<p>若要執行程式時，要使用虛擬環境的Python，需要先啟動虛擬環境。執行(路徑自行替換)</p>
-<p><code>source ~/Documents/Yue/venv/bin/activate</code></p>
-<p>之後就會發現cmd的前面多了(<code>venv</code>)，代表虛擬環境啟動中(如果是在VS Code中執行Python，如果設定正確就會自動進入venv)。</p>
-<p>接下來就該開始安裝需要的套件了，這裡就用pip完成就好</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install discord.py</span><br><span class="line">python -m pip install PyNaCl</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-<p>如果你有放<code>requirements.txt</code>的話也可以直接用</p>
-<p><code>python -m pip install -r requirements.txt</code></p>
-<p>最後測試執行(路徑自行替換為自己的Bot主程式)</p>
-<p><code>python Bot/Yue.py</code></p>
-<p>如果測試執行無誤的話就可以進行下一步。</p>
-<h2 id="隨時隨地的控制樹莓派">隨時隨地的控制樹莓派!</h2>
-<p>說到隨時隨地都在用的電子產品，常常會想到手機，於是我想到要用手機控制樹莓派(有申辦固定IP使用起來會方便的多)。為了不受區域網路限制，要先調整好路由器設定，基本上要動以下兩項。</p>
-<ol type="1">
-<li>固定樹莓派的區網ip</li>
-<li>設定外部連入時指向到樹梅派(ip forwarding , 虛擬伺服器設定)</li>
-</ol>
-<p>補充:預設的ssh port是22，沒有特別需求的話就設定22 -&gt; 22</p>
-<p>第二項和Minecraft等其他遊戲伺服器設定差不多，可以參考相關文章。</p>
-<p>接下來需要在手機安裝ssh軟體，我採用JuiceSSH(軟體繁多大同小異，隨便選一個就好了)。</p>
-<p>啟動JuiceSSH，選取快速連線，輸入</p>
-<p><code>pi@ip位址</code></p>
-<p>並輸入密碼就可以用pi的身分連入，使用狀況和cmd沒什麼差別，之後就可以利用ssh對樹莓派做操作了。</p>
-<p>補充:在ssh執行的程式，只要ssh中斷連線就會被終止。</p>
-<blockquote>
-<p>補充: 上面這些登入ssh的操作其實風險極高，公網上有非常多人會嘗試使用暴力破解登入ssh。如果不小心被猜到密碼就會導致主機淪為肉雞。 除了更改預設的使用者名稱再加上複雜密碼外，可以再搭配<a target="_blank" rel="noopener" href="https://www.fail2ban.org/wiki/index.php/Main_Page">Fail2ban</a>來防止密碼暴力破解。 最安全的方法就是直接關閉密碼驗證，改用全面公鑰登入。有興趣的人可以參考<a target="_blank" rel="noopener" href="https://blog.gtwang.org/linux/linux-ssh-public-key-authentication/">這篇文章</a></p>
-</blockquote>
-<h2 id="編寫shell-script來快速啟動bot">編寫Shell Script來快速啟動Bot</h2>
-<p>由於Python的venv啟動起來很麻煩，因此可以編寫腳本來解決問題，執行以下指令(自行替換名稱及路徑)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch YueLauncher.sh</span><br><span class="line">chmod +x YueLauncher.sh</span><br></pre></td></tr></table></figure>
-<p>解釋:建立名為<code>YueLauncher.sh</code>的檔案，並更改為可執行檔</p>
-<p>接下來用Vim或是文字編輯器在檔案中加入以下內容(自行替換名稱及路徑)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">source ~/Documents/Yue/venv/bin/activate</span><br><span class="line">cd ~/Documents/Yue/</span><br><span class="line">nohup python -W ignore Bot/Yue.py &amp;&gt; Log.txt &amp;</span><br></pre></td></tr></table></figure>
-<p>解釋:啟動虛擬環境，在背景下利用Python執行Yue.py，且使用者登出時不關閉程式(包含ssh)</p>
-<p>最後，啟動這個腳本來啟動程式(如果已經在家目錄下，不須執行cd，因此可以在剛登入ssh後就立刻執行)</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">./YueLauncher.sh</span><br></pre></td></tr></table></figure>
-<p>之後cmd不會有任何提示，但是Bot就會默默啟動了，並且在關閉以後把紀錄丟到目錄裡面的Log.txt裡面。如果要關閉Bot可以從cmd用指令kill掉處理程序，或是在Discord Bot加入關閉或重啟的指令，就可以從Discord客戶端控制。</p>
-<h2 id="結語">結語</h2>
-<p>樹莓派有非常多玩法，用來掛Discord Bot只是其中一種，各位有空也可以來玩玩看樹莓派喔!</p>
-
+<p>從我開始寫 Discord Bot 的時候，就一直缺少一個能讓程式 24h 運行的平台。由於 Bot 功能較多，沒辦法在雲端服務上部屬，最後只好找上樹莓派當作主機，因此近期購買了 4B 版本來實現我的需求。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/08/02/DiscordBot/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

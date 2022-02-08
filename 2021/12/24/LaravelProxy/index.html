@@ -246,6 +246,7 @@
         <h1 id="前言">前言</h1>
 <p>自從摸到 VM 的機器後又過了一段時間，就和學校電算申請了一個虛擬路徑用來連線到 VM 的主機。這個虛擬路徑服務除了主要功能以外，還可以幫忙上 SSL，省去我們單位自己維護 ssl 憑證和 domain 的麻煩。雖然這個服務聽起來相當方便，但要把原本的主機改成用虛擬路徑服務連線絕對不是簡單的一件事，何況這個主機上面同時架了三個網站，還要再根據不同的 request url 導向到不同的本機網站上面去，因此主機為了要配合虛擬路徑服務，又再加了一個 Reverse Proxy。</p>
 <p>這次的踩坑是 Laravel 在虛擬路徑上支援不完整，也花了很久的時間找出 Bug 在哪邊並且修復。</p>
+<span id="more"></span>
 <h1 id="正文">正文</h1>
 <h2 id="問題描述">問題描述</h2>
 <p>連上網站後虛擬路徑會被改寫成<code>https://domain/</code>，但是實際上提出的 request 是<code>https://domain/to/project</code>，導致了嚴重的路徑錯誤問題。經過觀察後發現前端路由(Ziggy)的 url 變數是<code>http://localhost:8080/</code>，可以先猜測是 reverse proxy 導致原本 request 的資訊遺失，原本的後端伺服器只能收到 reverse proxy 所送請求的資訊。</p>
