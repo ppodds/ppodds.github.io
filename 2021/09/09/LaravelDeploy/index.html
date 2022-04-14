@@ -18,12 +18,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ppodds.website","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="前言 上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。 正文 主機環境 基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。 時區調整 先檢查一下伺服器現在的時區 1timedatectl 伺服器一開">
 <meta property="og:type" content="article">
 <meta property="og:title" content="從零開始的Laravel生活(部署篇)">
-<meta property="og:url" content="https://ppodds.github.io/2021/09/09/LaravelDeploy/index.html">
+<meta property="og:url" content="http://blog.ppodds.website/2021/09/09/LaravelDeploy/index.html">
 <meta property="og:site_name" content="萌新的學習筆記">
 <meta property="og:description" content="前言 上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。 正文 主機環境 基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。 時區調整 先檢查一下伺服器現在的時區 1timedatectl 伺服器一開">
 <meta property="og:locale" content="zh_TW">
@@ -33,20 +33,20 @@
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="PHP">
 <meta property="article:tag" content="Laravel">
-<meta property="article:tag" content="Deploy">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="MySQL">
 <meta property="article:tag" content="MariaDB">
+<meta property="article:tag" content="Deploy">
 <meta property="article:tag" content="Ubuntu">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://ppodds.github.io/2021/09/09/LaravelDeploy/">
+<link rel="canonical" href="http://blog.ppodds.website/2021/09/09/LaravelDeploy/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2021/09/09/LaravelDeploy/","path":"2021/09/09/LaravelDeploy/","title":"從零開始的Laravel生活(部署篇)"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://blog.ppodds.website/2021/09/09/LaravelDeploy/","path":"2021/09/09/LaravelDeploy/","title":"從零開始的Laravel生活(部署篇)"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>從零開始的Laravel生活(部署篇) | 萌新的學習筆記</title>
@@ -196,7 +196,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2021/09/09/LaravelDeploy/">
+    <link itemprop="mainEntityOfPage" href="http://blog.ppodds.website/2021/09/09/LaravelDeploy/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -346,10 +346,10 @@
               <a href="/tags/Web/" rel="tag"># Web</a>
               <a href="/tags/PHP/" rel="tag"># PHP</a>
               <a href="/tags/Laravel/" rel="tag"># Laravel</a>
-              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
               <a href="/tags/MySQL/" rel="tag"># MySQL</a>
               <a href="/tags/MariaDB/" rel="tag"># MariaDB</a>
+              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
               <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
               <a href="/tags/Linux/" rel="tag"># Linux</a>
           </div>

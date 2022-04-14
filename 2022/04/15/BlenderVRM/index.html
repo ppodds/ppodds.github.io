@@ -18,27 +18,27 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ppodds.website","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="前言 前幾天心血來潮打算套個皮寫扣直播陪觀眾聊天，所以開始接觸 VRM 模組在 Blender 的操作，由於 Blender 是一個很專業的 3D 建模軟體，因此寫了這篇文章記錄一下這次調整模組的重點。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Blender對VRM模型的操作小記">
-<meta property="og:url" content="https://ppodds.github.io/2022/04/15/BlenderVRM/index.html">
+<meta property="og:url" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/index.html">
 <meta property="og:site_name" content="萌新的學習筆記">
 <meta property="og:description" content="前言 前幾天心血來潮打算套個皮寫扣直播陪觀眾聊天，所以開始接觸 VRM 模組在 Blender 的操作，由於 Blender 是一個很專業的 3D 建模軟體，因此寫了這篇文章記錄一下這次調整模組的重點。">
 <meta property="og:locale" content="zh_TW">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/shader1.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/shader2.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/cats.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/save.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/eye.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/eye_step1.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/eye_step2.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/eye_bone.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/spring_bone.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/bones_example.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/head_collider.png">
-<meta property="og:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/collider_group.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/shader1.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/shader2.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/cats.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/save.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/eye.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/eye_step1.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/eye_step2.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/eye_bone.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/spring_bone.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/bones_example.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/head_collider.png">
+<meta property="og:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/collider_group.png">
 <meta property="article:published_time" content="2022-04-14T16:40:27.000Z">
 <meta property="article:modified_time" content="2022-04-14T18:28:08.409Z">
 <meta property="article:author" content="ppodds">
@@ -47,14 +47,14 @@
 <meta property="article:tag" content="3D Model">
 <meta property="article:tag" content="VTuber">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://ppodds.github.io/2022/04/15/BlenderVRM/shader1.png">
+<meta name="twitter:image" content="http://blog.ppodds.website/2022/04/15/BlenderVRM/shader1.png">
 
 
-<link rel="canonical" href="https://ppodds.github.io/2022/04/15/BlenderVRM/">
+<link rel="canonical" href="http://blog.ppodds.website/2022/04/15/BlenderVRM/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://ppodds.github.io/2022/04/15/BlenderVRM/","path":"2022/04/15/BlenderVRM/","title":"Blender對VRM模型的操作小記"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"http://blog.ppodds.website/2022/04/15/BlenderVRM/","path":"2022/04/15/BlenderVRM/","title":"Blender對VRM模型的操作小記"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Blender對VRM模型的操作小記 | 萌新的學習筆記</title>
@@ -204,7 +204,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://ppodds.github.io/2022/04/15/BlenderVRM/">
+    <link itemprop="mainEntityOfPage" href="http://blog.ppodds.website/2022/04/15/BlenderVRM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
