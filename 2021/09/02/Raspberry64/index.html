@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.0.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
@@ -16,11 +15,12 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="前言 最近在用 Node 來重寫原本的 Discord bot，寫到一個段落後想部屬卻碰上了開發環境和部屬環境相差過大的問題，由於花了兩到三天才完全解決，就寫一篇文章來記錄一下這段期間的 debug 過程。 正文 NodeJS 在 ARMv8 只提供 x64 Prebuilt Binary Ubuntu Server x64 一上來就碰上這個麻煩的問題，為了要躲自行編譯 Node 的天堂">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 最近在用 Node 來重寫原本的 Discord bot，寫到一個段落後想部屬卻碰上了開發環境和部屬環境相差過大的問題，由於花了兩到三天才完全解決，就寫一篇文章來記錄一下這段期間的 debug 過程。 正文 NodeJS 在 ARMv8 只提供 x64 Prebuilt Binary Ubuntu Server x64 一上來就碰上這個麻煩的問題，為了要躲自行編譯 Node 的天堂">
 <meta property="og:type" content="article">
 <meta property="og:title" content="樹莓派的重啟人生">
 <meta property="og:url" content="https://ppodds.github.io/2021/09/02/Raspberry64/index.html">
@@ -55,6 +55,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
   <script src="/js/third-party/analytics/google-analytics.js"></script>
+
 
 
 
@@ -97,11 +98,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">13</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">51</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">14</span></a></li>
   </ul>
 </nav>
 
@@ -145,18 +142,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分類</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">51</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -205,11 +202,16 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="樹莓派的重啟人生 | 萌新的學習筆記">
+      <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -226,13 +228,13 @@
 
       <time title="創建時間：2021-09-02 15:10:35" itemprop="dateCreated datePublished" datetime="2021-09-02T15:10:35+08:00">2021-09-02</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-09-04 12:25:50" itemprop="dateModified" datetime="2021-09-04T12:25:50+08:00">2021-09-04</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2021-09-04 12:25:50" itemprop="dateModified" datetime="2021-09-04T12:25:50+08:00">2021-09-04</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -292,7 +294,7 @@
 <h3 id="用-docker-嘗試搞定環境">用 Docker 嘗試搞定環境</h3>
 <p>這次把腦筋動到 Docker 身上來，如果利用 Docker 的執行環境，應該就能弄出一個有不同 glibc 的環境。</p>
 <p><code>Dockerfile</code></p>
-<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">16.8</span>-buster</span><br><span class="line"></span><br><span class="line"><span class="comment"># ENV NODE_ENV=production</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> mkdir -p /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># general package</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm install -g node-gyp</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># discord js core</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm install discord.js @discordjs/rest discord-api-types @discordjs/builders \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install zlib-sync \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install bufferutil \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install utf-8-validate</span></span><br><span class="line"><span class="comment"># &amp;&amp; npm install discord/erlpack</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># voice support</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm install @discordjs/voice \</span></span><br><span class="line"><span class="bash">    npm install sodium \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install @discordjs/opus</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># other package</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> npm install async-lock \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install axios \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install beautify.log \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install file-type \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install sequelize \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install nodemon \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install mariadb \</span></span><br><span class="line"><span class="bash">    &amp;&amp; npm install sharp</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> ./src /app/src</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> ./deploy-commands.js /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> ./index.js /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># deploy commands</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> node deploy-commands.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [ <span class="string">&quot;node&quot;</span> , <span class="string">&quot;index.js&quot;</span>]</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">16.8</span>-buster</span><br><span class="line"></span><br><span class="line"><span class="comment"># ENV NODE_ENV=production</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> -p /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># general package</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install -g node-gyp</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># discord js core</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install discord.js @discordjs/rest discord-api-types @discordjs/builders \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install zlib-sync \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install bufferutil \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install utf-8-validate</span></span><br><span class="line"><span class="comment"># &amp;&amp; npm install discord/erlpack</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># voice support</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install @discordjs/voice \</span></span><br><span class="line"><span class="language-bash">    npm install sodium \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install @discordjs/opus</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># other package</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install async-lock \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install axios \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install beautify.log \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install file-type \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install sequelize \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install nodemon \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install mariadb \</span></span><br><span class="line"><span class="language-bash">    &amp;&amp; npm install sharp</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./src /app/src</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./deploy-commands.js /app</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> ./index.js /app</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># deploy commands</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> node deploy-commands.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> [ <span class="string">&quot;node&quot;</span> , <span class="string">&quot;index.js&quot;</span>]</span></span><br></pre></td></tr></table></figure>
 <p>這裡用很暴力的方式維護 package，因為如果直接把<code>package.json</code> copy 進去 install 的話會發現開發機裝得起來的 package 部署機不一定裝得起來，所以最後決定把 package 分開維護。</p>
 <blockquote>
 <p>其實開發機的環境後來也死了，最終連開發機都用 docker 跑，整個人變成 docker 的形狀</p>

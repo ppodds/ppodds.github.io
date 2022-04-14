@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.0.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
@@ -16,11 +15,12 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="前言 上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。 正文 主機環境 基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。 時區調整 先檢查一下伺服器現在的時區 1timedatectl 伺服器一開">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。 正文 主機環境 基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。 時區調整 先檢查一下伺服器現在的時區 1timedatectl 伺服器一開">
 <meta property="og:type" content="article">
 <meta property="og:title" content="從零開始的Laravel生活(部署篇)">
 <meta property="og:url" content="https://ppodds.github.io/2021/09/09/LaravelDeploy/index.html">
@@ -33,10 +33,10 @@
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="PHP">
 <meta property="article:tag" content="Laravel">
+<meta property="article:tag" content="Deploy">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="MySQL">
 <meta property="article:tag" content="MariaDB">
-<meta property="article:tag" content="Deploy">
 <meta property="article:tag" content="Ubuntu">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary">
@@ -54,6 +54,7 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-204954958-1"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-204954958-1","only_pageview":false}</script>
   <script src="/js/third-party/analytics/google-analytics.js"></script>
+
 
 
 
@@ -96,11 +97,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">13</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">51</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">14</span></a></li>
   </ul>
 </nav>
 
@@ -144,18 +141,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分類</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">51</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -204,11 +201,16 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="從零開始的Laravel生活(部署篇) | 萌新的學習筆記">
+      <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -268,7 +270,7 @@
 <p>時區改動了</p>
 <blockquote>
 <p>timedatectl 可以拿來改時區</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">timedatectl list-timezones # 找你的時區</span><br><span class="line">sudo timedatectl set-timezone &lt;time_zone&gt;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Example</span></span><br><span class="line">sudo timedatectl set-timezone Asia/Taipei</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">timedatectl list-timezones # 找你的時區</span><br><span class="line">sudo timedatectl set-timezone &lt;time_zone&gt;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Example</span></span><br><span class="line">sudo timedatectl set-timezone Asia/Taipei</span><br></pre></td></tr></table></figure>
 </blockquote>
 <h3 id="ssh-登入限制">ssh 登入限制</h3>
 <p>由於管理員們都是使用公鑰登入，為了安全考量決定把 ssh 的密碼登入關掉。</p>
@@ -344,10 +346,10 @@
               <a href="/tags/Web/" rel="tag"># Web</a>
               <a href="/tags/PHP/" rel="tag"># PHP</a>
               <a href="/tags/Laravel/" rel="tag"># Laravel</a>
+              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
               <a href="/tags/Docker/" rel="tag"># Docker</a>
               <a href="/tags/MySQL/" rel="tag"># MySQL</a>
               <a href="/tags/MariaDB/" rel="tag"># MariaDB</a>
-              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
               <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
               <a href="/tags/Linux/" rel="tag"># Linux</a>
           </div>

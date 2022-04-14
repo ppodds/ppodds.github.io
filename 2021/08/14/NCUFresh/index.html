@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.0.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.1.0">
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
@@ -16,11 +15,12 @@
 
 
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.8.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="前言 這個暑假作為新生知訊網的程設組員，和不少夥伴打造了全新的 2021 新生知訊網，無論是使用的框架還是概念都和以往不同，再加上這個專案是我首次做 Web 的實戰開發，學到了不少技巧，因此決定把學到的知識整理到這篇文章中，除了可以把概念整理一遍，便於未來複習外，也能給予其他人不小的幫助。 正文 專案架構 簡單的放一張醜醜的圖再說明  User View 表示使用者操作的瀏覽器視圖，一">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ppodds.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 這個暑假作為新生知訊網的程設組員，和不少夥伴打造了全新的 2021 新生知訊網，無論是使用的框架還是概念都和以往不同，再加上這個專案是我首次做 Web 的實戰開發，學到了不少技巧，因此決定把學到的知識整理到這篇文章中，除了可以把概念整理一遍，便於未來複習外，也能給予其他人不小的幫助。 正文 專案架構 簡單的放一張醜醜的圖再說明  User View 表示使用者操作的瀏覽器視圖，一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="2021新生知訊網開發筆記">
 <meta property="og:url" content="https://ppodds.github.io/2021/08/14/NCUFresh/index.html">
@@ -65,6 +65,7 @@
 
 
 
+
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
@@ -103,11 +104,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu">
-        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li>
-        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">47</span></a></li>
-        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">5</span></a></li>
-        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">13</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">51</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">14</span></a></li>
   </ul>
 </nav>
 
@@ -151,18 +148,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分類</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">51</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -211,11 +208,16 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="ppodds">
-      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="2021新生知訊網開發筆記 | 萌新的學習筆記">
+      <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -232,13 +234,13 @@
 
       <time title="創建時間：2021-08-14 20:12:40" itemprop="dateCreated datePublished" datetime="2021-08-14T20:12:40+08:00">2021-08-14</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新於</span>
-        <time title="修改時間：2021-12-29 19:39:53" itemprop="dateModified" datetime="2021-12-29T19:39:53+08:00">2021-12-29</time>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
       </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2021-12-29 19:39:53" itemprop="dateModified" datetime="2021-12-29T19:39:53+08:00">2021-12-29</time>
+    </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -305,7 +307,7 @@
 <p><img src="/2021/08/14/NCUFresh/route.png" alt="動態路由實例"></p>
 <h5 id="動態路由驗證">動態路由驗證</h5>
 <p>簡單的動態路由驗證可以像下面這樣子</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">validate</span>(<span class="params">&#123; params &#125;</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> club = [</span><br><span class="line">            <span class="string">&quot;learn&quot;</span>,</span><br><span class="line">            <span class="string">&quot;religion&quot;</span>,</span><br><span class="line">            <span class="string">&quot;music&quot;</span>,</span><br><span class="line">            <span class="string">&quot;sport&quot;</span>,</span><br><span class="line">            <span class="string">&quot;skill&quot;</span>,</span><br><span class="line">            <span class="string">&quot;serve&quot;</span>,</span><br><span class="line">            <span class="string">&quot;friend&quot;</span>,</span><br><span class="line">            <span class="string">&quot;fun&quot;</span>,</span><br><span class="line">            <span class="string">&quot;team&quot;</span></span><br><span class="line">        ];</span><br><span class="line">        <span class="keyword">return</span> club.includes(params.type);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="title function_">validate</span>(<span class="params">&#123; params &#125;</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> club = [</span><br><span class="line">            <span class="string">&quot;learn&quot;</span>,</span><br><span class="line">            <span class="string">&quot;religion&quot;</span>,</span><br><span class="line">            <span class="string">&quot;music&quot;</span>,</span><br><span class="line">            <span class="string">&quot;sport&quot;</span>,</span><br><span class="line">            <span class="string">&quot;skill&quot;</span>,</span><br><span class="line">            <span class="string">&quot;serve&quot;</span>,</span><br><span class="line">            <span class="string">&quot;friend&quot;</span>,</span><br><span class="line">            <span class="string">&quot;fun&quot;</span>,</span><br><span class="line">            <span class="string">&quot;team&quot;</span></span><br><span class="line">        ];</span><br><span class="line">        <span class="keyword">return</span> club.<span class="title function_">includes</span>(params.<span class="property">type</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>如果<code>type</code>不在清單上就會變成 404(找不到頁面)</p>
 <h3 id="clientonly">ClientOnly</h3>
 <p>有時會碰上 template 中的 component 只能在 client side render 的狀況。此時可以用</p>
@@ -317,12 +319,12 @@
 <h3 id="nuxt-event-bus">Nuxt Event Bus</h3>
 <p>Vue 本身就有<code>emit</code>可以在 component 之間傳遞資料了，不過 Nuxt 依舊提供一套 emit 的系統給我們使用。在使用妥當的情況下，甚至比原生 Vue 給的<code>emit</code>好用不少。</p>
 <p>當我們要使用 Nuxt 提供的 emit 前，我們要先在要接收的 component 註冊。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$on(<span class="string">&#x27;some-event&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="title">beforeDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$off(<span class="string">&#x27;some-event&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="title function_">created</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">$nuxt</span>.$on(<span class="string">&#x27;some-event&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// do something</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">beforeDestroy</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">$nuxt</span>.$off(<span class="string">&#x27;some-event&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>之後要發出事件就簡單多了，只要加一句</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$nuxt.$emit(<span class="string">&quot;some-event&quot;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="property">$nuxt</span>.$emit(<span class="string">&quot;some-event&quot;</span>);</span><br></pre></td></tr></table></figure>
 <p>整個頁面都能接收到 Nuxt emit 出去的事件，解決了 Vue 提供的<code>emit</code>連續向上傳遞或橫向傳遞時難以使用的問題。除此之外也能向原生的<code>emit</code>一樣傳參數，如:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">created</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$on(<span class="string">&#x27;some-event&#x27;</span>, <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(arg);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="function"><span class="title">beforeDestroy</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.$nuxt.$off(<span class="string">&#x27;some-event&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.$nuxt.$emit(<span class="string">&quot;some-event&quot;</span>, <span class="string">&quot;test&quot;</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="title function_">created</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">$nuxt</span>.$on(<span class="string">&#x27;some-event&#x27;</span>, <span class="function"><span class="params">arg</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(arg);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">beforeDestroy</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">$nuxt</span>.$off(<span class="string">&#x27;some-event&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">this</span>.<span class="property">$nuxt</span>.$emit(<span class="string">&quot;some-event&quot;</span>, <span class="string">&quot;test&quot;</span>);</span><br></pre></td></tr></table></figure>
 <h2 id="css-tricks">CSS Tricks</h2>
 <h3 id="rwd-圖片配上定位">RWD 圖片配上定位</h3>
 <p>我的頁面中有需要同時做 RWD 圖片並且相對定位不能跑掉的需求，最後找到的方法如下:</p>
@@ -387,7 +389,7 @@
 </blockquote>
 <h3 id="影響頁面上可滾動的元素">影響頁面上可滾動的元素</h3>
 <p>頁面上如果有可滾動元素，在沒有正確設定下，滾動就會被 fullpage 吃掉，最終變成切換頁面。所幸是解決方法不難，只要在 fullpage 的初始化設定內調整即可。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="attr">options</span>: &#123;</span><br><span class="line">                ...</span><br><span class="line">                <span class="attr">normalScrollElements</span>:</span><br><span class="line">                    <span class="string">&quot;.table-list-wrapper-inside, .content-area, .block-text-wrapper&quot;</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="title function_">data</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="attr">options</span>: &#123;</span><br><span class="line">                ...</span><br><span class="line">                <span class="attr">normalScrollElements</span>:</span><br><span class="line">                    <span class="string">&quot;.table-list-wrapper-inside, .content-area, .block-text-wrapper&quot;</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><code>normalScrollElements</code>設定要在頁面上能正常滾動的元素，採用 CSS selector 的方式設定，中間用<code>,</code>分隔</p>
 </blockquote>
