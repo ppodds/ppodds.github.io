@@ -88,7 +88,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">51</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">14</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">68</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">19</span></a></li>
   </ul>
 </nav>
 
@@ -125,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -136,7 +136,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">68</span>
         <span class="site-state-item-name">標籤</span></a>
       </div>
   </nav>
@@ -158,6 +158,486 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2021/12/24/LaravelProxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/12/24/LaravelProxy/" class="post-title-link" itemprop="url">從零開始的Laravel生活(部署篇-踩坑實錄)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-12-24 16:13:15" itemprop="dateCreated datePublished" datetime="2021-12-24T16:13:15+08:00">2021-12-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>自從摸到 VM 的機器後又過了一段時間，就和學校電算申請了一個虛擬路徑用來連線到 VM 的主機。這個虛擬路徑服務除了主要功能以外，還可以幫忙上 SSL，省去我們單位自己維護 ssl 憑證和 domain 的麻煩。雖然這個服務聽起來相當方便，但要把原本的主機改成用虛擬路徑服務連線絕對不是簡單的一件事，何況這個主機上面同時架了三個網站，還要再根據不同的 request url 導向到不同的本機網站上面去，因此主機為了要配合虛擬路徑服務，又再加了一個 Reverse Proxy。</p>
+<p>這次的踩坑是 Laravel 在虛擬路徑上支援不完整，也花了很久的時間找出 Bug 在哪邊並且修復。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/12/24/LaravelProxy/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2021/09/09/LaravelDeploy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/09/LaravelDeploy/" class="post-title-link" itemprop="url">從零開始的Laravel生活(部署篇)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+      
+
+      <time title="創建時間：2021-09-09 12:48:15 / 修改時間：13:57:33" itemprop="dateCreated datePublished" datetime="2021-09-09T12:48:15+08:00">2021-09-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>上次把專案寫完，直到最近才終於能碰到要部屬的機子。這次要部署的主機是學校的 VM，作業系統為 Ubuntu 20.04.3，算是很常見的 Linux 環境。本篇內容記錄程式部署的過程和主機的一些基本設定。</p>
+<h1 id="正文">正文</h1>
+<h2 id="主機環境">主機環境</h2>
+<p>基本的 zsh 還有一些雜項另外一位網管幫忙做完了，實際上我有做的只有下面幾項。</p>
+<h3 id="時區調整">時區調整</h3>
+<p>先檢查一下伺服器現在的時區</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">timedatectl</span><br></pre></td></tr></table></figure>
+<p>伺服器一開始是標準時區(+0)，要調整時區可以直接用內建的工具。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tzselect</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/09/LaravelDeploy/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2021/09/02/Raspberry64/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/02/Raspberry64/" class="post-title-link" itemprop="url">樹莓派的重啟人生</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-09-02 15:10:35" itemprop="dateCreated datePublished" datetime="2021-09-02T15:10:35+08:00">2021-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2021-09-04 12:25:50" itemprop="dateModified" datetime="2021-09-04T12:25:50+08:00">2021-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>最近在用 Node 來重寫原本的 Discord bot，寫到一個段落後想部屬卻碰上了開發環境和部屬環境相差過大的問題，由於花了兩到三天才完全解決，就寫一篇文章來記錄一下這段期間的 debug 過程。</p>
+<h1 id="正文">正文</h1>
+<h2 id="nodejs-在-armv8-只提供-x64-prebuilt-binary">NodeJS 在 ARMv8 只提供 x64 Prebuilt Binary</h2>
+<h3 id="ubuntu-server-x64">Ubuntu Server x64</h3>
+<p>一上來就碰上這個麻煩的問題，為了要躲自行編譯 Node 的天堂路，我決定直接重灌樹梅派的 OS，將原本官方提供的 x32 OS 換成 x64 的。</p>
+<p><img src="/2021/09/02/Raspberry64/piOS.png" alt="樹莓派官網提供的OS清單"></p>
+<blockquote>
+<p>官方其實有做 x64 的 image，不過似乎還是測試版，所以這裡找不到</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/02/Raspberry64/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2021/08/18/Laravel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/18/Laravel/" class="post-title-link" itemprop="url">從零開始的Laravel生活</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-08-18 00:17:20" itemprop="dateCreated datePublished" datetime="2021-08-18T00:17:20+08:00">2021-08-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2021-09-03 23:06:35" itemprop="dateModified" datetime="2021-09-03T23:06:35+08:00">2021-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>日前接了學校事務組的打工，有一個要寫迷你系統的需求。為了順便練練 PHP 的功力，這次選用 Laravel 做主要框架，不過做起來比想像中複雜非常多，看起來我太高估自己的學習能力了。</p>
+<h1 id="正文">正文</h1>
+<h2 id="專案架構">專案架構</h2>
+<p>一開始原本打算簡單做，所以大概是這樣想的:</p>
+<p><img src="/2021/08/18/Laravel/project.png" alt="簡易專案架構"></p>
+<p>東西打算放到學校的虛擬機上面跑，就用 Docker 包了 Container 來讓環境乾淨一點。這裡的圖省略了一些組件，在包 Container 時，為了要讓 Lavarel 有辦法提供 Web 服務，還有一項 NGINX，另外為了讓測試環境更舒適，我也順便把 Adminer 也包進去了，最後變成大禮包(?</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/18/Laravel/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2021/08/14/NCUFresh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/14/NCUFresh/" class="post-title-link" itemprop="url">2021新生知訊網開發筆記</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2021-08-14 20:12:40" itemprop="dateCreated datePublished" datetime="2021-08-14T20:12:40+08:00">2021-08-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2021-12-29 19:39:53" itemprop="dateModified" datetime="2021-12-29T19:39:53+08:00">2021-12-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>這個暑假作為新生知訊網的程設組員，和不少夥伴打造了全新的 2021 新生知訊網，無論是使用的框架還是概念都和以往不同，再加上這個專案是我首次做 Web 的實戰開發，學到了不少技巧，因此決定把學到的知識整理到這篇文章中，除了可以把概念整理一遍，便於未來複習外，也能給予其他人不小的幫助。</p>
+<h1 id="正文">正文</h1>
+<h2 id="專案架構">專案架構</h2>
+<p>簡單的放一張醜醜的圖再說明</p>
+<p><img src="/2021/08/14/NCUFresh/project.png" alt="專案架構圖"></p>
+<p>User View 表示使用者操作的瀏覽器視圖，一開始 Server 收到前端頁面的 request 時，會先經過 NGINX 的反向代理，再轉給 Nuxt 的前端伺服器去處理。Nuxt 就會把需要的資源還有整個 Vue app 傳給 client。client 解析完就會看到我們精心打造的網頁了!</p>
+<p>當使用者在視圖上操作時，Vue app 會即時的在前端把畫面刷新。若是需要用到後端資料的話，則利用<code>axios</code>對 Server 提出 api request，請求經過 NGINX 的反向代理轉給 Nuxt，再由 Nuxt 的 proxy 設定轉給 Express Server，Server 回應 client 後再由 Vue 刷新使用者的視圖。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/14/NCUFresh/#more" rel="contents">
+                閱讀全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 

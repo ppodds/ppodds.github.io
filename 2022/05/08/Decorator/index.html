@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ppodds.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 前幾天在重構 Discord bot 時，碰上了相同的架構下需要人工 import 大量 module 的問題。既然在架構相同的情況下，能不能有效的降低人工重複的操作?這個想法不禁在我腦海中徘徊。後來剛好找到了 discordx 這個 repo，發現他們利用 decorator 來解決類似的問題，受到他們的啟發，我便開始自己嘗試撰寫 decorator 。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TypeScript 的 Decorator 小記">
+<meta property="og:url" content="https://blog.ppodds.cc/2022/05/08/Decorator/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="前言 前幾天在重構 Discord bot 時，碰上了相同的架構下需要人工 import 大量 module 的問題。既然在架構相同的情況下，能不能有效的降低人工重複的操作?這個想法不禁在我腦海中徘徊。後來剛好找到了 discordx 這個 repo，發現他們利用 decorator 來解決類似的問題，受到他們的啟發，我便開始自己嘗試撰寫 decorator 。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2022-05-07T17:47:00.000Z">
+<meta property="article:modified_time" content="2023-12-07T17:20:40.382Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="TypeScript">
+<meta property="article:tag" content="Decorator">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ppodds.cc/2022/05/08/Decorator/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://blog.ppodds.cc/2022/05/08/Decorator/","path":"2022/05/08/Decorator/","title":"TypeScript 的 Decorator 小記"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TypeScript 的 Decorator 小記 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQ08PWL93D"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-ZQ08PWL93D","only_pageview":false,"measure_protocol_api_secret":"KRQC8K2kSTqiQHObS1ZkrA"}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">68</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">19</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E4%BD%9C%E6%A5%AD"><span class="nav-number">2.1.</span> <span class="nav-text">前置作業</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#typescript-%E4%B8%AD%E7%9A%84-decorator"><span class="nav-number">2.2.</span> <span class="nav-text">TypeScript 中的 decorator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator-factories"><span class="nav-number">2.3.</span> <span class="nav-text">Decorator Factories</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator-%E7%9A%84%E5%8F%83%E6%95%B8"><span class="nav-number">2.4.</span> <span class="nav-text">Decorator 的參數</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B5%90%E8%AA%9E"><span class="nav-number">3.</span> <span class="nav-text">結語</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2022/05/08/Decorator/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TypeScript 的 Decorator 小記 | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TypeScript 的 Decorator 小記
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2022-05-08 01:47:00" itemprop="dateCreated datePublished" datetime="2022-05-08T01:47:00+08:00">2022-05-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2023-12-08 01:20:40" itemprop="dateModified" datetime="2023-12-08T01:20:40+08:00">2023-12-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言">前言</h1>
+<p>前幾天在重構 Discord bot 時，碰上了相同的架構下需要人工 <code>import</code> 大量 <code>module</code> 的問題。既然在架構相同的情況下，能不能有效的降低人工重複的操作?這個想法不禁在我腦海中徘徊。後來剛好找到了 <a target="_blank" rel="noopener" href="https://github.com/oceanroleplay/discord.ts">discordx</a> 這個 repo，發現他們利用 decorator 來解決類似的問題，受到他們的啟發，我便開始自己嘗試撰寫 decorator 。</p>
+<span id="more"></span>
+<h1 id="正文">正文</h1>
+<h2 id="前置作業">前置作業</h2>
+<p>要開啟 TypeScript 的 decorator 功能，必須先在 <code>tsconfig.json</code> 中加入以下內容</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;compilerOptions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;experimentalDecorators&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>或是在編譯時加上 <code>--experimentalDecorators</code> 參數。</p>
+<h2 id="typescript-中的-decorator">TypeScript 中的 decorator</h2>
+<p>Decorator 是一種特殊的函式，可以用來修飾類別、方法、屬性等。在 TypeScript 中，共有以下幾種:</p>
+<ul>
+<li>Class Decorator</li>
+<li>Method Decorator</li>
+<li>Accessor Decorator</li>
+<li>Property Decorator</li>
+<li>Parameter Decorator</li>
+</ul>
+<p>Decorator 會根據類型不同而有不同的參數。</p>
+<h2 id="decorator-factories">Decorator Factories</h2>
+<p>由於 Decorator 函式的參數是綁死的，沒辦法變動，無法應付一般常態的需求，因此可以利用工廠函式來根據參數生成 Decorator。以官方文件的例子來說</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">color</span>(<span class="params">value: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">  <span class="comment">// this is the decorator factory, it sets up</span></span><br><span class="line">  <span class="comment">// the returned decorator function</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">target</span>) &#123;</span><br><span class="line">    <span class="comment">// this is the decorator</span></span><br><span class="line">    <span class="comment">// do something with &#x27;target&#x27; and &#x27;value&#x27;...</span></span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我們用工廠函式生成對應的 Decorator，這樣就可以利用自己的參數控制 Decorator 的行為了。</p>
+<h2 id="decorator-的參數">Decorator 的參數</h2>
+<p>關於各個 Decorator 的參數，這邊就不再多贅述了，可以直接參考<a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/decorators.html#class-decorators">官方文件</a>，這個小章節只會對幾個參數的值做簡單解釋。</p>
+<p>主要這次我有接觸的是 Method Decorator，所以下面就以 Method Decorator 為例。</p>
+<p>這是 Method Decorator 的宣告</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> (<span class="params">target: <span class="built_in">any</span>, propertyKey: <span class="built_in">string</span>, descriptor: PropertyDescriptor</span>);</span><br></pre></td></tr></table></figure>
+<p><code>target</code>除了是物件的實體外，上頭還會帶有<code>constructor</code>，<code>propertyKey</code>是 method 的名稱，<code>descriptor</code>是<code>PropertyDescriptor</code>的物件，我們可以利用它來設定 property descriptor，不過實際上我並沒有使用過。</p>
+<p>如果我們想讓別的程式經由 Decorator 的註冊來呼叫 method，要記得透過 target 還有 propertyKey 來呼叫。否則會因為失去物件的實體導致 <code>this</code> 之類的關鍵字失效。</p>
+<p>具體來說會像下面這樣來呼叫函式</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target[propertyKey](...args);</span><br></pre></td></tr></table></figure>
+<h1 id="結語">結語</h1>
+<p>今天是在深夜找事情做的時候寫紀錄，所以寫得很偷懶，內容不多，感謝不嫌棄還讀到最後的你。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TypeScript/" rel="tag"># TypeScript</a>
+              <a href="/tags/Decorator/" rel="tag"># Decorator</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/15/BlenderVRM/" rel="prev" title="Blender對VRM模型的操作小記">
+                  <i class="fa fa-angle-left"></i> Blender對VRM模型的操作小記
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/09/Intern/" rel="next" title="找實習和面試經驗分享">
+                  找實習和面試經驗分享 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2021 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ppodds</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

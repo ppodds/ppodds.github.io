@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ppodds.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本篇整理 ASP.NET Core 搭配 Entity Framework Core 的 migration 實踐。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASP.NET Core Migration 實踐">
+<meta property="og:url" content="https://blog.ppodds.cc/2023/02/07/ASPDotNetMigration/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="本篇整理 ASP.NET Core 搭配 Entity Framework Core 的 migration 實踐。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2023-02-07T13:02:31.000Z">
+<meta property="article:modified_time" content="2023-12-07T17:20:40.382Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content=".NET">
+<meta property="article:tag" content=".NET Core">
+<meta property="article:tag" content="ASP.NET Core">
+<meta property="article:tag" content="Migration">
+<meta property="article:tag" content="Database">
+<meta property="article:tag" content="Deploy">
+<meta property="article:tag" content="DevOps">
+<meta property="article:tag" content="Entity Framework">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ppodds.cc/2023/02/07/ASPDotNetMigration/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://blog.ppodds.cc/2023/02/07/ASPDotNetMigration/","path":"2023/02/07/ASPDotNetMigration/","title":"ASP.NET Core Migration 實踐"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>ASP.NET Core Migration 實踐 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQ08PWL93D"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-ZQ08PWL93D","only_pageview":false,"measure_protocol_api_secret":"KRQC8K2kSTqiQHObS1ZkrA"}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">68</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">19</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#migration-%E6%98%AF%E4%BB%80%E9%BA%BC"><span class="nav-number">1.</span> <span class="nav-text">Migration 是什麼?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%82%BA%E4%BB%80%E9%BA%BC%E8%A6%81%E5%AF%AB-migration"><span class="nav-number">2.</span> <span class="nav-text">為什麼要寫 Migration</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mingration-in-entity-framework"><span class="nav-number">3.</span> <span class="nav-text">Mingration in Entity Framework</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84-migration"><span class="nav-number">3.1.</span> <span class="nav-text">建立初始化的 migration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%97%E7%94%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84-migration"><span class="nav-number">3.2.</span> <span class="nav-text">套用初始化的 migration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%93%AC%E8%B3%87%E6%96%99%E5%BA%AB%E7%95%B0%E5%8B%95"><span class="nav-number">3.3.</span> <span class="nav-text">模擬資料庫異動</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BA%86%E6%AD%A3%E5%BC%8F%E6%A9%9F%E6%88%96-k8s-%E5%91%A2"><span class="nav-number">3.4.</span> <span class="nav-text">上了正式機或 K8S 呢?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%83%E8%80%83%E8%B3%87%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">參考資料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2023/02/07/ASPDotNetMigration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="ASP.NET Core Migration 實踐 | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ASP.NET Core Migration 實踐
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2023-02-07 21:02:31" itemprop="dateCreated datePublished" datetime="2023-02-07T21:02:31+08:00">2023-02-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2023-12-08 01:20:40" itemprop="dateModified" datetime="2023-12-08T01:20:40+08:00">2023-12-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本篇整理 ASP.NET Core 搭配 Entity Framework Core 的 migration 實踐。</p>
+<span id="more"></span>
+<h2 id="migration-是什麼">Migration 是什麼?</h2>
+<p>在寫 database migration 之前，我們得先認識一下 migration 是什麼。</p>
+<p>在我們後端專案開發時，可能會因為新功能的開發或功能異動導致資料庫的 schema 產生變化。舉個具體的例子，假設某天網站的使用者資訊突然要增加其他內容，我們可能會直接在新版本程式上線前，手動用 SQL 指令調整 table 格式。在這個案例下，可能會發生幾種問題。首先，我們在執行 SQL 指令前，若沒有做過相應的驗證，可能會讓指令執行完的結果不符預期，此外，也難保正式機的資料庫狀態跟驗證測試用的資料庫差不多。</p>
+<p>再看看另個例子，假設我們現在剛把後端程式寫好，要佈到正式機上。為了讓後端程式正常運行，我們要先手動執行 SQL 指令來初始化資料庫，於是乎，和上面差不多的問題又再度出現，共通點都是要手動執行 SQL 指令。為了解決這樣的情形，migration 就誕生了。</p>
+<h2 id="為什麼要寫-migration">為什麼要寫 Migration</h2>
+<ul>
+<li>避免手動調整或建置資料庫時出現問題</li>
+<li>加快部署速度</li>
+<li>降低開發環境和正式環境的資料庫差異</li>
+</ul>
+<h2 id="mingration-in-entity-framework">Mingration in Entity Framework</h2>
+<p>大家最常用的 Entity Framework (EF)其實已經有 migration 的支援了，不過在使用前，需要安裝 ef 的 cli 工具。微軟官方推薦使用 dotnet cli 進行安裝，因此這裡都用 dotnet cli 安裝的版本來示範。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/ef/core/cli/dotnet">安裝教學</a></p>
+</blockquote>
+<h3 id="建立初始化的-migration">建立初始化的 migration</h3>
+<p>如果你的專案過去都沒有使用過 migration，下面的指令會掃描當前目錄的專案，並自動建立名為 <code>InitialCreate</code> 的 migration。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet ef migrations add InitialCreate</span><br></pre></td></tr></table></figure>
+<p>這個指令掃描完專案後，會找出你有使用到的 entity，並自動根據你的 entity 定義產生生成 schema 的程式碼。但在套用之前，應該一律手動檢查，並確認是否與你的需求相符，若是和需求不符，就必須手動修改。</p>
+<blockquote>
+<p>在這裡檢查的意義，除了確認生成工具有沒有生出不符合當初設定的 entity 外，也可以再次確認資料庫和 entity 對應到的設定是否是一樣的。另外還有幾種情形，其一是想在 migration 中增加自訂邏輯，此時只能手動撰寫該部分程式碼，其二是工具在判斷和最近一次 migration 差異時出錯，此時也必須手動修改。幸運的是，絕大多數的狀況 ef 都幫我們處理得好好的。</p>
+</blockquote>
+<p>生成的 migration 預設會被放在 Migrations 資料夾內，請<strong>一定要加入版控</strong>，migration 本身和程式的版本息息相關，因此一定要納入版控，除此之外，也不要任意刪除已經套用過的 migration，否則會造成 migration 紀錄損壞。</p>
+<blockquote>
+<p>壞了有幾種解決辦法，如果你是不小心誤刪的，那用版控系統拉回來就好，但如果沒做版控，只能把 migration 記錄和 schema 清掉重來了(手動嘗試救援可能可行，後面講到 migration 紀錄原理再講)。不過只要不亂刪 migration 或有人搞破壞亂改 migration 紀錄，migration 是不太可能壞的。</p>
+</blockquote>
+<p>migration 檔名會長類似這樣： <code>20230202055946_InitialCreate.cs</code></p>
+<p>前面那串數字是時間戳，後面則是 migration 名稱，時間戳會被 ef 用來判斷 migration 的套用的先後順序，請記得不要亂改檔名。</p>
+<p>migration 會有數個檔案，但我們只要修改其中一個。</p>
+<ol type="1">
+<li><code>20230202055946_InitialCreate.cs</code></li>
+<li><code>20230202055946_InitialCreate.Designer.cs</code></li>
+<li><code>AssetsContextModelSnapshot</code></li>
+</ol>
+<blockquote>
+<p>這些是我碰到的專案例子，所以檔名會略有不同，但大家應該都看得懂</p>
+</blockquote>
+<p>第一個是我們需要觀看並修改的檔案，它的作用是運行程式碼對資料庫進行對應操作，因此你想對資料庫做什麼操作都直接寫在這裡即可，剩下兩個則是 ef 自己維護並使用的檔案，具體功能應該與 cli 有關。</p>
+<p>點開第一個檔案可看到 <code>InitialCreate</code> 的 class，且該 class 繼承 <code>Migration</code> 並實作 <code>Up</code> 和 <code>Down</code> 方法。<code>Up</code> 定義該 migration 執行時，資料庫應該要做的所有修改，<code>Down</code> 則是在復原 <code>Up</code> 進行的操作。很顯然的，它希望能做到可復原的修改，但事實上，完全可復原的修改是不可能的。</p>
+<blockquote>
+<p>假設原本使用者名稱長度可為 30 字，經過新的 migration 修改變為 10 字，而後的 migration 又將名稱長度改為 30 字，被截斷的資料依舊不會復原。</p>
+</blockquote>
+<p>正式資料庫在程式上線前應永遠要做備份，以避免任何狀況發生。是否要用 migration 來運行資料庫備份其實有討論的空間，但我個人認為不適合。</p>
+<blockquote>
+<p>備份永遠都要做，相信大家都認同，但為什麼我認為不該在 migration 裡面做呢? 我的想法大致如下：有學過 SOLID 原則的人，肯定讀過其中的單一職責原則，雖然 SOLID 原則應該套用在 class 身上而不是 migration，但其理念依舊適用。此處若將 migration 加入資料庫備份和還原的功能，migration 就要知道備份資料庫的存在，且同時還要知道還原時要用什麼規則去還原。光第一個問題，就強制讓我們的應用程式和備份資料庫耦合了，第二個問題也會造成 migration 邏輯複雜，相信這不是一件好事吧?</p>
+</blockquote>
+<h3 id="套用初始化的-migration">套用初始化的 migration</h3>
+<p>請注意，接下來的內容<strong>會影響當前的資料庫 schema</strong>，如果你用到的 DB 不是乾淨的，請備份後清空再嘗試，不然一定會遇到衝突(除非你是全新專案)</p>
+<p>在建立完 migration 後，可以執行下面的指令套用所有的 migration</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet ef database update</span><br></pre></td></tr></table></figure>
+<p>這個指令會讀取使用的資料庫內的 migration 紀錄，並套用尚未套用的 migration。migration 紀錄會被存放在 <code>__EFMigrationsHistory</code> 的 table 內，table 也只有兩個欄位。第一個是 <code>MigrationId</code>，用來記錄運行過的 migration，其二則是 <code>ProductVersion</code>，用來記錄運行的 ef 版本。</p>
+<p>用這種儲存方式，ef 就可以比對出哪些 migration 尚未運行，並且應該執行後加入到 migration 紀錄中。</p>
+<blockquote>
+<p><code>ProductVerion</code> 應該是為了提供 ef 不同版本之間兼容用的</p>
+</blockquote>
+<p>前面提過的手動救援，可以嘗試手動把被刪掉的 migration 從這張 table 裡面拿掉，不過依舊不保證會動，畢竟你的 database schema 跟 migration 追蹤到的不一樣，依舊要手動調整為 migration 的當前狀態。</p>
+<h3 id="模擬資料庫異動">模擬資料庫異動</h3>
+<p>當有新需求發生，我需要在表裡面加個 column 時怎麼辦呢? 我們一樣先改好 entity 的定義，接著依樣畫葫蘆</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet ef migrations add AddNewNameColumnInAsset</span><br></pre></td></tr></table></figure>
+<p>此時 ef 會比對舊的 entity 定義，並且生成對應的修改程式碼。我們只需要確認它生的和我們的需求是否相符即可。</p>
+<blockquote>
+<p>migration 名稱最好有意義，讓人一眼看出 database 的異動</p>
+</blockquote>
+<p>當 migration 確定沒問題後，再根據 migration 調整資料庫</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet ef database update</span><br></pre></td></tr></table></figure>
+<h3 id="上了正式機或-k8s-呢">上了正式機或 K8S 呢?</h3>
+<p>其實這種情況都對應到 DB 沒有做任何處理的情形。</p>
+<p>因為 migration 本身就很適合處理這種狀況，所以處理起來很簡單，我們只要將應用程式會用到的資料庫建好再運行 migration 即可。</p>
+<p>在一般的情形(資料庫是獨立 server)，我們手動連上資料庫，並執行 SQL 指令建一個 DB 給應用程式用即可，若是 K8S 或 Docker 這種環境，可以跟負責人討論看看，原則上是在資料庫容器 init 時就可以執行腳本自動把要用到的 DB 建起來，但如果 DB 共用，就照著一般處理方式來吧。</p>
+<p>或許你會有疑問，正式機環境也要安裝 ef 的 cli 工具才能跑 migration 嗎？感覺好像哪裡怪怪的。</p>
+<p>當然，這是一種處理的方式，但絕對稱不上好。微軟官方提出了數種 solution，其中最推薦的是利用 cli 先生成 migration 會用到的 SQL 語句，再手動丟上去資料庫執行，這樣可以避免在正式機上安裝 .NET SDK 和 cli 工具以及原本程式的 source code。具體做法如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">從全空的 db 跑到最新的 migration</span></span><br><span class="line">dotnet ef migrations script</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">從 AddNewTables 跑到最新的 migration</span></span><br><span class="line">dotnet ef migrations script AddNewTables</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">從 AddNewTables 跑到 AddAuditTable</span></span><br><span class="line">dotnet ef migrations script AddNewTables AddAuditTable</span><br></pre></td></tr></table></figure>
+<p>這樣子的做法有個小缺點。上面的 code 生成的 SQL 語句不會檢查當前 migration 的執行狀態(理論來講這些是你應該知道的)，因此你要在運行之前先知道自己想把 migration 從哪個狀態跑到哪個狀態。不過微軟還是提供了一個選項，可以只套用當前資料庫缺少的 migration(原理就是加一堆 if)。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dotnet ef migrations script --idempotent</span><br></pre></td></tr></table></figure>
+<h2 id="參考資料">參考資料</h2>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli">https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/C/" rel="tag"># C#</a>
+              <a href="/tags/NET/" rel="tag"># .NET</a>
+              <a href="/tags/NET-Core/" rel="tag"># .NET Core</a>
+              <a href="/tags/ASP-NET-Core/" rel="tag"># ASP.NET Core</a>
+              <a href="/tags/Migration/" rel="tag"># Migration</a>
+              <a href="/tags/Database/" rel="tag"># Database</a>
+              <a href="/tags/Deploy/" rel="tag"># Deploy</a>
+              <a href="/tags/DevOps/" rel="tag"># DevOps</a>
+              <a href="/tags/Entity-Framework/" rel="tag"># Entity Framework</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/07/ASPDotNetContainerize/" rel="prev" title="ASP.NET Core 專案容器化實踐">
+                  <i class="fa fa-angle-left"></i> ASP.NET Core 專案容器化實踐
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2021 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ppodds</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

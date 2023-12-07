@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.0.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" integrity="sha256-yIDrPSXHZdOZhAqiBP7CKzIwMQmRCJ8UeB8Jo17YC4o=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.ppodds.cc","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="相信滿多人剛接觸 C# 的時候，都很難搞懂整個 C# 生態系統。最近因為天天在寫 C#，就對整個生態系統做了一個簡單整理，剛好可以讓各位快速了解 C# 的生態系。">
+<meta property="og:type" content="article">
+<meta property="og:title" content=".NET 生態系統好亂？ 一次幫你搞懂">
+<meta property="og:url" content="https://blog.ppodds.cc/2023/02/04/DotNet/index.html">
+<meta property="og:site_name" content="萌新的學習筆記">
+<meta property="og:description" content="相信滿多人剛接觸 C# 的時候，都很難搞懂整個 C# 生態系統。最近因為天天在寫 C#，就對整個生態系統做了一個簡單整理，剛好可以讓各位快速了解 C# 的生態系。">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2023-02-04T04:10:36.000Z">
+<meta property="article:modified_time" content="2023-12-07T17:20:40.383Z">
+<meta property="article:author" content="ppodds">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content=".NET">
+<meta property="article:tag" content=".NET Core">
+<meta property="article:tag" content="ASP.NET Core">
+<meta property="article:tag" content=".NET Framework">
+<meta property="article:tag" content=".NET Standard">
+<meta property="article:tag" content="Mono">
+<meta property="article:tag" content="AST.NET">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.ppodds.cc/2023/02/04/DotNet/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://blog.ppodds.cc/2023/02/04/DotNet/","path":"2023/02/04/DotNet/","title":".NET 生態系統好亂？ 一次幫你搞懂"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>.NET 生態系統好亂？ 一次幫你搞懂 | 萌新的學習筆記</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQ08PWL93D"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-ZQ08PWL93D","only_pageview":false,"measure_protocol_api_secret":"KRQC8K2kSTqiQHObS1ZkrA"}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">萌新的學習筆記</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">ppodds</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤<span class="badge">68</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類<span class="badge">6</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔<span class="badge">19</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#net-%E7%B0%A1%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">.NET 簡介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#net-framework"><span class="nav-number">1.1.</span> <span class="nav-text">.NET Framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mono"><span class="nav-number">1.2.</span> <span class="nav-text">Mono</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#net-.net-core"><span class="nav-number">1.3.</span> <span class="nav-text">.NET (.NET Core)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#net-standard"><span class="nav-number">1.4.</span> <span class="nav-text">.NET Standard</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#asp-%E9%AB%94%E7%B3%BB"><span class="nav-number">2.</span> <span class="nav-text">ASP 體系</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#asp.net"><span class="nav-number">2.1.</span> <span class="nav-text">ASP.NET</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asp.net-core"><span class="nav-number">2.2.</span> <span class="nav-text">ASP.NET Core</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">ppodds</p>
+  <div class="site-description" itemprop="description">學習筆記, 程式設計, Web, CTF</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ppodds" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ppodds" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://blog.ppodds.cc/2023/02/04/DotNet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="ppodds">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌新的學習筆記">
+      <meta itemprop="description" content="學習筆記, 程式設計, Web, CTF">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content=".NET 生態系統好亂？ 一次幫你搞懂 | 萌新的學習筆記">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          .NET 生態系統好亂？ 一次幫你搞懂
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2023-02-04 12:10:36" itemprop="dateCreated datePublished" datetime="2023-02-04T12:10:36+08:00">2023-02-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新於</span>
+      <time title="修改時間：2023-12-08 01:20:40" itemprop="dateModified" datetime="2023-12-08T01:20:40+08:00">2023-12-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88/" itemprop="url" rel="index"><span itemprop="name">程式設計</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>相信滿多人剛接觸 C# 的時候，都很難搞懂整個 C# 生態系統。最近因為天天在寫 C#，就對整個生態系統做了一個簡單整理，剛好可以讓各位快速了解 C# 的生態系。</p>
+<span id="more"></span>
+<h2 id="net-簡介">.NET 簡介</h2>
+<p>一開始我們先來認識一下 .NET 到底是什麼。</p>
+<p>.NET 是一個微軟開發的 SDK，整個生態系統包含 .NET Framework、.NET(.NET Core)、.NET Standard 等。.NET 生態系主要使用 C# 做為開發語言，但也可以使用其他語言開發，例如 F#、VB.NET 等。以下針對各個 Runtime 做簡單介紹</p>
+<h3 id="net-framework">.NET Framework</h3>
+<p>.NET Framework 是微軟官方開發的 Windows 限定 .NET Runtime。.NET Framework 提供了一些限定的功能，像是大家熟悉的 Ｗ inForm 就是其中之一，他最大的缺點就是沒辦法跨平台執行，因此有了下面的幾項產品。</p>
+<h3 id="mono">Mono</h3>
+<p>Mono 是一個社群維護的跨平台 .NET Runtime，他實作了一部份的 .NET Framework 功能，因此可作為 .NET Framework 在跨平台下的替代品。著名的 Unity 遊戲引擎就是使用 Mono 來做為 Scripting Backend。</p>
+<blockquote>
+<p>Unity 還提供了 IL2CPP 來做為 Scripting Backend，但是 IL2CPP 並不是 .NET Runtime，他是一個 C++ Compiler，他會將 C# 編譯成 C++，再透過 C++ Compiler 來編譯成執行檔。</p>
+</blockquote>
+<h3 id="net-.net-core">.NET (.NET Core)</h3>
+<p>原則上現在的 .NET Core 和 .NET 是同個東西。這東西的發展歷史是這樣的，當初 .NET Framework 只能在 Windows 上執行，微軟覺得好像有哪裡不太對，於是生出了 .NET Core 作為 .NET Framework 在其他平台下的替代品。不過因為跨平台的關係，依舊缺少了部分 .NET Framework 的功能。後來在 .NET Core 3.1 後，微軟改了產品名稱，日後版本更名為 .NET，並且直接從 .NET 5 開始出，後續版本名稱就變成 .NET 6、.NET 7 等。</p>
+<h3 id="net-standard">.NET Standard</h3>
+<p>因為 .NET Core 和 .NET Framework 寫完的程式碼其實完全不能共用，於是微軟又再次生出了 .NET Standard。.NET Standard 是一個標準，他定義了一些 .NET Framework 和 .NET Core 共同實作的功能，這樣就可以讓 .NET Framework 和 .NET Core 共用一些程式碼。不同的 .NET Standard 版本定義的範圍也不一樣，可以參考微軟官方的<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-tw/dotnet/standard/net-standard?tabs=net-standard-2-0">文件</a>來確認。</p>
+<h2 id="asp-體系">ASP 體系</h2>
+<h3 id="asp.net">ASP.NET</h3>
+<p>原本是指 .NET Framework 上的 ASP，在下面的 ASP.NET Core 出來後，有時候名稱會混在一起用。總而言之是 .NET 驅動的 Web Framework。ASP.NET MVC 則是上面的 MVC 框架，可以搭配 Entity Framework (EF) 來做資料庫操作。</p>
+<h3 id="asp.net-core">ASP.NET Core</h3>
+<p>其實就是 ASP.NET 在 .NET Core 上的移植版，同樣也有 ASP.NET Core MVC 和 EF Core，目前如果要寫 C# backend 的話，都推薦直接用 ASP.NET Core。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/C/" rel="tag"># C#</a>
+              <a href="/tags/NET/" rel="tag"># .NET</a>
+              <a href="/tags/NET-Core/" rel="tag"># .NET Core</a>
+              <a href="/tags/ASP-NET-Core/" rel="tag"># ASP.NET Core</a>
+              <a href="/tags/NET-Framework/" rel="tag"># .NET Framework</a>
+              <a href="/tags/NET-Standard/" rel="tag"># .NET Standard</a>
+              <a href="/tags/Mono/" rel="tag"># Mono</a>
+              <a href="/tags/AST-NET/" rel="tag"># AST.NET</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/09/Intern/" rel="prev" title="找實習和面試經驗分享">
+                  <i class="fa fa-angle-left"></i> 找實習和面試經驗分享
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/07/ASPDotNetContainerize/" rel="next" title="ASP.NET Core 專案容器化實踐">
+                  ASP.NET Core 專案容器化實踐 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2021 – 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ppodds</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 強力驅動
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
